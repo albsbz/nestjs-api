@@ -1,16 +1,19 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { MongooseModule } from '@nestjs/mongoose';
 import { ArticlesModule } from './articles/articles.module';
 
 @Module({
   imports: [
     ArticlesModule,
-    TypeOrmModule.forRoot({
-      type: 'mongodb',
-      url: 'mongodb://root:example@localhost:27017/?authMechanism=DEFAULT',
-      autoLoadEntities: true,
-      useUnifiedTopology: true,
-    }),
+    // TypeOrmModule.forRoot({
+    //   type: 'mongodb',
+    //   url: 'mongodb://root:example@localhost:27017/?authMechanism=DEFAULT',
+    //   autoLoadEntities: true,
+    //   useUnifiedTopology: true,
+    // }),
+    MongooseModule.forRoot(
+      'mongodb://root:example@localhost:27017/?authMechanism=DEFAULT',
+    ),
   ],
   controllers: [],
   providers: [],
