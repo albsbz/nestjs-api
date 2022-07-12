@@ -53,7 +53,6 @@ export class ArticlesService {
       },
     );
 
-    console.log('res', result);
     if (!result) {
       throw new NotFoundException();
     }
@@ -63,7 +62,6 @@ export class ArticlesService {
 
   async remove(id: string): Promise<void> {
     const result = await this.articleModel.findByIdAndDelete(id);
-    console.log('res', result);
 
     if (!result) {
       throw new NotFoundException();
