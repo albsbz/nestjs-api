@@ -11,7 +11,7 @@ import {
 import { ArticlesService } from './articles.service';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { FindAll } from './dto/find-all.dto';
-import { GetId } from './dto/getId';
+import { GetId } from '../common/dto/getId';
 import { UpdateArticleDto } from './dto/update-article.dto';
 import { Article } from './schemas/article.schema';
 
