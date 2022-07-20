@@ -1,14 +1,14 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-// import { InjectRepository } from '@nestjs/typeorm';
-// import { Like, MongoRepository, Repository } from 'typeorm';
-import { CreateArticleDto } from './dto/create-article.dto';
-import { UpdateArticleDto } from './dto/update-article.dto';
-// import { Article } from './entities/article.entity';
-// import { ObjectID } from 'mongodb';
-import { FindAll } from './dto/find-all.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { Article, ArticleDocument } from './schemas/article.schema';
 import { Model, Types } from 'mongoose';
+
+import {
+  CreateArticleDto,
+  UpdateArticleDto,
+  FindAll,
+} from './dto/requests.dto';
+
+import { Article, ArticleDocument } from './schemas/article.schema';
 
 @Injectable()
 export class ArticlesService {

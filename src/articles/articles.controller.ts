@@ -9,10 +9,9 @@ import {
   Query,
 } from '@nestjs/common';
 import { ArticlesService } from './articles.service';
-import { CreateArticleDto } from './dto/create-article.dto';
-import { FindAll } from './dto/find-all.dto';
-import { GetId } from '../common/dto/getId';
-import { UpdateArticleDto } from './dto/update-article.dto';
+import { CreateArticleDto, FindAll } from './dto/requests.dto';
+import { GetId } from '../common/dto/requests.dto';
+import { UpdateArticleDto } from './dto/requests.dto';
 import { Article } from './schemas/article.schema';
 
 @Controller('articles')

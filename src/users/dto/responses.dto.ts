@@ -1,8 +1,6 @@
-import { ObjectId } from 'mongoose';
 import { Role } from '../roles/role.enum';
 
-export class UseResponseDto {
-  _id: ObjectId;
+export class UserResponseDto {
   username: string;
   email: string;
   roles: Role[];

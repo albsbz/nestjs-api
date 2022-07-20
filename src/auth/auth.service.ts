@@ -1,30 +1,78 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { UseResponseDto } from 'src/users/dto/user-response.dto';
+import { UserResponseDto } from 'src/users/dto/responses.dto';
 import { UsersService } from 'src/users/users.service';
-
+import * as bcrypt from 'bcrypt';
 @Injectable()
 export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
+    private configService: ConfigService,
   ) {}
 
-  async validateUser(username: string, pass: string): Promise<UseResponseDto> {
-    const user = await this.usersService.findOne(username);
+  async validateUser(
+    email: string,
+    pass: string,
+  ): Promise<UserResponseDto | null> {
+    const user = await this.usersService.findOne(email);
 
     if (user && user.password === pass) {
-      const { password, ...result } = user;
-      return result;
+      delete user.password;
+      return user;
     }
     return null;
   }
 
-  async login(user: any): Promise<any> {
-    const payload = { username: user.username, sub: user._id };
-    return {
-      access_token: this.jwtService.sign(payload),
+  async createTokens(user: {
+    email: string;
+    _id: string;
+  }): Promise<{ accessToken: string; refreshToken: string }> {
+    const accessTokenPayload = {
+      email: user.email,
+      sub: user._id,
+      tokenType: 'access',
     };
+    const refreshToken = this.jwtService.sign(
+      { sub: user._id, tokenType: 'refresh' },
+      {
+        secret: this.configService.get('jwtConstants.refreshSecret'),
+        expiresIn: this.configService.get('jwtConstants.refreshTokenExpiresIn'),
+      },
+    );
+    await this.saveHashedRefreshToken(refreshToken, user._id);
+    return {
+      accessToken: this.jwtService.sign(accessTokenPayload),
+      refreshToken,
+    };
+  }
+
+  async saveHashedRefreshToken(
+    refreshToken: string,
+    userId: string,
+  ): Promise<void> {
+    const hashedRefreshToken = await bcrypt.hash(refreshToken, 10);
+
+    return this.usersService.setRefreshToken(hashedRefreshToken, userId);
+  }
+
+  async saveEmptyRefreshToken(userId: string): Promise<void> {
+    return this.usersService.setRefreshToken('', userId);
+  }
+
+  async compareRefreshToken(
+    refreshToken: string,
+    userId: string,
+  ): Promise<{ accessToken: string; refreshToken: string }> {
+    const user = await this.usersService.findById(userId);
+    const tokenValid = await bcrypt.compare(refreshToken, user.refreshToken);
+
+    if (!tokenValid || !user.refreshToken) {
+      throw new ForbiddenException('refresh token not valid');
+    }
+    const tokens = await this.createTokens(user);
+    return tokens;
   }
 
   // async register(userDto: CreateUserDto): Promise<RegistrationStatus> {

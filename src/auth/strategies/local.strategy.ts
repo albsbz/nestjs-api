@@ -1,21 +1,30 @@
 import { Strategy } from 'passport-local';
 import { PassportStrategy } from '@nestjs/passport';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  UnauthorizedException,
+  UseInterceptors,
+} from '@nestjs/common';
 import { AuthService } from '../auth.service';
-import { UseResponseDto } from 'src/users/dto/user-response.dto';
+import { UserResponseDto } from 'src/users/dto/responses.dto';
+import MongooseClassSerializerInterceptor from 'src/common/interceptors/mongooseClassSerializer.interceptor';
+import { User } from 'src/users/schemas/user.schema';
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
   constructor(private authService: AuthService) {
-    super();
+    super({ usernameField: 'email' });
   }
 
-  async validate(username: string, password: string): Promise<UseResponseDto> {
-    const user = await this.authService.validateUser(username, password);
+  @UseInterceptors(MongooseClassSerializerInterceptor(User))
+  async validate(email: string, password: string): Promise<UserResponseDto> {
+    const user = await this.authService.validateUser(email, password);
 
+    // add email check and exception for unconfirmed email
     if (!user) {
       throw new UnauthorizedException();
     }
+
     return user;
   }
 }
