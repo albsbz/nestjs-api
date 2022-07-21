@@ -1,9 +1,14 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  ForbiddenException,
+  Injectable,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { UserResponseDto } from 'src/users/dto/responses.dto';
 import { UsersService } from 'src/users/users.service';
 import * as bcrypt from 'bcrypt';
+import { RegisterRequest } from './dto/requests.dto';
 @Injectable()
 export class AuthService {
   constructor(
@@ -18,11 +23,21 @@ export class AuthService {
   ): Promise<UserResponseDto | null> {
     const user = await this.usersService.findOne(email);
 
-    if (user && user.password === pass) {
+    if (user && (await bcrypt.compare(pass, user.password))) {
       delete user.password;
       return user;
     }
     return null;
+  }
+
+  async registerUser({ email, password }: RegisterRequest): Promise<void> {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = await this.usersService.createUser(email, hashedPassword);
+
+    if (!user) {
+      throw new ConflictException('User already exists');
+    }
+    return;
   }
 
   async createTokens(user: {

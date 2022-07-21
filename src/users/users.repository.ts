@@ -8,12 +8,23 @@ import { User, UserDocument } from './schemas/user.schema';
 @IdToString
 export class UsersRepository {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
+  async createUser(email: string, password: string): Promise<boolean> {
+    const newUser = await this.userModel.findOneAndUpdate(
+      { email },
+      { $setOnInsert: { password } },
+      { upsert: true, new: false },
+    );
+    console.log('created', !newUser);
+
+    return !newUser;
+  }
+
   async findByEmail(email: string): Promise<User | null> {
-    return await this.userModel.findOne({ email: email }).lean();
+    return this.userModel.findOne({ email: email }).lean();
   }
 
   async remove(id: string): Promise<User> {
-    return await this.userModel.findByIdAndDelete(id);
+    return this.userModel.findByIdAndDelete(id);
   }
 
   async update(id: string, refreshToken: string): Promise<User> {
@@ -24,6 +35,6 @@ export class UsersRepository {
   }
 
   async findById(userId: string): Promise<User | null> {
-    return await this.userModel.findById(userId).lean();
+    return this.userModel.findById(userId).lean();
   }
 }

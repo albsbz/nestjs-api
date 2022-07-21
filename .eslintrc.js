@@ -21,5 +21,6 @@ module.exports = {
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     'prettier/prettier': ['error', { endOfLine: 'auto' }],
     '@typescript-eslint/explicit-function-return-type': ['error'],
+    '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
   },
 };
