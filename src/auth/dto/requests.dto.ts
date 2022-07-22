@@ -1,4 +1,5 @@
 import {
+  IsEmail,
   IsNotEmpty,
   IsString,
   Matches,
@@ -18,6 +19,7 @@ export class LoginRequest {
 export class RegisterRequest {
   @IsNotEmpty()
   @IsString()
+  @IsEmail()
   email: string;
 
   @IsString()

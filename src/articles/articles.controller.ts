@@ -13,8 +13,10 @@ import { CreateArticleDto, FindAll } from './dto/requests.dto';
 import { GetId } from '../common/dto/requests.dto';
 import { UpdateArticleDto } from './dto/requests.dto';
 import { Article } from './schemas/article.schema';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('articles')
+@ApiTags('articles')
 export class ArticlesController {
   constructor(private readonly articlesService: ArticlesService) {}
 
