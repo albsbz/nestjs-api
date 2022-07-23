@@ -6,6 +6,7 @@ import { ArticlesModule } from './articles/articles.module';
 import { AuthModule } from './auth/auth.module';
 import { RolesGuard } from './guards/roles.guard';
 import { UsersModule } from './users/users.module';
+import { MailModule } from './mail/mail.module';
 import configuration from './config/configuration';
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import configuration from './config/configuration';
     ArticlesModule,
     AuthModule,
     UsersModule,
+    MailModule,
   ],
   controllers: [],
   providers: [

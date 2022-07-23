@@ -14,8 +14,6 @@ export class UsersRepository {
       { $setOnInsert: { password } },
       { upsert: true, new: false },
     );
-    console.log('created', !newUser);
-
     return !newUser;
   }
 

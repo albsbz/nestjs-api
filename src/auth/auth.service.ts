@@ -9,12 +9,14 @@ import { UserResponseDto } from 'src/users/dto/responses.dto';
 import { UsersService } from 'src/users/users.service';
 import * as bcrypt from 'bcrypt';
 import { RegisterRequest } from './dto/requests.dto';
+import { MailConfirmationService } from 'src/mail/mailConfirmation.service';
 @Injectable()
 export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
     private configService: ConfigService,
+    private mailConfirmationService: MailConfirmationService,
   ) {}
 
   async validateUser(
@@ -37,6 +39,7 @@ export class AuthService {
     if (!user) {
       throw new ConflictException('User already exists');
     }
+    await this.mailConfirmationService.sendVerificationLink(email);
     return;
   }
 
