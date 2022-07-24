@@ -30,3 +30,9 @@ export class RegisterRequest {
   })
   password: string;
 }
+
+export class EmailTokenRequest {
+  @IsNotEmpty()
+  @IsString()
+  token: string;
+}

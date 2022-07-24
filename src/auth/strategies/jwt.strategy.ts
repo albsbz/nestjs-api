@@ -16,10 +16,15 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   async validate(payload: {
     email: string;
     sub: string;
-  }): Promise<{ userId: string; email: string }> {
+    emailIsConfirmed: boolean;
+  }): Promise<{ userId: string; email: string; emailIsConfirmed: boolean }> {
     //add revoked tokens check
 
-    const result = { userId: payload.sub, email: payload.email };
+    const result = {
+      userId: payload.sub,
+      email: payload.email,
+      emailIsConfirmed: payload.emailIsConfirmed,
+    };
 
     return result;
   }

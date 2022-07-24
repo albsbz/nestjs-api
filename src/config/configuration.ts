@@ -1,7 +1,7 @@
 export default (): unknown => ({
   jwtConstants: {
     accessSecret: process.env.ACCESS_TOKEN_SECRET,
-    accessTokenExpiresIn: '30s',
+    accessTokenExpiresIn: '360s',
     refreshSecret: process.env.REFRESH_TOKEN_SECRET,
     refreshTokenExpiresIn: '720s',
   },

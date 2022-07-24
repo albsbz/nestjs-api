@@ -8,6 +8,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { EmailConfirmationGuard } from 'src/auth/guards/email-confirmation.guard';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { GetId } from 'src/common/dto/requests.dto';
 import MongooseClassSerializerInterceptor from 'src/common/interceptors/mongooseClassSerializer.interceptor';
@@ -21,16 +22,18 @@ import { UsersService } from './users.service';
 @UseInterceptors(MongooseClassSerializerInterceptor(User))
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
-  @ApiBearerAuth('accessToken')
-  @UseGuards(JwtAuthGuard)
+
   @Get('profile')
+  @ApiBearerAuth('accessToken')
+  @UseGuards(EmailConfirmationGuard)
+  @UseGuards(JwtAuthGuard)
   getProfile(@Request() req): Promise<User> {
     return req.user;
   }
 
+  @Delete(':id')
   @UseGuards(JwtAuthGuard)
   @Roles(Role.Admin)
-  @Delete(':id')
   remove(@Param() params: GetId): Promise<void> {
     const { id } = params;
     return this.usersService.remove(id);

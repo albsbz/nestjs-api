@@ -39,17 +39,23 @@ export class AuthService {
     if (!user) {
       throw new ConflictException('User already exists');
     }
-    await this.mailConfirmationService.sendVerificationLink(email);
+    this.sendVerificationLink(email);
     return;
+  }
+
+  async sendVerificationLink(email: string): Promise<void> {
+    return this.mailConfirmationService.sendVerificationLink(email);
   }
 
   async createTokens(user: {
     email: string;
     _id: string;
+    emailIsConfirmed: boolean;
   }): Promise<{ accessToken: string; refreshToken: string }> {
     const accessTokenPayload = {
       email: user.email,
       sub: user._id,
+      emailIsConfirmed: user.emailIsConfirmed,
       tokenType: 'access',
     };
     const refreshToken = this.jwtService.sign(

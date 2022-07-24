@@ -35,4 +35,14 @@ export class UsersRepository {
   async findById(userId: string): Promise<User | null> {
     return this.userModel.findById(userId).lean();
   }
+
+  public async confirmEmail(email: string): Promise<User> {
+    const user = await this.userModel.findOneAndUpdate(
+      { email, emailIsConfirmed: false },
+      { $set: { emailIsConfirmed: true } },
+      { new: true },
+    );
+
+    return user;
+  }
 }

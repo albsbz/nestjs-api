@@ -1,10 +1,23 @@
-import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Query,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 import { Request as RequestType } from 'express';
+import { MailConfirmationService } from 'src/mail/mailConfirmation.service';
 import { User } from 'src/users/schemas/user.schema';
 import { AuthService } from './auth.service';
-import { LoginRequest, RegisterRequest } from './dto/requests.dto';
+import {
+  EmailTokenRequest,
+  LoginRequest,
+  RegisterRequest,
+} from './dto/requests.dto';
 import { LoginResponse } from './dto/responses.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { JwtRefreshGuard } from './guards/jwt-refresh.guard';
@@ -14,7 +27,10 @@ import { LocalAuthGuard } from './guards/local-auth.guard';
 @Controller('auth')
 @ApiTags('Auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private mailConfirmationService: MailConfirmationService,
+  ) {}
 
   @UseGuards(LocalAuthGuard)
   @Post('login')
@@ -28,6 +44,24 @@ export class AuthController {
   @Post('register')
   async register(@Body() credentials: RegisterRequest): Promise<void> {
     return this.authService.registerUser(credentials);
+  }
+
+  @Get('confirm-email')
+  async decodeToken(@Query() query: EmailTokenRequest): Promise<LoginResponse> {
+    const email = await this.mailConfirmationService.getEmailFromToken(
+      query.token,
+    );
+    const user = await this.mailConfirmationService.confirmEmail(email);
+    return this.authService.createTokens(user);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('resend-confirm-email')
+  async resendEmailConfirmLink(
+    @Request() req: Request & { user: User },
+  ): Promise<void> {
+    this.authService.sendVerificationLink(req.user.email);
+    return;
   }
 
   @UseGuards(JwtAuthGuard)

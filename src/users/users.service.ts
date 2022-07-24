@@ -50,4 +50,8 @@ export class UsersService {
     }
     return user;
   }
+
+  public async confirmEmail(email: string): Promise<User> {
+    return this.usersRepository.confirmEmail(email);
+  }
 }

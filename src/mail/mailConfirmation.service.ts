@@ -1,6 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { User } from 'src/users/schemas/user.schema';
+import { UsersService } from 'src/users/users.service';
 import { MailService } from './mail.service';
 
 @Injectable()
@@ -9,6 +11,7 @@ export class MailConfirmationService {
     private configService: ConfigService,
     private mailService: MailService,
     private jwtService: JwtService,
+    private usersService: UsersService,
   ) {}
 
   public sendVerificationLink(email: string): Promise<void> {
@@ -32,5 +35,31 @@ export class MailConfirmationService {
       subject: 'Email confirmation',
       text,
     });
+  }
+  public async getEmailFromToken(token: string): Promise<string> {
+    try {
+      const payload = await this.jwtService.verify(token, {
+        secret: this.configService.get('emailConstants.emailTokenSecret'),
+      });
+      if (typeof payload === 'object' && 'email' in payload) {
+        return payload.email;
+      }
+      throw new BadRequestException();
+    } catch (error) {
+      if (error instanceof Error && error?.name === 'TokenExpiredError') {
+        throw new BadRequestException('Email confirmation token expired');
+      }
+      throw new BadRequestException('Bad confirmation token');
+    }
+
+    return;
+  }
+
+  public async confirmEmail(email: string): Promise<User> {
+    const user = await this.usersService.confirmEmail(email);
+    if (!user) {
+      throw new BadRequestException('Email already confirmed');
+    }
+    return user;
   }
 }
