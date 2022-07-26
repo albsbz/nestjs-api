@@ -5,11 +5,12 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { UserResponseDto } from 'src/users/dto/responses.dto';
-import { UsersService } from 'src/users/users.service';
+
 import * as bcrypt from 'bcrypt';
 import { RegisterRequest } from './dto/requests.dto';
-import { MailConfirmationService } from 'src/mail/mailConfirmation.service';
+import { UserResponseDto } from '../users/dto/responses.dto';
+import { UsersService } from '../users/users.service';
+import { MailConfirmationService } from '../mail/mailConfirmation.service';
 @Injectable()
 export class AuthService {
   constructor(

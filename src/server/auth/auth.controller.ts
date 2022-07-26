@@ -10,8 +10,9 @@ import {
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 import { Request as RequestType } from 'express';
-import { MailConfirmationService } from 'src/mail/mailConfirmation.service';
-import { User } from 'src/users/schemas/user.schema';
+import { MailConfirmationService } from '../mail/mailConfirmation.service';
+
+import { User } from '../users/schemas/user.schema';
 import { AuthService } from './auth.service';
 import {
   EmailTokenRequest,

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { IdToString } from 'src/common/decorators/idToString.decorator';
+import { IdToString } from '../common/decorators/idToString.decorator';
 import { User, UserDocument } from './schemas/user.schema';
 
 @Injectable()

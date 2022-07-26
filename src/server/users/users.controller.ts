@@ -8,10 +8,12 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { EmailConfirmationGuard } from 'src/auth/guards/email-confirmation.guard';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { GetId } from 'src/common/dto/requests.dto';
-import MongooseClassSerializerInterceptor from 'src/common/interceptors/mongooseClassSerializer.interceptor';
+import { EmailConfirmationGuard } from '../auth/guards/email-confirmation.guard';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { GetId } from '../common/dto/requests.dto';
+
+import MongooseClassSerializerInterceptor from '../common/interceptors/mongooseClassSerializer.interceptor';
+
 import { Role } from './roles/role.enum';
 import { Roles } from './roles/roles.decorator';
 import { User } from './schemas/user.schema';

@@ -1,4 +1,4 @@
-export default (): unknown => ({
+const Consts = (): unknown => ({
   jwtConstants: {
     accessSecret: process.env.ACCESS_TOKEN_SECRET,
     accessTokenExpiresIn: '360s',
@@ -23,3 +23,4 @@ export default (): unknown => ({
     port: process.env.REDIS_PORT,
   },
 });
+export default Consts;

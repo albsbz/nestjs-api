@@ -6,9 +6,10 @@ import { AuthController } from './auth.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { ConfigService } from '@nestjs/config';
-import { UsersModule } from 'src/users/users.module';
+
 import { JwtRefreshStrategy } from './strategies/jwt-refresh.strategy';
-import { MailModule } from 'src/mail/mail.module';
+import { UsersModule } from '../users/users.module';
+import { MailModule } from '../mail/mail.module';
 
 @Module({
   imports: [

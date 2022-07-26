@@ -9,6 +9,9 @@ import { UsersModule } from './users/users.module';
 import { MailModule } from './mail/mail.module';
 import configuration from './config/configuration';
 import { BullModule } from '@nestjs/bull';
+import { RenderModule } from 'nest-next';
+import { SsrModule } from './ssr/ssr.module';
+import Next from 'next';
 @Module({
   imports: [
     // TypeOrmModule.forRoot({
@@ -17,6 +20,12 @@ import { BullModule } from '@nestjs/bull';
     //   autoLoadEntities: true,
     //   useUnifiedTopology: true,
     // }),
+    RenderModule.forRootAsync(
+      Next({ dev: true }),
+      /* null means that nest-next 
+        should look for pages in root dir */
+      { viewsDir: null },
+    ),
     MongooseModule.forRoot(
       'mongodb://root:example@localhost:27017/?authMechanism=DEFAULT',
     ),
@@ -35,6 +44,7 @@ import { BullModule } from '@nestjs/bull';
     AuthModule,
     UsersModule,
     MailModule,
+    SsrModule,
   ],
   controllers: [],
   providers: [
