@@ -19,7 +19,7 @@ import { Roles } from './roles/roles.decorator';
 import { User } from './schemas/user.schema';
 import { UsersService } from './users.service';
 
-@Controller('users')
+@Controller('api/users')
 @ApiTags('users')
 @UseInterceptors(MongooseClassSerializerInterceptor(User))
 export class UsersController {
