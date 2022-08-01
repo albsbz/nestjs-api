@@ -1,7 +1,10 @@
 # compiled output
-/dist
 /node_modules
-/.next
+/dto/node_modules
+/server/node_modules
+/server/dist
+/ui/node_modules
+/ui/.next
 
 # Logs
 logs
@@ -37,6 +40,7 @@ lerna-debug.log*
 
 #Config
 .env
-
+/server/.env
+/ui/.env
 /mongo-data
 
