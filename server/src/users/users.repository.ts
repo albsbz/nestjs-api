@@ -2,19 +2,108 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { IdToString } from '../common/decorators/idToString.decorator';
+import { Provider } from './providers/providers.enum';
 import { User, UserDocument } from './schemas/user.schema';
 
 @Injectable()
 @IdToString
 export class UsersRepository {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
-  async createUser(email: string, password: string): Promise<boolean> {
-    const newUser = await this.userModel.findOneAndUpdate(
-      { email },
-      { $setOnInsert: { password } },
-      { upsert: true, new: false },
+  async createLocalUser(
+    email: string,
+    password: string,
+    provider: Provider,
+  ): Promise<boolean> {
+    const user = await this.userModel.updateOne(
+      {
+        email,
+      },
+      [
+        {
+          $set: {
+            password: {
+              $switch: {
+                branches: [
+                  {
+                    case: {
+                      $not: {
+                        $in: [provider, { $ifNull: ['$providers', []] }],
+                      },
+                    },
+                    then: password,
+                  },
+                ],
+                default: '$password',
+              },
+            },
+            providers: {
+              $switch: {
+                branches: [
+                  {
+                    case: {
+                      $not: {
+                        $in: [provider, { $ifNull: ['$providers', []] }],
+                      },
+                    },
+                    then: {
+                      $concatArrays: [
+                        { $ifNull: ['$providers', []] },
+                        [provider],
+                      ],
+                    },
+                  },
+                ],
+                default: '$providers',
+              },
+            },
+          },
+        },
+      ],
+      {
+        upsert: true,
+      },
     );
-    return !newUser;
+
+    return !!(user.modifiedCount || user.upsertedCount);
+  }
+
+  async createProviderUser(email: string, provider: Provider): Promise<User> {
+    const user = await this.userModel.findOneAndUpdate(
+      {
+        email,
+      },
+      [
+        {
+          $set: {
+            providers: {
+              $switch: {
+                branches: [
+                  {
+                    case: {
+                      $not: {
+                        $in: [provider, { $ifNull: ['$providers', []] }],
+                      },
+                    },
+                    then: {
+                      $concatArrays: [
+                        { $ifNull: ['$providers', []] },
+                        [provider],
+                      ],
+                    },
+                  },
+                ],
+                default: '$providers',
+              },
+            },
+          },
+        },
+      ],
+      {
+        upsert: true,
+      },
+    );
+
+    return user;
   }
 
   async findByEmail(email: string): Promise<User | null> {

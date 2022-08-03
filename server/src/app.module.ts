@@ -16,11 +16,23 @@ import { resolve } from 'path';
 @Module({
   imports: [
     RenderModule.forRootAsync(
-      Next({ dev: true, dir: resolve(__dirname, '../../ui') }),
-      { viewsDir: null, passthrough404: true },
+      Next({
+        dev: true,
+        dir: resolve(__dirname, '../../ui'),
+      }),
+      {
+        viewsDir: null,
+        passthrough404: true,
+      },
     ),
-    MongooseModule.forRoot(process.env.MONGO_URL),
     ConfigModule.forRoot({ isGlobal: true, load: [configuration] }),
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        uri: configService.get('db.mongoUrl'),
+      }),
+      inject: [ConfigService],
+    }),
     BullModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({

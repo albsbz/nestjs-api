@@ -1,6 +1,10 @@
 const Consts = (): unknown => ({
   apiUrl: process.env.NEXT_PUBLIC_API_URL,
   url: process.env.NEXT_PUBLIC_URL,
+  db: {
+    mongoUrl: process.env.MONGO_URL,
+    mongoPasswordPrefix: process.env.MONGO_PASSWORD_PREFIX,
+  },
   jwtConstants: {
     accessSecret: process.env.ACCESS_TOKEN_SECRET,
     accessTokenExpiresIn: '360s',

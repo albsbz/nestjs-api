@@ -3,9 +3,14 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { swaggerOptions } from './config/swaggerOptions';
+import { RenderService } from 'nest-next';
 
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule);
+  const service = app.get(RenderService);
+  service.setErrorHandler(async (err, req, res) => {
+    res.send(err.response);
+  });
   app.enableCors({});
   app.useGlobalPipes(
     new ValidationPipe({

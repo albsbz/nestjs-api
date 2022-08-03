@@ -1,13 +1,33 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { Provider } from './providers/providers.enum';
 import { User } from './schemas/user.schema';
 import { UsersRepository } from './users.repository';
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly usersRepository: UsersRepository) {}
+  constructor(
+    private readonly usersRepository: UsersRepository,
+    private configService: ConfigService,
+  ) {}
 
-  async createUser(email: string, password: string): Promise<boolean> {
-    return this.usersRepository.createUser(email, password);
+  async createLocalUser(
+    email: string,
+    password: string,
+    provider: Provider,
+  ): Promise<boolean> {
+    const passwordWithPrefix = `${this.configService.get(
+      'db.mongoPasswordPrefix',
+    )}_${password}`;
+    return this.usersRepository.createLocalUser(
+      email,
+      passwordWithPrefix,
+      provider,
+    );
+  }
+
+  async createProviderUser(email: string, provider: Provider): Promise<User> {
+    return this.usersRepository.createProviderUser(email, provider);
   }
 
   async findOne(email: string): Promise<User | null> {

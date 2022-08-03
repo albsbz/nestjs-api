@@ -10,6 +10,7 @@ import {
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 import { Request as RequestType } from 'express';
+import { Provider } from 'src/users/providers/providers.enum';
 import { MailConfirmationService } from '../mail/mailConfirmation.service';
 
 import { User } from '../users/schemas/user.schema';
@@ -44,7 +45,12 @@ export class AuthController {
 
   @Post('register')
   async register(@Body() credentials: RegisterRequest): Promise<void> {
-    return this.authService.registerUser(credentials);
+    const res = this.authService.registerUser({
+      ...credentials,
+      provider: Provider.Local,
+    });
+
+    return res;
   }
 
   @Get('confirm-email')

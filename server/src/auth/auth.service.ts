@@ -11,6 +11,8 @@ import { RegisterRequest } from './dto/requests.dto';
 import { UserResponseDto } from '../users/dto/responses.dto';
 import { UsersService } from '../users/users.service';
 import { MailConfirmationService } from '../mail/mailConfirmation.service';
+import { Provider } from 'src/users/providers/providers.enum';
+import { User } from 'src/users/schemas/user.schema';
 @Injectable()
 export class AuthService {
   constructor(
@@ -25,23 +27,51 @@ export class AuthService {
     pass: string,
   ): Promise<UserResponseDto | null> {
     const user = await this.usersService.findOne(email);
-
-    if (user && (await bcrypt.compare(pass, user.password))) {
+    const passwordWithouPrefix = user.password.split('_')?.[1];
+    if (
+      user &&
+      passwordWithouPrefix &&
+      (await bcrypt.compare(pass, passwordWithouPrefix)) &&
+      user.providers.includes(Provider.Local)
+    ) {
       delete user.password;
       return user;
     }
     return null;
   }
 
-  async registerUser({ email, password }: RegisterRequest): Promise<void> {
+  async registerUser({
+    email,
+    password,
+    provider,
+  }: RegisterRequest & { provider: Provider }): Promise<void> {
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = await this.usersService.createUser(email, hashedPassword);
+    const newlyCreatedUser = await this.usersService.createLocalUser(
+      email,
+      hashedPassword,
+      provider,
+    );
 
-    if (!user) {
+    if (!newlyCreatedUser) {
       throw new ConflictException('User already exists');
     }
-    this.sendVerificationLink(email);
+    // this.sendVerificationLink(email);
     return;
+  }
+
+  async registerUserWithProvider({
+    email,
+    provider,
+  }: {
+    email: string;
+    provider: Provider;
+  }): Promise<User> {
+    const user = await this.usersService.createProviderUser(email, provider);
+
+    if (!user || typeof user === 'boolean') {
+      throw new ConflictException('User already exists');
+    }
+    return user;
   }
 
   async sendVerificationLink(email: string): Promise<void> {

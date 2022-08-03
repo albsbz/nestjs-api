@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Exclude, Transform } from 'class-transformer';
+import { Provider } from '../providers/providers.enum';
 import { Role } from '../roles/role.enum';
 
 export type UserDocument = User & Document;
@@ -21,6 +22,9 @@ export class User {
 
   @Prop({ required: true, default: [Role.User] })
   roles: Role[];
+
+  @Prop({ required: true })
+  providers: Provider[];
 
   @Prop()
   refreshToken: string;
