@@ -5,11 +5,12 @@ import {
   Post,
   Query,
   Request,
+  Res,
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
-import { Request as RequestType } from 'express';
+import { Request as RequestType, Response } from 'express';
 import { Provider } from 'src/users/providers/providers.enum';
 import { MailConfirmationService } from '../mail/mailConfirmation.service';
 
@@ -39,8 +40,14 @@ export class AuthController {
   async login(
     @Request() req: RequestType & { user: User },
     @Body() _body: LoginRequest,
-  ): Promise<LoginResponse> {
-    return this.authService.createTokens(req.user);
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<unknown> {
+    const { accessToken, refreshToken } = await this.authService.createTokens(
+      req.user,
+    );
+    res.header('accessToken', accessToken);
+    res.header('refreshToken', refreshToken);
+    return;
   }
 
   @Post('register')
