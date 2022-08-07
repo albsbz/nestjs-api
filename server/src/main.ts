@@ -6,13 +6,16 @@ import { swaggerOptions } from './config/swaggerOptions';
 import { RenderService } from 'nest-next';
 
 async function bootstrap(): Promise<void> {
-  const app = await NestFactory.create(AppModule);
-  const service = app.get(RenderService);
+  const server = await NestFactory.create(AppModule);
+
+  const service = server.get(RenderService);
   service.setErrorHandler(async (err, req, res) => {
-    res.send(err.response);
+    if (res.statusCode !== 404) {
+      res.send(err.response);
+    }
   });
-  app.enableCors({});
-  app.useGlobalPipes(
+  server.enableCors({});
+  server.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
       transform: true,
@@ -27,8 +30,8 @@ async function bootstrap(): Promise<void> {
     .addBearerAuth(undefined, 'accessToken')
     .addBearerAuth(undefined, 'refreshToken')
     .build();
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document, swaggerOptions);
-  await app.listen(3000);
+  const document = SwaggerModule.createDocument(server, config);
+  SwaggerModule.setup('api', server, document, swaggerOptions);
+  await server.listen(3000);
 }
 bootstrap();

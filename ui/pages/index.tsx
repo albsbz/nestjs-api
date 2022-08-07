@@ -1,7 +1,12 @@
 import { NextPage } from 'next';
+import BasicLayout from '../components/layouts/BasicLayout';
 
 const Home: NextPage = () => {
-  return <h1>Home1</h1>;
+  return (
+    <BasicLayout>
+      <h1>Main</h1>
+    </BasicLayout>
+  );
 };
 
 // export async function getStaticProps() {

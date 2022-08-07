@@ -13,4 +13,10 @@ export class SsrController {
   login(): unknown {
     return {};
   }
+
+  // @Get('test')
+  // @Render('test')
+  // test(): unknown {
+  //   return {};
+  // }
 }
