@@ -1,6 +1,5 @@
-import { Controller, UseGuards, Get, Req } from '@nestjs/common';
-import { Request } from 'express';
-import { LoginResponse } from '../dto/responses.dto';
+import { Controller, UseGuards, Get, Req, Res } from '@nestjs/common';
+import { Request, Response } from 'express';
 import { GoogleOauthGuard } from '../guards/google-oauth.guard';
 import { GoogleUser } from './dto/GoogleUser.dto';
 
@@ -20,14 +19,17 @@ export class GoogleAuthController {
   @UseGuards(GoogleOauthGuard)
   async google(
     @Req() req: Request & { user: GoogleUser },
-  ): Promise<LoginResponse> {
+    @Res() res: Response,
+  ): Promise<void> {
     const jwtToken = await this.googleAuthenticationService.authenticate(
       req.user,
     );
     if (jwtToken) {
-      return jwtToken;
+      const { accessToken, refreshToken } = jwtToken;
+      res.header('accessToken', accessToken);
+      res.header('refreshToken', refreshToken);
     }
 
-    return;
+    return res.redirect('/');
   }
 }
