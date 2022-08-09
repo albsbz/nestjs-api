@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const instance = axios.create({
+const axiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
   headers: {
     'Content-Type': 'application/json',
@@ -8,7 +8,7 @@ const instance = axios.create({
   },
 });
 
-instance.interceptors.response.use(
+axiosInstance.interceptors.response.use(
   function (response) {
     // Any status code that lie within the range of 2xx cause this function to trigger
     // Do something with response data
@@ -21,4 +21,4 @@ instance.interceptors.response.use(
   },
 );
 
-export default instance;
+export default axiosInstance;

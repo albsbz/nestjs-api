@@ -1,6 +1,6 @@
 import { NextPage } from 'next';
 import React from 'react';
-import BasicLayout from '../components/layouts/BasicLayout';
+import BasicLayout from '../layouts/BasicLayout';
 import { Page } from '../common/types/pages';
 
 const BlogApp: Page = () => {

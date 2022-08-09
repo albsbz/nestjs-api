@@ -4,12 +4,48 @@ import AppButton from '../../../components/Button';
 import GoogleButton from '../../../components/GoogleButton';
 import AppInput from '../../../components/Input';
 import styles from './style.module.css';
+import axiosInstance from '../../../services/axios';
+import { useErrorHandler } from 'react-error-boundary';
+import useAsyncError from '../../../hooks/useAsyncError';
 
 const LoginPage = () => {
-  //   const [form] = Form.useForm();
+  const [form] = Form.useForm();
+  const handleError = useErrorHandler();
+  const throwError = useAsyncError();
 
-  const onFinish = (values: any) => {
+  const passwordValidator = (_, pw) => {
+    if (/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/.test(pw)) {
+      return Promise.resolve();
+    } else {
+      return Promise.reject('Some message here');
+    }
+  };
+
+  const onFinish = async (values: any) => {
     console.log('Success:', values);
+    let resp;
+    try {
+      resp = await axiosInstance.post('auth/login', {
+        email: values.email,
+        password: values.password,
+      });
+      const tokens = {
+        accessToken: resp.headers.accesstoken,
+        refreshToken: resp.headers.refreshtoken,
+      };
+      console.log('resp', tokens);
+    } catch (e) {
+      console.log('e', e.response.status);
+      if (e.response.status === 401) {
+        form.setFields([
+          { name: 'password', errors: [e.response.data.message] },
+        ]);
+      } else {
+        throwError(e);
+      }
+    }
+
+    console.log('resp', resp);
   };
 
   const onFinishFailed = (errorInfo: any) => {
@@ -19,7 +55,7 @@ const LoginPage = () => {
     <div>
       <h1>Login</h1>
       <Form
-        // form={form}
+        form={form}
         name="basic"
         labelCol={{ span: 5 }}
         initialValues={{ remember: true }}
@@ -36,7 +72,7 @@ const LoginPage = () => {
           name="email"
           rules={[
             { required: true, message: 'Please input your Email!' },
-            // { type: 'email', message: 'Email incorrect' },
+            { type: 'email', message: 'Email incorrect' },
           ]}
         >
           <AppInput placeholder="Email" prefix={<UserOutlined />} />
@@ -45,7 +81,10 @@ const LoginPage = () => {
         <Form.Item
           label="Password"
           name="password"
-          rules={[{ required: true, message: 'Please input your password!' }]}
+          rules={[
+            { required: true, message: 'Please input your password!' },
+            { validator: passwordValidator, message: 'Password is too week' },
+          ]}
         >
           <AppInput
             placeholder="Password"

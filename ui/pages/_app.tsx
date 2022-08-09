@@ -1,5 +1,6 @@
 import { AppProps } from 'next/app';
 import { Page } from '../common/types/pages';
+// globalThis.ASYNC_VALIDATOR_NO_WARNING = 1;
 
 type Props = AppProps & {
   Component: Page;
