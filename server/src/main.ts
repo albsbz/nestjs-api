@@ -1,12 +1,14 @@
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { NestFactory } from '@nestjs/core';
+import helmet from 'helmet';
 import { AppModule } from './app.module';
 import { swaggerOptions } from './config/swaggerOptions';
 import { RenderService } from 'nest-next';
 
 async function bootstrap(): Promise<void> {
   const server = await NestFactory.create(AppModule);
+  server.use(helmet({ contentSecurityPolicy: false }));
 
   const service = server.get(RenderService);
   service.setErrorHandler(async (err, req, res) => {
@@ -14,7 +16,7 @@ async function bootstrap(): Promise<void> {
       res.send(err.response);
     }
   });
-  server.enableCors({});
+  // server.enableCors({});
   server.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,

@@ -1,4 +1,3 @@
-import React from 'react';
 import AppAvatarDropdown from './AvatarDropdown';
 
 const AppProfileMenu = () => {

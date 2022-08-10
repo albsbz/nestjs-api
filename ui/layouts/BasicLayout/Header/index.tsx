@@ -1,4 +1,6 @@
-import { Layout, Menu } from 'antd';
+import { Button, Layout, Menu } from 'antd';
+import { useRouter } from 'next/router';
+import { useAuthContext } from '../../../context/authContext';
 import AppProfileMenu from './ProfileMenu';
 import styles from './style.module.css';
 
@@ -12,11 +14,23 @@ const items = [
 ];
 
 const AppHeader: React.FC = () => {
+  const { isAuth } = useAuthContext();
+  const router = useRouter();
   return (
     <Header style={{ position: 'fixed', zIndex: 1, width: '100%' }}>
       <div className={styles.logo} />
       <div style={{ float: 'right' }}>
-        <AppProfileMenu />
+        {isAuth ? (
+          <AppProfileMenu />
+        ) : (
+          <Button
+            onClick={() => {
+              router.push('/login');
+            }}
+          >
+            Login
+          </Button>
+        )}
       </div>
       <Menu
         theme="dark"
