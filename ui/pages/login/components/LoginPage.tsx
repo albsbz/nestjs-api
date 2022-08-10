@@ -7,11 +7,13 @@ import styles from './style.module.css';
 import axiosInstance from '../../../services/axios';
 import { useErrorHandler } from 'react-error-boundary';
 import useAsyncError from '../../../hooks/useAsyncError';
+import { useAuthContext } from '../../../context/authContext';
 
 const LoginPage = () => {
   const [form] = Form.useForm();
   const handleError = useErrorHandler();
   const throwError = useAsyncError();
+  const { tokens, setTokens, user } = useAuthContext();
 
   const passwordValidator = (_, pw) => {
     if (/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/.test(pw)) {
@@ -33,7 +35,7 @@ const LoginPage = () => {
         accessToken: resp.headers.accesstoken,
         refreshToken: resp.headers.refreshtoken,
       };
-      console.log('resp', tokens);
+      setTokens(tokens);
     } catch (e) {
       console.log('e', e.response.status);
       if (e.response.status === 401) {

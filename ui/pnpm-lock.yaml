@@ -12,6 +12,7 @@ specifiers:
   eslint-config-prettier: ^8.5.0
   eslint-plugin-prettier: ^4.2.1
   eslint-plugin-react: ^7.30.1
+  jwt-decode: ^3.1.2
   prettier: ^2.7.1
   react-error-boundary: ^3.1.4
   rimraf: ^3.0.2
@@ -22,6 +23,7 @@ dependencies:
   antd: 4.22.3
   axios: 0.27.2
   eslint-plugin-react: 7.30.1_eslint@8.21.0
+  jwt-decode: 3.1.2
   react-error-boundary: 3.1.4
 
 devDependencies:
@@ -1310,6 +1312,10 @@ packages:
     dependencies:
       array-includes: 3.1.5
       object.assign: 4.1.2
+
+  /jwt-decode/3.1.2:
+    resolution: {integrity: sha512-UfpWE/VZn0iP50d8cz9NrZLM9lSWhcJ+0Gt/nm4by88UL+J1SiKN8/5dkjMmbEzwL2CAe+67GsegCbIKtbp75A==}
+    dev: false
 
   /language-subtag-registry/0.3.22:
     resolution: {integrity: sha512-tN0MCzyWnoz/4nHS6uxdlFWoUZT7ABptwKPQ52Ea7URk6vll88bWBVhodtnlfEuCcKWNGoc+uGbw1cwa9IKh/w==}
