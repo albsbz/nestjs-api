@@ -14,6 +14,7 @@ async function bootstrap(): Promise<void> {
   service.setErrorHandler(async (err, req, res) => {
     if (res.statusCode !== 404) {
       res.send(err.response);
+      return;
     }
   });
   // server.enableCors({});

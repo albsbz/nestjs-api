@@ -10,10 +10,6 @@ const securityHeaders = [
     value: 'max-age=63072000; includeSubDomains; preload',
   },
   {
-    key: 'Server',
-    value: 'Apache', // phony server value
-  },
-  {
     key: 'X-Content-Type-Options',
     value: 'nosniff',
   },
@@ -28,10 +24,6 @@ const securityHeaders = [
   {
     key: 'Referrer-Policy',
     value: 'same-origin',
-  },
-  {
-    key: 'Permissions-Policy',
-    value: 'geolocation=*', // allow specified policies here
   },
 ];
 const nextConfig = {

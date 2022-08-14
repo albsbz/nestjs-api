@@ -4,16 +4,18 @@ import AppButton from '../../../components/Button';
 import GoogleButton from '../../../components/GoogleButton';
 import AppInput from '../../../components/Input';
 import styles from './style.module.css';
-import axiosInstance from '../../../services/axios';
+import { axiosInstance } from '../../../utils/axios';
 import { useErrorHandler } from 'react-error-boundary';
 import useAsyncError from '../../../hooks/useAsyncError';
 import { useAuthContext } from '../../../context/authContext';
+import { useRouter } from 'next/router';
 
 const LoginPage = () => {
+  const router = useRouter();
   const [form] = Form.useForm();
   const handleError = useErrorHandler();
   const throwError = useAsyncError();
-  const { tokens, setTokens, user } = useAuthContext();
+  const { login } = useAuthContext();
 
   const passwordValidator = (_, pw) => {
     if (/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/.test(pw)) {
@@ -24,20 +26,16 @@ const LoginPage = () => {
   };
 
   const onFinish = async (values: any) => {
-    console.log('Success:', values);
     let resp;
     try {
       resp = await axiosInstance.post('auth/login', {
         email: values.email,
         password: values.password,
       });
-      const tokens = {
-        accessToken: resp.headers.accesstoken,
-        refreshToken: resp.headers.refreshtoken,
-      };
-      setTokens(tokens);
+
+      login(resp.headers.accesstoken, resp.headers.refreshtoken);
+      router.push('/');
     } catch (e) {
-      console.log('e', e.response.status);
       if (e.response.status === 401) {
         form.setFields([
           { name: 'password', errors: [e.response.data.message] },
@@ -46,13 +44,9 @@ const LoginPage = () => {
         throwError(e);
       }
     }
-
-    console.log('resp', resp);
   };
 
-  const onFinishFailed = (errorInfo: any) => {
-    console.log('Failed:', errorInfo);
-  };
+  const onFinishFailed = (errorInfo: any) => {};
   return (
     <div>
       <h1>Login</h1>

@@ -1,15 +1,17 @@
-import jwtDecode from 'jwt-decode';
+import { useRouter } from 'next/router';
 import { createContext, useContext, useEffect, useState } from 'react';
 import { Props } from '../../common/interface/Props';
-import { JWTTokenPayload } from '../../common/types/jwtTokenPayload';
-import axiosInstance from '../../services/axios';
 import useAuth from './hooks/useAuth';
+import useGetInitTokens from './hooks/useGetInitTokens';
+import { useRefreshToken } from './hooks/useRefreshToken';
 
 export const AuthContext = createContext({
-  tokens: {},
+  login: (accessToken: string, refreshToken: string) => {},
+  logout: () => {},
   user: {},
   isAuth: false,
-  setTokens: (tokens) => {},
+  isLoading: false,
+  setIsLoading: (v: boolean) => {},
 });
 
 export const useAuthContext = () => {
@@ -17,10 +19,26 @@ export const useAuthContext = () => {
 };
 
 export const AuthContextProvider: React.FC<Props> = (props) => {
-  const { tokens, setTokens, user, isAuth } = useAuth();
+  const [isLoading, setIsLoading] = useState(true);
+
+  const router = useRouter();
+  const initTokens = useGetInitTokens();
+  const { login, logout, user, isAuth, tokens, clearUser, setTokens } = useAuth(
+    initTokens,
+    setIsLoading,
+  );
+
+  useRefreshToken(tokens, login, logout, clearUser);
+
+  useEffect(() => {
+    if (!isAuth && props.needAuth) {
+      router.push('/login');
+    }
+  }, [isAuth, props.needAuth, router]);
+
   return (
     <AuthContext.Provider
-      value={{ tokens, setTokens, user, isAuth }}
+      value={{ login, logout, user, isAuth, isLoading, setIsLoading }}
       {...props}
     />
   );

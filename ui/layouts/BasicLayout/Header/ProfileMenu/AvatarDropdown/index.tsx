@@ -1,13 +1,15 @@
 import { Avatar, Dropdown, Menu, Space } from 'antd';
 import { useRouter } from 'next/router';
+import { useAuthContext } from '../../../../../context/authContext';
 
 const AppAvatarDropdown: React.FC = () => {
   const router = useRouter();
+  const { logout } = useAuthContext();
   const menu = () => {
     // const router = useRouter();
-    const handleLogout = (a) => {
-      console.log('logout!', a);
-      // router.push('/logout');
+    const handleLogout = () => {
+      logout();
+      router.push('/');
     };
     return (
       <Menu
@@ -15,6 +17,12 @@ const AppAvatarDropdown: React.FC = () => {
           {
             key: '1',
             label: <a onClick={handleLogout}>Logout</a>,
+          },
+          {
+            key: '2',
+            label: (
+              <a onClick={() => router.push('/auth/profile')}>My profile</a>
+            ),
           },
         ]}
       />

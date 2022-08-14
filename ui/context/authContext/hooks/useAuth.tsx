@@ -1,53 +1,68 @@
 import jwtDecode from 'jwt-decode';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { JWTTokenPayload } from '../../../common/types/jwtTokenPayload';
-import axiosInstance from '../../../services/axios';
+import {
+  setAuthHeader,
+  unsetAuthHeader,
+  axiosInstance,
+} from '../../../utils/axios';
 
-const useAuth = () => {
-  const [tokens, setTokens] = useState({
-    accessToken: null,
-    refreshToken: null,
-  });
+const useAuth = (initTokens, setIsLoading) => {
+  // setIsLoading(true);
+  const [tokens, setTokens] = useState(initTokens);
   const [user, setUser] = useState({});
-  const [isAuth, setIsAuth] = useState(false);
+  const [isAuth, setIsAuth] = useState(true);
 
-  const login = useCallback(
-    (
-      userData: JWTTokenPayload,
-      tokens: { accessToken: string; refreshToken: string },
-    ) => {
+  const updateUserData = useCallback((accessToken: string) => {
+    const userData = jwtDecode<JWTTokenPayload>(accessToken);
+    if (userData) {
       setUser(userData);
       setIsAuth(true);
-      axiosInstance.interceptors.request.use(function (config) {
-        config.headers.Authorization = `Bearer ${tokens.accessToken}`;
-        return config;
-      });
-      localStorage.setItem('appRefreshToken', tokens.refreshToken);
-      localStorage.setItem('appAccessToken', tokens.accessToken);
-    },
-    [],
-  );
-
-  useEffect(() => {
-    if (tokens.accessToken) {
-      const userData = jwtDecode<JWTTokenPayload>(tokens.accessToken);
-      if (userData) {
-        login(userData, tokens);
-      }
+      setAuthHeader(accessToken);
     }
-  }, [tokens, login]);
+  }, []);
 
   useEffect(() => {
-    console.log('user', user);
-  }, [user]);
+    if (tokens.accessToken && tokens.refreshToken) {
+      const { accessToken, refreshToken } = tokens;
+      updateUserData(accessToken);
+      localStorage.setItem('appRefreshToken', refreshToken);
+      localStorage.setItem('appAccessToken', accessToken);
+    } else {
+      setIsAuth(false);
+    }
+    setIsLoading(false);
+  }, [tokens, updateUserData, setIsLoading]);
+
+  const login = (accessToken: string, refreshToken: string) => {
+    setTokens({ accessToken, refreshToken });
+  };
+
+  const clearUser = () => {
+    localStorage.removeItem('appRefreshToken');
+    localStorage.removeItem('appAccessToken');
+
+    unsetAuthHeader();
+    setTokens({ accesToken: null, refreshToken: null });
+    setUser({});
+  };
+
+  const logout = async () => {
+    setIsLoading(true);
+    await axiosInstance.post('/auth/logout');
+    clearUser();
+
+    setIsLoading(false);
+  };
 
   return {
-    tokens,
     setTokens,
+    login,
+    logout,
     user,
-    setUser,
     isAuth,
-    setIsAuth,
+    tokens,
+    clearUser,
   };
 };
 export default useAuth;
