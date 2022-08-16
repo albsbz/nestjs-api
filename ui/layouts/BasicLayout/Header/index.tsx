@@ -14,24 +14,26 @@ const items = [
 ];
 
 const AppHeader: React.FC = () => {
-  const { isAuth } = useAuthContext();
+  const { isAuth, isLoading } = useAuthContext();
   const router = useRouter();
   return (
     <Header style={{ position: 'fixed', zIndex: 1, width: '100%' }}>
       <div className={styles.logo} />
-      <div style={{ float: 'right' }}>
-        {isAuth ? (
-          <AppProfileMenu />
-        ) : (
-          <Button
-            onClick={() => {
-              router.push('/login');
-            }}
-          >
-            Login
-          </Button>
-        )}
-      </div>
+      {!isLoading && (
+        <div style={{ float: 'right' }}>
+          {isAuth ? (
+            <AppProfileMenu />
+          ) : (
+            <Button
+              onClick={() => {
+                router.push('/login');
+              }}
+            >
+              Login
+            </Button>
+          )}
+        </div>
+      )}
       <Menu
         theme="dark"
         mode="horizontal"

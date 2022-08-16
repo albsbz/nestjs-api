@@ -13,7 +13,7 @@ export class GoogleOAuthStrategy extends PassportStrategy(
     super({
       clientID: configService.get('google.auth.clientId'),
       clientSecret: configService.get('google.auth.clientSecret'),
-      callbackURL: `${configService.get('apiUrl')}/google`,
+      callbackURL: `${configService.get('url')}/auth/provider?provider=google`,
       scope: ['email', 'profile'],
       prompt: 'select_account',
     });

@@ -23,7 +23,7 @@ export const AuthContextProvider: React.FC<Props> = (props) => {
 
   const router = useRouter();
   const initTokens = useGetInitTokens();
-  const { login, logout, user, isAuth, tokens, clearUser, setTokens } = useAuth(
+  const { login, logout, user, isAuth, tokens, clearUser } = useAuth(
     initTokens,
     setIsLoading,
   );

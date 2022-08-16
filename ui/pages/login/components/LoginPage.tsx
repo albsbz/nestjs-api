@@ -9,13 +9,26 @@ import { useErrorHandler } from 'react-error-boundary';
 import useAsyncError from '../../../hooks/useAsyncError';
 import { useAuthContext } from '../../../context/authContext';
 import { useRouter } from 'next/router';
+import { useEffect, useMemo } from 'react';
 
 const LoginPage = () => {
   const router = useRouter();
   const [form] = Form.useForm();
   const handleError = useErrorHandler();
   const throwError = useAsyncError();
-  const { login } = useAuthContext();
+  const { login, isAuth, setIsLoading, isLoading } = useAuthContext();
+
+  useEffect(() => {
+    if (isAuth) {
+      setIsLoading(true);
+    }
+  }, [isAuth, setIsLoading]);
+
+  useEffect(() => {
+    if (!isLoading && isAuth) {
+      router.push('/');
+    }
+  }, [router, isAuth, isLoading]);
 
   const passwordValidator = (_, pw) => {
     if (/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/.test(pw)) {

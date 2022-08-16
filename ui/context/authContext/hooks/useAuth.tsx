@@ -11,7 +11,7 @@ const useAuth = (initTokens, setIsLoading) => {
   // setIsLoading(true);
   const [tokens, setTokens] = useState(initTokens);
   const [user, setUser] = useState({});
-  const [isAuth, setIsAuth] = useState(true);
+  const [isAuth, setIsAuth] = useState(false);
 
   const updateUserData = useCallback((accessToken: string) => {
     const userData = jwtDecode<JWTTokenPayload>(accessToken);

@@ -100,6 +100,7 @@ export class UsersRepository {
       ],
       {
         upsert: true,
+        new: true,
       },
     );
 
