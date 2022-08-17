@@ -2,7 +2,7 @@ import { Button, Layout, Menu } from 'antd';
 import { useRouter } from 'next/router';
 import { useAuthContext } from '../../../context/authContext';
 import AppProfileMenu from './ProfileMenu';
-import styles from './style.module.css';
+import styles from './style.module.scss';
 
 const { Header } = Layout;
 
@@ -17,28 +17,57 @@ const AppHeader: React.FC = () => {
   const { isAuth, isLoading } = useAuthContext();
   const router = useRouter();
   return (
-    <Header style={{ position: 'fixed', zIndex: 1, width: '100%' }}>
-      <div className={styles.logo} />
+    <Header
+      style={{
+        position: 'fixed',
+        zIndex: 1,
+        width: '100%',
+      }}
+      className={styles.headerColor}
+    >
+      <div
+        className={styles.logo}
+        onClick={() => {
+          router.push('/');
+        }}
+      >
+        <h1>{process.env.NEXT_PUBLIC_UI_LOGO_NAME}</h1>
+      </div>
       {!isLoading && (
-        <div style={{ float: 'right' }}>
+        <div className={styles.rightButtonsWrapper}>
           {isAuth ? (
             <AppProfileMenu />
           ) : (
-            <Button
-              onClick={() => {
-                router.push('/login');
-              }}
-            >
-              Login
-            </Button>
+            <>
+              <Button
+                onClick={() => {
+                  router.push('/auth/login');
+                }}
+                size="small"
+                type="primary"
+              >
+                Login
+              </Button>
+              <div className={styles.dash}>/</div>
+              <Button
+                onClick={() => {
+                  router.push('/auth/registration');
+                }}
+                size="small"
+                type="dashed"
+                style={{ margin: '0px 5px' }}
+              >
+                Create account
+              </Button>
+            </>
           )}
         </div>
       )}
       <Menu
-        theme="dark"
         mode="horizontal"
         defaultSelectedKeys={['2']}
         items={items}
+        className={styles.headerColor}
       />
     </Header>
   );

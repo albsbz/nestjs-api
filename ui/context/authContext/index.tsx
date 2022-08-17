@@ -32,7 +32,7 @@ export const AuthContextProvider: React.FC<Props> = (props) => {
 
   useEffect(() => {
     if (!isAuth && props.needAuth) {
-      router.push('/login');
+      router.push('/auth/login');
     }
   }, [isAuth, props.needAuth, router]);
 

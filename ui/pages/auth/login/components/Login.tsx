@@ -1,17 +1,17 @@
-import { Form, Space } from 'antd';
+import { Button, Form, Space } from 'antd';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
-import AppButton from '../../../components/Button';
-import GoogleButton from '../../../components/GoogleButton';
-import AppInput from '../../../components/Input';
-import styles from './style.module.css';
-import { axiosInstance } from '../../../utils/axios';
+import AppButton from '../../../../components/Button';
+import GoogleButton from '../../../../components/GoogleButton';
+import AppInput from '../../../../components/Input';
+import styles from './style.module.scss';
+import { axiosInstance } from '../../../../utils/axios';
 import { useErrorHandler } from 'react-error-boundary';
-import useAsyncError from '../../../hooks/useAsyncError';
-import { useAuthContext } from '../../../context/authContext';
+import useAsyncError from '../../../../hooks/useAsyncError';
+import { useAuthContext } from '../../../../context/authContext';
 import { useRouter } from 'next/router';
 import { useEffect, useMemo } from 'react';
 
-const LoginPage = () => {
+const Login = () => {
   const router = useRouter();
   const [form] = Form.useForm();
   const handleError = useErrorHandler();
@@ -59,6 +59,11 @@ const LoginPage = () => {
     }
   };
 
+  const handleNewAccount = (e) => {
+    e.preventDefault();
+    router.push('/auth/registration');
+  };
+
   const onFinishFailed = (errorInfo: any) => {};
   return (
     <div>
@@ -74,7 +79,6 @@ const LoginPage = () => {
         layout="horizontal"
         className={styles.form}
         size="large"
-        validateTrigger="onSubmit"
       >
         <Form.Item
           label="Email"
@@ -101,13 +105,16 @@ const LoginPage = () => {
             prefix={<LockOutlined className="site-form-item-icon" />}
           />
         </Form.Item>
+        <Button type="link" onClick={handleNewAccount}>
+          Create account
+        </Button>
 
         <Form.Item wrapperCol={{ offset: 0, span: 24 }}>
           <AppButton type="primary" htmlType="submit" block>
             Login with Email
           </AppButton>
         </Form.Item>
-        <GoogleButton></GoogleButton>
+        <GoogleButton>Login with google</GoogleButton>
       </Form>
     </div>
   );
@@ -119,4 +126,4 @@ export async function getStaticProps() {
   };
 }
 
-export default LoginPage;
+export default Login;
