@@ -135,4 +135,14 @@ export class UsersRepository {
 
     return user;
   }
+
+  public async updatePassword(id, newPassword): Promise<User> {
+    const user = await this.userModel.findByIdAndUpdate(
+      id,
+      { password: newPassword, refreshToken: '' },
+      { new: true },
+    );
+
+    return user;
+  }
 }

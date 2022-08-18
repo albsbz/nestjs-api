@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   ForbiddenException,
   Injectable,
@@ -13,6 +14,7 @@ import { UsersService } from '../users/users.service';
 import { MailConfirmationService } from '../mail/mailConfirmation.service';
 import { Provider } from 'src/users/providers/providers.enum';
 import { User } from 'src/users/schemas/user.schema';
+import { MailService } from 'src/mail/mail.service';
 @Injectable()
 export class AuthService {
   constructor(
@@ -20,6 +22,7 @@ export class AuthService {
     private jwtService: JwtService,
     private configService: ConfigService,
     private mailConfirmationService: MailConfirmationService,
+    private mailService: MailService,
   ) {}
 
   async validateUser(
@@ -130,19 +133,63 @@ export class AuthService {
     return tokens;
   }
 
-  // async register(userDto: CreateUserDto): Promise<RegistrationStatus> {
-  //   let status: RegistrationStatus = {
-  //     success: true,
-  //     message: 'user registered',
-  //   };
-  //   try {
-  //     await this.usersService.create(userDto);
-  //   } catch (err) {
-  //     status = {
-  //       success: false,
-  //       message: err,
-  //     };
-  //   }
-  //   return status;
-  // }
+  async sendDropPasswordToken(email: string): Promise<void> {
+    const user = await this.usersService.findOne(email);
+    //check provider
+    if (!user) return;
+    if (!user.providers.includes(Provider.Local)) return;
+    const key = await bcrypt.hash(user.password.slice(10, 18), 10);
+    const token = this.jwtService.sign(
+      { id: user._id, key },
+      {
+        secret: this.configService.get('jwtConstants.dropPasswordSecret'),
+        expiresIn: this.configService.get(
+          'jwtConstants.dropPasswordTokenExpiresIn',
+        ),
+      },
+    );
+
+    const url = `${this.configService.get(
+      'emailConstants.emailDropPasswordUrl',
+    )}?token=${token}`;
+
+    const text = `To drop password, click here: ${url}`;
+
+    this.mailService.sendMail({
+      from: this.configService.get('emailConstants.emailSender'),
+      to: email,
+      subject: 'Email password reset',
+      text,
+    });
+
+    return;
+  }
+
+  async updatePassword(token: string, newPassword: string): Promise<void> {
+    try {
+      const { id, key } = await this.jwtService.verify<{
+        id: string;
+        key: string;
+      }>(token, {
+        secret: this.configService.get('jwtConstants.dropPasswordSecret'),
+      });
+
+      const user = await this.usersService.findById(id);
+      const validKey = await bcrypt.compare(user.password.slice(10, 18), key);
+      if (!validKey) throw new Error('Not valid key');
+      const samePassword = await bcrypt.compare(newPassword, user.password);
+      if (samePassword) throw new Error('Old and new password a the same');
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      await this.usersService.updatePassword(id, hashedPassword);
+    } catch (error) {
+      if (
+        error instanceof Error &&
+        error.message === 'Old and new password a the same'
+      ) {
+        throw new BadRequestException(error.message);
+      }
+      throw new BadRequestException('Token not valid');
+    }
+    return;
+  }
 }

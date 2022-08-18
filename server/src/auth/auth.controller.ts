@@ -17,6 +17,8 @@ import { MailConfirmationService } from '../mail/mailConfirmation.service';
 import { User } from '../users/schemas/user.schema';
 import { AuthService } from './auth.service';
 import {
+  ConfirmDroppasswordRequest,
+  DroppasswordRequest,
   EmailTokenRequest,
   LoginRequest,
   RegisterRequest,
@@ -93,5 +95,20 @@ export class AuthController {
       req.user.refreshToken,
       req.user.userId,
     );
+  }
+
+  @Post('droppassword')
+  async droppasword(@Body() body: DroppasswordRequest): Promise<void> {
+    const res = this.authService.sendDropPasswordToken(body.email);
+
+    return res;
+  }
+
+  @Post('confirm-drop-password')
+  async confirmDropPassword(
+    @Body() body: ConfirmDroppasswordRequest,
+  ): Promise<void> {
+    const res = this.authService.updatePassword(body.token, body.password);
+    return res;
   }
 }

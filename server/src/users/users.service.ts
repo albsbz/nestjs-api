@@ -11,17 +11,18 @@ export class UsersService {
     private configService: ConfigService,
   ) {}
 
+  private passwordWithPrefix(password): string {
+    return `${this.configService.get('db.mongoPasswordPrefix')}_${password}`;
+  }
+
   async createLocalUser(
     email: string,
     password: string,
     provider: Provider,
   ): Promise<boolean> {
-    const passwordWithPrefix = `${this.configService.get(
-      'db.mongoPasswordPrefix',
-    )}_${password}`;
     return this.usersRepository.createLocalUser(
       email,
-      passwordWithPrefix,
+      this.passwordWithPrefix(password),
       provider,
     );
   }
@@ -73,5 +74,12 @@ export class UsersService {
 
   public async confirmEmail(email: string): Promise<User> {
     return this.usersRepository.confirmEmail(email);
+  }
+
+  public async updatePassword(id: string, newPassword: string): Promise<User> {
+    return this.usersRepository.updatePassword(
+      id,
+      this.passwordWithPrefix(newPassword),
+    );
   }
 }

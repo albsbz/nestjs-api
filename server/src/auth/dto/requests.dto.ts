@@ -36,3 +36,24 @@ export class EmailTokenRequest {
   @IsString()
   token: string;
 }
+
+export class DroppasswordRequest {
+  @IsNotEmpty()
+  @IsString()
+  @IsEmail()
+  email: string;
+}
+
+export class ConfirmDroppasswordRequest {
+  @IsNotEmpty()
+  @IsString()
+  token: string;
+
+  @IsString()
+  @MinLength(4)
+  @MaxLength(20)
+  @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {
+    message: 'password too weak',
+  })
+  password: string;
+}
