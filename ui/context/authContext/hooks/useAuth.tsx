@@ -31,7 +31,6 @@ const useAuth = (initTokens, setIsLoading) => {
     } else {
       setIsAuth(false);
     }
-    setIsLoading(false);
   }, [tokens, updateUserData, setIsLoading]);
 
   const login = (accessToken: string, refreshToken: string) => {
@@ -51,8 +50,6 @@ const useAuth = (initTokens, setIsLoading) => {
     setIsLoading(true);
     await axiosInstance.post('/auth/logout');
     clearUser();
-
-    setIsLoading(false);
   };
 
   return {

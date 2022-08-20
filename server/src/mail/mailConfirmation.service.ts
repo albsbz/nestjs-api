@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { User } from '../users/schemas/user.schema';
+import { User } from '../common/schemas/user.schema';
 import { UsersService } from '../users/users.service';
 
 import { MailService } from './mail.service';

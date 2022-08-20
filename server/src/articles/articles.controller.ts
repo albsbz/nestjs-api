@@ -12,7 +12,7 @@ import { ArticlesService } from './articles.service';
 import { CreateArticleDto, FindAll } from './dto/requests.dto';
 import { GetId } from '../common/dto/requests.dto';
 import { UpdateArticleDto } from './dto/requests.dto';
-import { Article } from './schemas/article.schema';
+import { Article } from '../common/schemas/article.schema';
 import { ApiTags } from '@nestjs/swagger';
 
 @Controller('api/articles')

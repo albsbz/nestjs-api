@@ -10,7 +10,7 @@ export const AuthContext = createContext({
   logout: () => {},
   user: {},
   isAuth: false,
-  isLoading: false,
+  isLoading: true,
   setIsLoading: (v: boolean) => {},
 });
 
@@ -31,10 +31,19 @@ export const AuthContextProvider: React.FC<Props> = (props) => {
   useRefreshToken(tokens, login, logout, clearUser);
 
   useEffect(() => {
-    if (!isAuth && props.needAuth) {
-      router.push('/auth/login');
+    if (!props.needAuth) {
+      setIsLoading(false);
+      return;
     }
-  }, [isAuth, props.needAuth, router]);
+    if (isAuth) {
+      setIsLoading(false);
+      return;
+    } else {
+      if (!tokens.accessToken) {
+        router.push('/auth/login');
+      }
+    }
+  }, [isAuth, props.needAuth, router, tokens.accessToken]);
 
   return (
     <AuthContext.Provider

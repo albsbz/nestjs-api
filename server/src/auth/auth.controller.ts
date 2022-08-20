@@ -14,7 +14,7 @@ import { Request as RequestType, Response } from 'express';
 import { Provider } from 'src/users/providers/providers.enum';
 import { MailConfirmationService } from '../mail/mailConfirmation.service';
 
-import { User } from '../users/schemas/user.schema';
+import { User } from '../common/schemas/user.schema';
 import { AuthService } from './auth.service';
 import {
   ConfirmDroppasswordRequest,

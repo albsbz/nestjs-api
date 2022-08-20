@@ -1,14 +1,17 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Provider } from './providers/providers.enum';
-import { User } from './schemas/user.schema';
+import { User } from '../common/schemas/user.schema';
 import { UsersRepository } from './users.repository';
+import { FilesService } from 'src/files/files.service';
+import { PublicFile } from 'src/common/schemas/publicFile.schema';
 
 @Injectable()
 export class UsersService {
   constructor(
     private readonly usersRepository: UsersRepository,
     private configService: ConfigService,
+    private readonly filesService: FilesService,
   ) {}
 
   private passwordWithPrefix(password): string {
@@ -81,5 +84,20 @@ export class UsersService {
       id,
       this.passwordWithPrefix(newPassword),
     );
+  }
+
+  public async addAvatar(
+    id: string,
+    imageBuffer: Buffer,
+    filename: string,
+  ): Promise<PublicFile> {
+    const avatar = await this.filesService.uploadPublicFile(
+      imageBuffer,
+      filename,
+    );
+
+    await this.usersRepository.updateAvatar(id, avatar);
+
+    return avatar;
   }
 }

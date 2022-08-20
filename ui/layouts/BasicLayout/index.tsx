@@ -15,8 +15,8 @@ const BasicLayout: React.FC<Props> = ({ children, needAuth }) => {
   return (
     <ErrorBoundary>
       <AuthContextProvider needAuth={needAuth}>
-        <PageLoader>
-          <Layout>
+        <PageLoader needAuth={needAuth}>
+          <Layout style={{ height: '100vh' }}>
             <AppHeader />
             <AlertContextProvider>
               <AppAlert />

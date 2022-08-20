@@ -1,20 +1,13 @@
 import React from 'react';
-import { useAuthContext } from '../../../context/authContext';
 import BasicLayout from '../../../layouts/BasicLayout';
+import Profile from './components/Profile';
 
-function Profile() {
-  const { user } = useAuthContext();
-
-  return (
-    <>
-      <h1>Profile</h1>
-      <div> {JSON.stringify(user)}</div>
-    </>
-  );
+function ProfilePage() {
+  return <Profile />;
 }
 
-Profile.getLayout = (page) => {
+ProfilePage.getLayout = (page) => {
   return <BasicLayout needAuth>{page}</BasicLayout>;
 };
 
-export default Profile;
+export default ProfilePage;

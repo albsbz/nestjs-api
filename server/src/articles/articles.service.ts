@@ -8,7 +8,7 @@ import {
   FindAll,
 } from './dto/requests.dto';
 
-import { Article, ArticleDocument } from './schemas/article.schema';
+import { Article, ArticleDocument } from '../common/schemas/article.schema';
 
 @Injectable()
 export class ArticlesService {

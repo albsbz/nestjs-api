@@ -13,6 +13,8 @@ import { RenderModule } from 'nest-next';
 import { SsrModule } from './ssr/ssr.module';
 import Next from 'next';
 import { resolve } from 'path';
+import { FilesController } from './files/files.controller';
+import { FilesModule } from './files/files.module';
 @Module({
   imports: [
     RenderModule.forRootAsync(
@@ -48,8 +50,9 @@ import { resolve } from 'path';
     UsersModule,
     MailModule,
     SsrModule,
+    FilesModule,
   ],
-  controllers: [],
+  controllers: [FilesController],
   providers: [
     {
       provide: APP_GUARD,

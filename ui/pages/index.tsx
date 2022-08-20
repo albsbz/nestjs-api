@@ -5,10 +5,10 @@ import { Page } from '../common/types/pages';
 import { useAuthContext } from '../context/authContext';
 
 const BlogApp: Page = () => {
-  const { setIsLoading } = useAuthContext();
-  useEffect(() => {
-    setIsLoading(false);
-  }, [setIsLoading]);
+  // const { setIsLoading } = useAuthContext();
+  // useEffect(() => {
+  //   setIsLoading(false);
+  // }, [setIsLoading]);
   return <h1>Home</h1>;
 };
 

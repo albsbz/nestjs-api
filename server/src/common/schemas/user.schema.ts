@@ -1,7 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Exclude, Transform } from 'class-transformer';
-import { Provider } from '../providers/providers.enum';
-import { Role } from '../roles/role.enum';
+import { Exclude, Transform, Type } from 'class-transformer';
+import { Provider } from '../../users/providers/providers.enum';
+import { Role } from '../../users/roles/role.enum';
+import { PublicFile, PublicFileSchema } from './publicFile.schema';
 
 export type UserDocument = User & Document;
 
@@ -28,6 +29,10 @@ export class User {
 
   @Prop()
   refreshToken: string;
+
+  @Prop({ type: PublicFileSchema })
+  @Type(() => PublicFile)
+  avatar: PublicFile;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

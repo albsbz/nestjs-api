@@ -7,9 +7,9 @@ const Consts = (): unknown => ({
   },
   jwtConstants: {
     accessSecret: process.env.ACCESS_TOKEN_SECRET,
-    accessTokenExpiresIn: '10s',
+    accessTokenExpiresIn: '3600s',
     refreshSecret: process.env.REFRESH_TOKEN_SECRET,
-    refreshTokenExpiresIn: '720s',
+    refreshTokenExpiresIn: '7200s',
     dropPasswordSecret: process.env.DROP_PASSWORD_TOKEN_SECRET,
     dropPasswordTokenExpiresIn: '10800s',
   },
@@ -35,6 +35,13 @@ const Consts = (): unknown => ({
       clientId: process.env.GOOGLE_AUTH_CLIENT_ID,
       clientSecret: process.env.GOOGLE_AUTH_CLIENT_SECRET,
     },
+  },
+  aws: {
+    region: process.env.AWS_REGION,
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+    publicBucketName: process.env.AWS_PUBLIC_BUCKET_NAME,
+    bucketUrl: `https://${process.env.AWS_PUBLIC_BUCKET_NAM}.s3.${process.env.AWS_REGION}.amazonaws.com`,
   },
 });
 export default Consts;
