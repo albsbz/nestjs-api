@@ -41,7 +41,8 @@ const Consts = (): unknown => ({
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
     publicBucketName: process.env.AWS_PUBLIC_BUCKET_NAME,
-    bucketUrl: `https://${process.env.AWS_PUBLIC_BUCKET_NAM}.s3.${process.env.AWS_REGION}.amazonaws.com`,
+    bucketUrl: `https://${process.env.AWS_PUBLIC_BUCKET_NAME}.s3.amazonaws.com`,
+    bucketUrlRegion: `https://${process.env.AWS_PUBLIC_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com`,
   },
 });
 export default Consts;

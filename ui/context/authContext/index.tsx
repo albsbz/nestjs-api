@@ -1,24 +1,27 @@
 import { useRouter } from 'next/router';
 import { createContext, useContext, useEffect, useState } from 'react';
-import { Props } from '../../common/interface/Props';
+import { IAuthContext } from '../../common/interface/IAuthContext';
+import { IProps } from '../../common/interface/IProps';
 import useAuth from './hooks/useAuth';
 import useGetInitTokens from './hooks/useGetInitTokens';
 import { useRefreshToken } from './hooks/useRefreshToken';
 
-export const AuthContext = createContext({
+const context: IAuthContext = {
   login: (accessToken: string, refreshToken: string) => {},
   logout: () => {},
   user: {},
   isAuth: false,
   isLoading: true,
   setIsLoading: (v: boolean) => {},
-});
+};
+
+export const AuthContext = createContext(context);
 
 export const useAuthContext = () => {
   return useContext(AuthContext);
 };
 
-export const AuthContextProvider: React.FC<Props> = (props) => {
+export const AuthContextProvider: React.FC<IProps> = (props) => {
   const [isLoading, setIsLoading] = useState(true);
 
   const router = useRouter();

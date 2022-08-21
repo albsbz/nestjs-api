@@ -1,6 +1,6 @@
 import { Breadcrumb, Layout } from 'antd';
 import 'antd/dist/antd.css';
-import { Props } from '../../common/interface/Props';
+import { IProps } from '../../common/interface/IProps';
 import styles from './style.module.scss';
 import AppHeader from './Header';
 import ErrorBoundary from '../../components/ErrorBoundary';
@@ -11,7 +11,7 @@ import AppAlert from '../../components/Alert';
 
 const { Content, Footer } = Layout;
 
-const BasicLayout: React.FC<Props> = ({ children, needAuth }) => {
+const BasicLayout: React.FC<IProps> = ({ children, needAuth }) => {
   return (
     <ErrorBoundary>
       <AuthContextProvider needAuth={needAuth}>

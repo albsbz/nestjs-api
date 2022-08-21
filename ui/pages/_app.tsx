@@ -1,9 +1,9 @@
 import { AppProps } from 'next/app';
-import { Page } from '../common/types/pages';
+import { TPage } from '../common/types/TPages';
 // globalThis.ASYNC_VALIDATOR_NO_WARNING = 1;
 
 type Props = AppProps & {
-  Component: Page;
+  Component: TPage;
 };
 
 export default function MyApp({ Component, pageProps }: Props) {

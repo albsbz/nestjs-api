@@ -1,10 +1,10 @@
 import { NextPage } from 'next';
 import React, { useEffect } from 'react';
 import BasicLayout from '../layouts/BasicLayout';
-import { Page } from '../common/types/pages';
+import { TPage } from '../common/types/TPages';
 import { useAuthContext } from '../context/authContext';
 
-const BlogApp: Page = () => {
+const BlogApp: TPage = () => {
   // const { setIsLoading } = useAuthContext();
   // useEffect(() => {
   //   setIsLoading(false);

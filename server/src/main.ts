@@ -10,7 +10,26 @@ import { ConfigService } from '@nestjs/config';
 
 async function bootstrap(): Promise<void> {
   const server = await NestFactory.create(AppModule);
-  server.use(helmet({ contentSecurityPolicy: false }));
+  const configService = server.get(ConfigService);
+  const policies = {
+    'script-src': ['self', configService.get('url')],
+    'img-src': [
+      'self',
+      configService.get('aws.bucketUrlRegion'),
+      configService.get('aws.bucketUrl'),
+    ],
+  };
+  if (process.env.NODE_ENV !== 'production') {
+    policies['script-src'].push("'unsafe-eval'");
+  }
+  server.use(
+    helmet({
+      contentSecurityPolicy: {
+        directives: policies,
+      },
+      crossOriginEmbedderPolicy: false,
+    }),
+  );
 
   const service = server.get(RenderService);
   service.setErrorHandler(async (err, req, res) => {
@@ -18,10 +37,6 @@ async function bootstrap(): Promise<void> {
       res.send(err.response);
       return;
     }
-  });
-  const configService = server.get(ConfigService);
-  server.enableCors({
-    origin: [configService.get('url'), configService.get('aws.bucketUrl')],
   });
 
   config.update({

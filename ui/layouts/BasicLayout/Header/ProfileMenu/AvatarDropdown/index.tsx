@@ -1,10 +1,10 @@
-import { Avatar, Dropdown, Menu, Space } from 'antd';
+import { Avatar, Dropdown, Image, Menu, Space } from 'antd';
 import { useRouter } from 'next/router';
 import { useAuthContext } from '../../../../../context/authContext';
 
 const AppAvatarDropdown: React.FC = () => {
   const router = useRouter();
-  const { logout } = useAuthContext();
+  const { logout, user } = useAuthContext();
   const menu = () => {
     // const router = useRouter();
     const handleLogout = () => {
@@ -29,11 +29,21 @@ const AppAvatarDropdown: React.FC = () => {
     );
   };
 
+  const avatarURL = user?.avatarURL;
+
+  const AvatarImage = avatarURL && (
+    <Image src={avatarURL} preview={false} alt="avatar" />
+  );
+
   return (
     <Space direction="vertical">
       <Space wrap>
         <Dropdown overlay={menu} placement="bottom">
-          <Avatar style={{ verticalAlign: 'middle' }} size="large">
+          <Avatar
+            style={{ verticalAlign: 'middle' }}
+            size="large"
+            src={AvatarImage}
+          >
             {/* {'Tom'} */}
           </Avatar>
         </Dropdown>

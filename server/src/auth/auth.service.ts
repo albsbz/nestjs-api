@@ -81,16 +81,15 @@ export class AuthService {
     return this.mailConfirmationService.sendVerificationLink(email);
   }
 
-  async createTokens(user: {
-    email: string;
-    _id: string;
-    emailIsConfirmed: boolean;
-  }): Promise<{ accessToken: string; refreshToken: string }> {
+  async createTokens(
+    user: Partial<User>,
+  ): Promise<{ accessToken: string; refreshToken: string }> {
     const accessTokenPayload = {
       email: user.email,
       sub: user._id,
       emailIsConfirmed: user.emailIsConfirmed,
       tokenType: 'access',
+      avatarURL: user.avatar?.url,
     };
     const refreshToken = this.jwtService.sign(
       { sub: user._id, tokenType: 'refresh' },

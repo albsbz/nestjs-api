@@ -1,6 +1,6 @@
 import jwtDecode from 'jwt-decode';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { JWTTokenPayload } from '../../../common/types/jwtTokenPayload';
+import { TJWTTokenPayload } from '../../../common/types/TJwtTokenPayload';
 import {
   setAuthHeader,
   unsetAuthHeader,
@@ -14,7 +14,7 @@ const useAuth = (initTokens, setIsLoading) => {
   const [isAuth, setIsAuth] = useState(false);
 
   const updateUserData = useCallback((accessToken: string) => {
-    const userData = jwtDecode<JWTTokenPayload>(accessToken);
+    const userData = jwtDecode<TJWTTokenPayload>(accessToken);
     if (userData) {
       setUser(userData);
       setIsAuth(true);

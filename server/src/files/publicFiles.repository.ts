@@ -20,4 +20,10 @@ export class PublicFilesRepository {
 
     return publicFile;
   }
+
+  public async delete(id): Promise<void> {
+    await this.publicFileModel.deleteOne({ _id: id });
+
+    return;
+  }
 }

@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { S3 } from 'aws-sdk';
 import { ConfigService } from '@nestjs/config';
 import { v4 as uuid } from 'uuid';
 import { PublicFilesRepository } from './publicFiles.repository';
 import { PublicFile } from 'src/common/schemas/publicFile.schema';
+import { s3 } from 'src/config/s3';
 
 @Injectable()
 export class FilesService {
@@ -16,7 +16,6 @@ export class FilesService {
     dataBuffer: Buffer,
     filename: string,
   ): Promise<PublicFile> {
-    const s3 = new S3();
     const uploadResult = await s3
       .upload({
         Bucket: this.configService.get('aws.publicBucketName'),
@@ -33,5 +32,17 @@ export class FilesService {
     });
 
     return newFile;
+  }
+
+  async deletePublicFile(id, key): Promise<void> {
+    await s3
+      .deleteObject({
+        Bucket: this.configService.get('aws.publicBucketName'),
+        Key: key,
+      })
+      .promise(),
+      await this.publicFilesRepository.delete(id);
+
+    return;
   }
 }

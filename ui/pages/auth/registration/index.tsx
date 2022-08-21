@@ -1,8 +1,8 @@
-import { Page } from '../../../common/types/pages';
+import { TPage } from '../../../common/types/TPages';
 import BasicLayout from '../../../layouts/BasicLayout';
 import Registration from './components/Registration';
 
-const RegistartionPage: Page = () => {
+const RegistartionPage: TPage = () => {
   return <Registration />;
 };
 

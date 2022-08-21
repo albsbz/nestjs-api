@@ -3,6 +3,7 @@ import { message, Upload } from 'antd';
 import type { UploadChangeParam } from 'antd/es/upload';
 import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
 import React, { useState } from 'react';
+import { AuthContext, useAuthContext } from '../../../../context/authContext';
 import { axiosInstance } from '../../../../utils/axios';
 
 const getBase64 = (img: RcFile, callback: (url: string) => void) => {
@@ -12,8 +13,9 @@ const getBase64 = (img: RcFile, callback: (url: string) => void) => {
 };
 
 const AppUploadAvatar: React.FC = () => {
+  const { user } = useAuthContext();
   const [loading, setLoading] = useState(false);
-  const [imageUrl, setImageUrl] = useState<string>();
+  const [imageUrl, setImageUrl] = useState<string>(user.avatarURL);
 
   const beforeUpload = async (file: RcFile) => {
     const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';

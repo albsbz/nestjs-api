@@ -96,8 +96,13 @@ export class UsersService {
       filename,
     );
 
-    await this.usersRepository.updateAvatar(id, avatar);
-
+    const oldUser = await this.usersRepository.updateAvatar(id, avatar);
+    if (oldUser.avatar) {
+      await this.filesService.deletePublicFile(
+        oldUser.avatar._id,
+        oldUser.avatar.key,
+      );
+    }
     return avatar;
   }
 }

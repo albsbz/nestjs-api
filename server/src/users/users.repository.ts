@@ -147,11 +147,7 @@ export class UsersRepository {
   }
 
   public async updateAvatar(id, avatar): Promise<User> {
-    const user = await this.userModel.findByIdAndUpdate(
-      id,
-      { avatar },
-      { new: true },
-    );
+    const user = await this.userModel.findByIdAndUpdate(id, { avatar });
 
     return user;
   }

@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Props } from '../../common/interface/Props';
+import { IProps } from '../../common/interface/IProps';
 
 export interface ConditionallyRenderProps {
   client?: boolean;
   server?: boolean;
 }
 
-const ConditionallyRender: React.FC<Props & ConditionallyRenderProps> = (
+const ConditionallyRender: React.FC<IProps & ConditionallyRenderProps> = (
   props,
 ) => {
   const [isMounted, setIsMounted] = useState(false);

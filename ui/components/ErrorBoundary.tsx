@@ -1,12 +1,12 @@
 import { Alert } from 'antd';
 import React, { ReactNode } from 'react';
-import { Props } from '../common/interface/Props';
+import { IProps } from '../common/interface/IProps';
 
 class ErrorBoundary extends React.Component<
-  Props,
+  IProps,
   { hasError: boolean; error: TypeError }
 > {
-  constructor(props: Props) {
+  constructor(props: IProps) {
     super(props);
     // Define a state variable to track whether is an error or not
     this.state = { hasError: false, error: null };

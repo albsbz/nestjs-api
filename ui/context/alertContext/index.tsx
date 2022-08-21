@@ -1,6 +1,6 @@
 import { Alert } from 'antd';
 import { createContext, useContext, useEffect, useState } from 'react';
-import { Props } from '../../common/interface/Props';
+import { IProps } from '../../common/interface/IProps';
 
 type AlertTypes = 'success' | 'info' | 'warning' | 'error';
 type AlertObjectType = {
@@ -19,7 +19,7 @@ export const useAlertContext = () => {
   return useContext(AlertContext);
 };
 
-export const AlertContextProvider: React.FC<Props> = (props) => {
+export const AlertContextProvider: React.FC<IProps> = (props) => {
   const [alert, setAlert] = useState({
     message: '',
     type: 'info',
