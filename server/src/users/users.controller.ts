@@ -22,7 +22,6 @@ import { Role } from './roles/role.enum';
 import { Roles } from './roles/roles.decorator';
 import { User } from '../common/schemas/user.schema';
 import { UsersService } from './users.service';
-import { PublicFile } from 'src/common/schemas/publicFile.schema';
 import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('api/users')

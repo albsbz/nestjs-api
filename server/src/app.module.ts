@@ -13,7 +13,6 @@ import { RenderModule } from 'nest-next';
 import { SsrModule } from './ssr/ssr.module';
 import Next from 'next';
 import { resolve } from 'path';
-import { FilesController } from './files/files.controller';
 import { FilesModule } from './files/files.module';
 @Module({
   imports: [
@@ -52,7 +51,6 @@ import { FilesModule } from './files/files.module';
     SsrModule,
     FilesModule,
   ],
-  controllers: [FilesController],
   providers: [
     {
       provide: APP_GUARD,
