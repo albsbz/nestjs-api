@@ -52,6 +52,10 @@ async function bootstrap(): Promise<void> {
       forbidUnknownValues: true,
     }),
   );
+
+  // server.useGlobalInterceptors(
+  //   new ClassSerializerInterceptor(server.get(Reflector)),
+  // );
   const swaggerConfig = new DocumentBuilder()
     .setTitle('blog-api')
     .setDescription('blog-api description')

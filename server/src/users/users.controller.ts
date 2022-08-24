@@ -30,12 +30,13 @@ import { FileInterceptor } from '@nestjs/platform-express';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  // @UseInterceptors(MongooseClassSerializerInterceptor(User))
   @Get('profile')
   @ApiBearerAuth('accessToken')
   // @UseGuards(EmailConfirmationGuard)
   @UseGuards(JwtAuthGuard)
   getProfile(@Request() req): Promise<User> {
-    return req.user;
+    return this.usersService.findById(req.user.userId);
   }
 
   @Delete(':id')

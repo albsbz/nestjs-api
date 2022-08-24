@@ -9,15 +9,20 @@ import {
 } from './dto/requests.dto';
 
 import { Article, ArticleDocument } from '../common/schemas/article.schema';
+import ArticlesRepository from './articles.repository';
 
 @Injectable()
 export class ArticlesService {
   constructor(
     @InjectModel(Article.name) private articleModel: Model<ArticleDocument>,
+    private readonly artilesRepository: ArticlesRepository,
   ) {}
 
-  create(createArticleDto: CreateArticleDto): Promise<Article> {
-    return this.articleModel.create(createArticleDto);
+  create(createArticleDto: CreateArticleDto, userId: string): Promise<Article> {
+    return this.artilesRepository.create({
+      ...createArticleDto,
+      author: userId,
+    });
   }
 
   async findAll(params: FindAll): Promise<Article[]> {
@@ -38,7 +43,9 @@ export class ArticlesService {
   }
 
   async findOne(id: string): Promise<Article> {
-    return await this.articleModel.findById(id);
+    return this.articleModel
+      .findById(id)
+      .populate('author', '_id nickname avatar');
   }
 
   async update(

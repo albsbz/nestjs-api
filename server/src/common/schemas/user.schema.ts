@@ -18,6 +18,9 @@ export class User {
   @Prop({ required: true, unique: true })
   email: string;
 
+  @Prop({ required: false, unique: true })
+  nickname?: string;
+
   @Prop({ default: false })
   emailIsConfirmed: boolean;
 
@@ -28,6 +31,7 @@ export class User {
   providers: Provider[];
 
   @Prop()
+  @Exclude()
   refreshToken: string;
 
   @Prop({ type: PublicFileSchema })
