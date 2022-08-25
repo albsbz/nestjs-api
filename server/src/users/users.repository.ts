@@ -122,8 +122,9 @@ export class UsersRepository {
     return result;
   }
 
-  async findById(userId: string): Promise<User | null> {
-    return this.userModel.findById(userId).lean();
+  async findById(userId: string): Promise<User> {
+    return this.userModel.findById(userId);
+    // .lean();
   }
 
   public async confirmEmail(email: string): Promise<User> {
@@ -148,6 +149,19 @@ export class UsersRepository {
 
   public async updateAvatar(id, avatar): Promise<User> {
     const user = await this.userModel.findByIdAndUpdate(id, { avatar });
+
+    return user;
+  }
+
+  public async updateProfile(id, profileData): Promise<User> {
+    const user = await this.userModel.findByIdAndUpdate(
+      id,
+      {
+        name: profileData.name,
+        about: profileData.about,
+      },
+      { new: true },
+    );
 
     return user;
   }

@@ -19,7 +19,10 @@ export class User {
   email: string;
 
   @Prop({ required: false, unique: true })
-  nickname?: string;
+  name?: string;
+
+  @Prop({ required: false })
+  about?: string;
 
   @Prop({ default: false })
   emailIsConfirmed: boolean;

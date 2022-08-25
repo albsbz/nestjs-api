@@ -1,9 +1,9 @@
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import { message, Upload } from 'antd';
-import type { UploadChangeParam } from 'antd/es/upload';
-import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
+import type { RcFile } from 'antd/es/upload/interface';
 import React, { useState } from 'react';
-import { AuthContext, useAuthContext } from '../../../../context/authContext';
+import { IProps } from '../../../../common/interface/IProps';
+import { useAuthContext } from '../../../../context/authContext';
 import { axiosInstance } from '../../../../utils/axios';
 
 const getBase64 = (img: RcFile, callback: (url: string) => void) => {
@@ -12,10 +12,16 @@ const getBase64 = (img: RcFile, callback: (url: string) => void) => {
   reader.readAsDataURL(img);
 };
 
-const AppUploadAvatar: React.FC = () => {
+const AppUploadAvatar = ({ avatarURL }) => {
   const { user } = useAuthContext();
   const [loading, setLoading] = useState(false);
+  const [prevAvatarURL, setPrevAvatarURL] = useState(avatarURL);
   const [imageUrl, setImageUrl] = useState<string>(user.avatarURL);
+
+  if (avatarURL && avatarURL !== prevAvatarURL) {
+    setPrevAvatarURL(avatarURL);
+    setImageUrl(avatarURL);
+  }
 
   const beforeUpload = async (file: RcFile) => {
     const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';

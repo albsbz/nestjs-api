@@ -1,11 +1,10 @@
-import { Button, Form, Space } from 'antd';
+import { Button, Form } from 'antd';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import AppButton from '../../../../../../components/Button';
 import GoogleButton from '../../../../../../components/GoogleButton';
 import AppInput from '../../../../../../components/Input';
 import styles from './style.module.scss';
 import { axiosInstance } from '../../../../../../utils/axios';
-import { useErrorHandler } from 'react-error-boundary';
 import useAsyncError from '../../../../../../hooks/useAsyncError';
 import { useAuthContext } from '../../../../../../context/authContext';
 import { useRouter } from 'next/router';
@@ -15,9 +14,8 @@ import { useAlertContext } from '../../../../../../context/alertContext';
 const RegistrationStep = ({ next }) => {
   const router = useRouter();
   const [form] = Form.useForm();
-  const handleError = useErrorHandler();
   const throwError = useAsyncError();
-  const { isAuth, setIsLoading, isLoading } = useAuthContext();
+  const { isAuth, setIsLoading, isLoading, login } = useAuthContext();
   const { setAlert } = useAlertContext();
 
   useEffect(() => {
@@ -57,6 +55,12 @@ const RegistrationStep = ({ next }) => {
         email: values.email,
         password: values.password,
       });
+      const resp = await axiosInstance.post('auth/login', {
+        email: values.email,
+        password: values.password,
+      });
+
+      login(resp.headers.accesstoken, resp.headers.refreshtoken);
       next();
       // router.push('/auth/login');
       setAlert({ message: 'Registration success!' });

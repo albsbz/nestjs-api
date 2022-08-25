@@ -46,7 +46,7 @@ const AppHeader: React.FC = () => {
                 size="small"
                 type="primary"
               >
-                Login
+                Sign in
               </Button>
               <div className={styles.dash}>/</div>
               <Button
@@ -57,7 +57,7 @@ const AppHeader: React.FC = () => {
                 type="dashed"
                 style={{ margin: '0px 5px' }}
               >
-                Create account
+                Sign up
               </Button>
             </>
           )}

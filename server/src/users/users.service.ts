@@ -105,4 +105,11 @@ export class UsersService {
     }
     return avatar;
   }
+
+  public async updateProfile(
+    id: string,
+    profileData: { about: string; name: string },
+  ): Promise<User> {
+    return await this.usersRepository.updateProfile(id, profileData);
+  }
 }

@@ -5,21 +5,6 @@ import styles from './style.module.scss';
 
 const { Step } = Steps;
 
-// const stepsNames = [
-//   {
-//     title: 'First',
-//     content: 'First-content',
-//   },
-//   {
-//     title: 'Second',
-//     content: 'Second-content',
-//   },
-//   {
-//     title: 'Last',
-//     content: 'Last-content',
-//   },
-// ];
-
 const AppSteps: React.FC<IProps & { next; prev; current; stepTitles }> = ({
   children,
   next,

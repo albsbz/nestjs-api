@@ -1,24 +1,33 @@
-import { InboxOutlined, PlusOutlined } from '@ant-design/icons';
-import { Button, Form, Upload } from 'antd';
 import { useAuthContext } from '../../../../context/authContext';
-import AppUploadAvatar from './AppUploadAvatar';
+import AppUploadAvatar from '../../../../components/AppProfileSettings/components/AppUploadAvatar';
+import AppProfileSettings from '../../../../components/AppProfileSettings';
+import { useEffect, useState } from 'react';
+import { axiosInstance } from '../../../../utils/axios';
+import { useRouter } from 'next/router';
 
-const Profile = (_) => {
+const Profile = () => {
   const { user } = useAuthContext();
-  const onFinish = async (values) => {};
-  const normFile = (e: any) => {
-    if (Array.isArray(e)) {
-      return e;
-    }
-    return e?.fileList;
+  const [profile, setProfile] = useState();
+
+  let didInit = false;
+
+  const getProfile = async () => {
+    const res = await axiosInstance.get('users/profile');
+    setProfile(res.data);
   };
+  useEffect(() => {
+    if (!didInit) {
+      didInit = true;
+      getProfile();
+    }
+  }, []);
 
   return (
     <>
       <h1>Profile</h1>
       <div> {JSON.stringify(user)}</div>
 
-      <AppUploadAvatar />
+      <AppProfileSettings profile={profile} next={() => {}} />
     </>
   );
 };
