@@ -29,15 +29,20 @@ const ProviderAuthController = () => {
   const { accessToken, refreshToken } = tokens;
 
   const getTokens = useCallback(async (provider, code) => {
-    if (!possibleProviders.includes(provider))
-      throw new Error('Wrong provider');
+    if (!possibleProviders.includes(provider)) {
+      // throw new Error('Wrong provider');
+      router.push('/');
+      return;
+    }
     let resp;
     try {
       resp = await axiosInstance.get<Tokens>(provider, {
         params: { code },
       });
     } catch (e) {
-      throw new Error('Authentication failed');
+      // throw new Error('Authentication failed');
+      router.push('/');
+      return;
     }
 
     setTokens(resp.data);

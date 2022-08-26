@@ -42,6 +42,7 @@ export const useRefreshToken = (
               'Authorization'
             ] = `Bearer ${resp.data.accessToken}`;
             let newAttempt;
+
             try {
               newAttempt = await axiosInstance.request(originalRequestConfig);
             } catch (e) {
@@ -50,6 +51,7 @@ export const useRefreshToken = (
               router.push('/');
               return Promise.resolve();
             }
+
             login(resp.data.accessToken, resp.data.refreshToken);
             return Promise.resolve(newAttempt);
           }

@@ -20,6 +20,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import MongooseClassSerializerInterceptor from 'src/common/interceptors/mongooseClassSerializer.interceptor';
 import { User } from 'src/common/schemas/user.schema';
+import RequestWithJWT from 'src/common/interfaces/RequestWithJWT';
 
 @Controller('api/articles')
 @ApiTags('articles')
@@ -31,7 +32,7 @@ export class ArticlesController {
   @UseGuards(JwtAuthGuard)
   create(
     @Body() createArticleDto: CreateArticleDto,
-    @Request() req,
+    @Request() req: RequestWithJWT,
   ): Promise<Article> {
     return this.articlesService.create(createArticleDto, req.user.userId);
   }
@@ -39,6 +40,15 @@ export class ArticlesController {
   @Get()
   findAll(@Query() query: FindAll): Promise<Article[]> {
     return this.articlesService.findAll(query);
+  }
+
+  @Get('my')
+  @UseGuards(JwtAuthGuard)
+  findAllMy(
+    @Query() query: FindAll,
+    @Request() req: RequestWithJWT,
+  ): Promise<Article[]> {
+    return this.articlesService.findAll(query, req.user.userId);
   }
 
   @Get(':id')

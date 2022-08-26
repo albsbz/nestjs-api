@@ -1,6 +1,6 @@
 const useLoginOnStart = () => {
-  let accessToken = null;
-  let refreshToken = null;
+  let accessToken = '';
+  let refreshToken = '';
   if (typeof window !== 'undefined') {
     accessToken = localStorage.getItem('appAccessToken');
     refreshToken = localStorage.getItem('appRefreshToken');

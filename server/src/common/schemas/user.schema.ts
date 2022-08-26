@@ -8,7 +8,8 @@ export type UserDocument = User & Document;
 
 @Schema()
 export class User {
-  @Transform(({ value }) => value.toString())
+  // @Transform(({ value }) => value.toString())
+  @Transform((params) => params.obj._id.toString())
   _id: string;
 
   @Prop({ required: true })

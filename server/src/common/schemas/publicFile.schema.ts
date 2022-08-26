@@ -5,7 +5,8 @@ export type PublicFileDocument = PublicFile & Document;
 
 @Schema()
 export class PublicFile {
-  @Transform(({ value }) => value.toString())
+  // @Transform(({ value }) => value.toString())
+  @Transform((params) => params.obj._id.toString())
   _id: string;
 
   @Prop()

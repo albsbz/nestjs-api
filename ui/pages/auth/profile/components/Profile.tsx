@@ -13,7 +13,9 @@ const Profile = () => {
 
   const getProfile = async () => {
     const res = await axiosInstance.get('users/profile');
-    setProfile(res.data);
+    if (res?.data) {
+      setProfile(res.data);
+    }
   };
   useEffect(() => {
     if (!didInit) {

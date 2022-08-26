@@ -10,20 +10,24 @@ const { Header } = Layout;
 
 const AppHeader: React.FC = () => {
   const { isAuth, isLoading } = useAuthContext();
-  const items = useMemo(
-    () => [
-      {
-        key: '/',
-        label: <Link href="/">Main</Link>,
-      },
-    ],
-    [isAuth],
-  );
+  let items = [
+    {
+      key: '/',
+      label: <Link href="/">Main</Link>,
+    },
+  ];
   if (isAuth) {
-    items.push({
-      key: '/article/create',
-      label: <Link href="article/create">New article</Link>,
-    });
+    items = [
+      ...items,
+      {
+        key: '/articles/create',
+        label: <Link href="/articles/create">New article</Link>,
+      },
+      {
+        key: '/articles/my',
+        label: <Link href="/articles/my">My articles</Link>,
+      },
+    ];
   }
   const router = useRouter();
   return (

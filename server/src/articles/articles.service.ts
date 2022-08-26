@@ -25,19 +25,25 @@ export class ArticlesService {
     });
   }
 
-  async findAll(params: FindAll): Promise<Article[]> {
+  async findAll(params: FindAll, userId?: string): Promise<Article[]> {
     const { take, skip, keyword } = params;
 
     const search = { $regex: new RegExp(`${keyword}`, 'i') };
 
-    const result = await this.articleModel.find(
-      { $or: [{ title: search }, { content: search }] },
-      null,
-      {
+    let idFilter = {};
+    if (userId) {
+      idFilter = { author: userId };
+    }
+    const filter = {
+      $and: [{ $or: [{ title: search }, { content: search }] }, idFilter],
+    };
+
+    const result = await this.articleModel
+      .find(filter, null, {
         skip,
         limit: take,
-      },
-    );
+      })
+      .populate('author', '_id name avatar');
 
     return result;
   }
