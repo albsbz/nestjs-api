@@ -1,20 +1,30 @@
 import { Button, Layout, Menu } from 'antd';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { useMemo } from 'react';
 import { useAuthContext } from '../../../context/authContext';
 import AppProfileMenu from './ProfileMenu';
 import styles from './style.module.scss';
 
 const { Header } = Layout;
 
-const items = [
-  ...new Array(3).fill(null).map((_, index) => ({
-    key: String(index + 1),
-    label: `nav ${index + 1}`,
-  })),
-];
-
 const AppHeader: React.FC = () => {
   const { isAuth, isLoading } = useAuthContext();
+  const items = useMemo(
+    () => [
+      {
+        key: '/',
+        label: <Link href="/">Main</Link>,
+      },
+    ],
+    [isAuth],
+  );
+  if (isAuth) {
+    items.push({
+      key: '/article/create',
+      label: <Link href="article/create">New article</Link>,
+    });
+  }
   const router = useRouter();
   return (
     <Header
@@ -65,7 +75,7 @@ const AppHeader: React.FC = () => {
       )}
       <Menu
         mode="horizontal"
-        defaultSelectedKeys={['2']}
+        defaultSelectedKeys={[router.route]}
         items={items}
         className={styles.headerColor}
       />
