@@ -5,8 +5,9 @@ import { axiosInstance } from '../../../utils/axios';
 export const useRefreshToken = (
   tokens: { accessToken: string; refreshToken: string },
   login: (accessToken, refreshToken) => void,
-  logout: () => void,
+  logout: (noRequest: boolean) => void,
   clearUser: () => void,
+  updateLocalStorage: (accessToken, refreshToken) => void,
 ) => {
   const router = useRouter();
   useMemo(() => {
@@ -30,7 +31,7 @@ export const useRefreshToken = (
                 },
               );
             } catch (e) {
-              clearUser();
+              logout(true);
 
               router.push('/');
               // return Promise.reject(error);
@@ -46,13 +47,13 @@ export const useRefreshToken = (
             try {
               newAttempt = await axiosInstance.request(originalRequestConfig);
             } catch (e) {
-              clearUser();
+              logout(true);
 
               router.push('/');
               return Promise.resolve();
             }
-
-            login(resp.data.accessToken, resp.data.refreshToken);
+            updateLocalStorage(resp.data.accessToken, resp.data.refreshToken);
+            // login(resp.data.accessToken, resp.data.refreshToken);
             return Promise.resolve(newAttempt);
           }
           // Any status codes that falls outside the range of 2xx cause this function to trigger

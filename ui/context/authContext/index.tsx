@@ -1,9 +1,10 @@
 import { useRouter } from 'next/router';
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { IAuthContext } from '../../common/interface/IAuthContext';
 import { IProps } from '../../common/interface/IProps';
 import useAuth from './hooks/useAuth';
 import useGetInitTokens from './hooks/useGetInitTokens';
+// import useGetInitTokens from './hooks/useGetInitTokens';
 import { useRefreshToken } from './hooks/useRefreshToken';
 
 const context: IAuthContext = {
@@ -23,15 +24,13 @@ export const useAuthContext = () => {
 
 export const AuthContextProvider: React.FC<IProps> = (props) => {
   const [isLoading, setIsLoading] = useState(true);
-
   const router = useRouter();
   const initTokens = useGetInitTokens();
-  const { login, logout, user, isAuth, tokens, clearUser } = useAuth(
-    initTokens,
-    setIsLoading,
-  );
 
-  useRefreshToken(tokens, login, logout, clearUser);
+  const { login, logout, user, isAuth, tokens, clearUser, updateLocalStorage } =
+    useAuth(initTokens, setIsLoading);
+
+  useRefreshToken(tokens, login, logout, clearUser, updateLocalStorage);
 
   useEffect(() => {
     if (!props.needAuth) {

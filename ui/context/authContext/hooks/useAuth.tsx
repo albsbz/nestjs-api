@@ -26,12 +26,16 @@ const useAuth = (initTokens, setIsLoading) => {
     if (tokens.accessToken && tokens.refreshToken) {
       const { accessToken, refreshToken } = tokens;
       updateUserData(accessToken);
-      localStorage.setItem('appRefreshToken', refreshToken);
-      localStorage.setItem('appAccessToken', accessToken);
+      updateLocalStorage(accessToken, refreshToken);
     } else {
       setIsAuth(false);
     }
-  }, [tokens, updateUserData, setIsLoading]);
+  }, [tokens]);
+
+  const updateLocalStorage = (accessToken, refreshToken) => {
+    localStorage.setItem('appRefreshToken', refreshToken);
+    localStorage.setItem('appAccessToken', accessToken);
+  };
 
   const login = (accessToken: string, refreshToken: string) => {
     setTokens({ accessToken, refreshToken });
@@ -46,9 +50,11 @@ const useAuth = (initTokens, setIsLoading) => {
     setUser({});
   };
 
-  const logout = async () => {
+  const logout = async (noRequest?: boolean) => {
     setIsLoading(true);
-    await axiosInstance.post('/auth/logout');
+    if (!noRequest) {
+      await axiosInstance.post('/auth/logout');
+    }
     clearUser();
   };
 
@@ -60,6 +66,7 @@ const useAuth = (initTokens, setIsLoading) => {
     isAuth,
     tokens,
     clearUser,
+    updateLocalStorage,
   };
 };
 export default useAuth;
