@@ -25,27 +25,83 @@ export class ArticlesService {
     });
   }
 
-  async findAll(params: FindAll, userId?: string): Promise<Article[]> {
+  async findAll(
+    params: FindAll,
+    userId?: string,
+  ): Promise<{ articles: Article[]; count: string }> {
     const { take, skip, keyword } = params;
 
-    const search = { $regex: new RegExp(`${keyword}`, 'i') };
-
-    let idFilter = {};
-    if (userId) {
-      idFilter = { author: userId };
-    }
     const filter = {
-      $and: [{ $or: [{ title: search }, { content: search }] }, idFilter],
+      $and: [],
     };
 
-    const result = await this.articleModel
-      .find(filter, null, {
-        skip,
-        limit: take,
-      })
-      .populate('author', '_id name avatar');
+    if (keyword) {
+      filter.$and.push({
+        $or: [
+          {
+            title: { $regex: keyword, $options: 'i' },
+          },
+          {
+            content: { $regex: keyword, $options: 'i' },
+          },
+        ],
+      });
+    }
 
-    return result;
+    if (userId) {
+      const idFilter = { author: new Types.ObjectId(userId) };
+      filter.$and.push(idFilter);
+    }
+
+    const articles = await this.articleModel.aggregate([
+      {
+        $facet: {
+          totalData: [
+            { $match: filter },
+            { $skip: skip },
+            { $limit: take },
+            {
+              $addFields: {
+                _id: {
+                  $toString: '$_id',
+                },
+              },
+            },
+            {
+              $lookup: {
+                from: 'users',
+                localField: 'author',
+                foreignField: '_id',
+                as: 'author',
+                pipeline: [
+                  {
+                    $project: {
+                      name: 1,
+                      avatar: 1,
+                      _id: {
+                        $toString: '$_id',
+                      },
+                      about: 1,
+                    },
+                  },
+                ],
+              },
+            },
+          ],
+          totalCount: [
+            { $match: filter },
+            {
+              $count: 'count',
+            },
+          ],
+        },
+      },
+    ]);
+
+    return {
+      articles: articles[0].totalData,
+      count: articles[0].totalCount[0].count,
+    };
   }
 
   async findOne(id: string): Promise<Article> {

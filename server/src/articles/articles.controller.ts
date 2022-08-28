@@ -38,7 +38,9 @@ export class ArticlesController {
   }
 
   @Get()
-  findAll(@Query() query: FindAll): Promise<Article[]> {
+  findAll(
+    @Query() query: FindAll,
+  ): Promise<{ articles: Article[]; count: string }> {
     return this.articlesService.findAll(query);
   }
 
@@ -47,7 +49,7 @@ export class ArticlesController {
   findAllMy(
     @Query() query: FindAll,
     @Request() req: RequestWithJWT,
-  ): Promise<Article[]> {
+  ): Promise<{ articles: Article[]; count: string }> {
     return this.articlesService.findAll(query, req.user.userId);
   }
 

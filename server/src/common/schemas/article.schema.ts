@@ -11,7 +11,10 @@ export class Article {
   @Exclude()
   __v: string;
 
-  @Transform((params) => params.obj._id.toString())
+  @Transform((params) => {
+    return params.obj._id.toString();
+  })
+  // @Transform(({ value }) => value.toString())
   _id: string;
 
   @Prop({ required: true })

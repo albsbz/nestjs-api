@@ -16,25 +16,17 @@ const BasicLayout: React.FC<IProps> = ({ children, needAuth }) => {
     <ErrorBoundary>
       <AuthContextProvider needAuth={needAuth}>
         <PageLoader needAuth={needAuth}>
-          <Layout style={{ height: '100vh' }}>
+          <Layout className={styles.layout}>
             <AppHeader />
             <AlertContextProvider>
               <AppAlert />
-              <Content
-                className={styles.siteLayout}
-                style={{ padding: '0 50px' }}
-              >
+              <Content className={styles.content} style={{ padding: '0 50px' }}>
                 <Breadcrumb style={{ margin: '16px 0' }}>
                   <Breadcrumb.Item>Home</Breadcrumb.Item>
                   <Breadcrumb.Item>List</Breadcrumb.Item>
                   <Breadcrumb.Item>App</Breadcrumb.Item>
                 </Breadcrumb>
-                <div
-                  className={styles.siteLayoutBackground}
-                  style={{ padding: 24, minHeight: 380 }}
-                >
-                  {children}
-                </div>
+                <div className={styles.contentBackground}>{children}</div>
               </Content>
             </AlertContextProvider>
 

@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { axiosInstance } from '../../../../utils/axios';
 import { LikeOutlined, MessageOutlined, StarOutlined } from '@ant-design/icons';
-import { Avatar, List, Space } from 'antd';
+import { Avatar, Divider, List, Skeleton, Space } from 'antd';
 import React from 'react';
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 const IconText = ({ icon, text }: { icon: React.FC; text: string }) => (
   <Space>
@@ -12,77 +13,100 @@ const IconText = ({ icon, text }: { icon: React.FC; text: string }) => (
 );
 
 const MyArticles = () => {
+  //   const [articles, setArticles] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [articles, setArticles] = useState([]);
-  const getArticles = async () => {
-    const res = await axiosInstance.get('articles/my');
-    if (res?.data) {
-      setArticles(res.data);
+  const [count, setCount] = useState(0);
+  let didLoad = false;
+
+  const loadMoreData = () => {
+    if (loading) {
+      return;
+    }
+    setLoading(true);
+    axiosInstance
+      .get(`articles/my?take=10&skip=${articles.length}`)
+      .then((res) => {
+        setArticles([...articles, ...res.data.articles]);
+        setCount(res.data.count);
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoading(false);
+      });
+  };
+  const initLoad = () => {
+    if (!didLoad) {
+      loadMoreData();
+      didLoad = true;
     }
   };
 
-  let didInit = false;
-
   useEffect(() => {
-    if (!didInit) {
-      didInit = true;
-      getArticles();
-    }
+    initLoad();
   }, []);
 
   return (
-    <>
+    <div
+      style={{
+        // height: '100%',
+        overflow: 'auto',
+      }}
+    >
       <h1>My articles</h1>
-      <List
-        itemLayout="vertical"
-        size="large"
-        pagination={{
-          onChange: (page) => {},
-          pageSize: 3,
+
+      {/* <div
+        id="scrollableDiv"
+        style={{
+          height: '100%',
+          overflow: 'auto',
         }}
-        dataSource={articles}
-        footer={
-          <div>
-            <b>ant design</b> footer part
-          </div>
-        }
-        renderItem={(item) => (
-          <List.Item
-            key={item.id}
-            actions={[
-              <IconText
-                icon={StarOutlined}
-                text="156"
-                key="list-vertical-star-o"
-              />,
-              <IconText
-                icon={LikeOutlined}
-                text="156"
-                key="list-vertical-like-o"
-              />,
-              <IconText
-                icon={MessageOutlined}
-                text="2"
-                key="list-vertical-message"
-              />,
-            ]}
-            extra={
-              <img
-                width={272}
-                alt="logo"
-                src="https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
+      > */}
+      <InfiniteScroll
+        dataLength={articles.length}
+        next={loadMoreData}
+        hasMore={articles.length < count}
+        loader={<Skeleton avatar paragraph={{ rows: 1 }} active />}
+        endMessage={<Divider plain>It is all, nothing more 🤐</Divider>}
+        // scrollableTarget="scrollableDiv"
+      >
+        <List
+          dataSource={articles}
+          renderItem={(article) => (
+            <List.Item
+              style={{ height: 100 }}
+              key={article._id}
+              actions={[
+                <IconText
+                  icon={StarOutlined}
+                  text="156"
+                  key="list-vertical-star-o"
+                />,
+                <IconText
+                  icon={LikeOutlined}
+                  text="156"
+                  key="list-vertical-like-o"
+                />,
+                <IconText
+                  icon={MessageOutlined}
+                  text="2"
+                  key="list-vertical-message"
+                />,
+              ]}
+              extra={<img width={272} alt="logo" src="" />}
+            >
+              <List.Item.Meta
+                avatar={<Avatar src={''} />}
+                title={<a href={article.href}>{article.title}</a>}
+                description={article.description}
               />
-            }
-          >
-            <List.Item.Meta
-              avatar={<Avatar src={item.avatar} />}
-              title={<a href={item.href}>{item.title}</a>}
-              description={item.description}
-            />
-            {item.content}
-          </List.Item>
-        )}
-      />
-    </>
+              {article.content}
+            </List.Item>
+          )}
+        />
+      </InfiniteScroll>
+      {/* </div> */}
+    </div>
   );
 };
 

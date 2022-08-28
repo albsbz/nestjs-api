@@ -15,6 +15,7 @@ specifiers:
   jwt-decode: ^3.1.2
   prettier: ^2.7.1
   react-error-boundary: ^3.1.4
+  react-infinite-scroll-component: ^6.1.0
   react-quill: ^2.0.0
   rimraf: ^3.0.2
   typescript: ^4.7.4
@@ -26,6 +27,7 @@ dependencies:
   eslint-plugin-react: 7.30.1_eslint@8.21.0
   jwt-decode: 3.1.2
   react-error-boundary: 3.1.4
+  react-infinite-scroll-component: 6.1.0
   react-quill: 2.0.0
 
 devDependencies:
@@ -2121,6 +2123,14 @@ packages:
       '@babel/runtime': 7.18.9
     dev: false
 
+  /react-infinite-scroll-component/6.1.0:
+    resolution: {integrity: sha512-SQu5nCqy8DxQWpnUVLx7V7b7LcA37aM7tvoWjTLZp1dk6EJibM5/4EJKzOnl07/BsM1Y40sKLuqjCwwH/xV0TQ==}
+    peerDependencies:
+      react: '>=16.0.0'
+    dependencies:
+      throttle-debounce: 2.3.0
+    dev: false
+
   /react-is/16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
 
@@ -2290,6 +2300,11 @@ packages:
 
   /text-table/0.2.0:
     resolution: {integrity: sha512-N+8UisAXDGk8PFXP4HAzVR9nbfmVJ3zYLAWiTIoqC5v5isinhr+r5uaO8+7r3BMfuNIufIsA7RdpVgacC2cSpw==}
+
+  /throttle-debounce/2.3.0:
+    resolution: {integrity: sha512-H7oLPV0P7+jgvrk+6mwwwBDmxTaxnu9HMXmloNLXwnNO0ZxZ31Orah2n8lU1eMPvsaowP2CX+USCgyovXfdOFQ==}
+    engines: {node: '>=8'}
+    dev: false
 
   /to-regex-range/5.0.1:
     resolution: {integrity: sha512-65P7iz6X5yEr1cwcgvQxbbIw7Uk3gOy5dIdtZ4rDveLqhrdJP+Li/Hx6tyK0NEb+2GCyneCMJiGqrADCSNk8sQ==}

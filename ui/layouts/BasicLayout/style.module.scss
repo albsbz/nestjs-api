@@ -1,11 +1,18 @@
-.siteLayout {
+.content {
   background: #fff;
 }
 
-.siteLayoutBackground {
+.contentBackground {
   background: #fff;
+  padding: 24px;
+  height: calc(100% - 80px);
 }
 
 .footer {
+  height: 50px;
   font-family: 'Inter', sans-serif;
+}
+
+.layout {
+  min-height: '100vh';
 }
