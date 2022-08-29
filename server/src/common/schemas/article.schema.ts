@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Exclude, Transform, Type } from 'class-transformer';
 import mongoose, { Document } from 'mongoose';
 import { User } from './user.schema';
+import * as uniqueValidator from 'mongoose-unique-validator';
 
 export type ArticleDocument = Article & Document;
 
@@ -20,6 +21,12 @@ export class Article {
   @Prop({ required: true })
   title: string;
 
+  @Prop({ required: true, unique: true })
+  slug: string;
+
+  @Prop({ required: true })
+  description: string;
+
   @Prop({ required: true })
   content: string;
 
@@ -28,4 +35,5 @@ export class Article {
   author: User;
 }
 
-export const ArticleSchema = SchemaFactory.createForClass(Article);
+export const ArticleSchema =
+  SchemaFactory.createForClass(Article).plugin(uniqueValidator);

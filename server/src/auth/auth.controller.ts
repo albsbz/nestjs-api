@@ -28,6 +28,7 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { JwtRefreshGuard } from './guards/jwt-refresh.guard';
 
 import { LocalAuthGuard } from './guards/local-auth.guard';
+import RequestWithJWT from 'src/common/interfaces/RequestWithJWT';
 
 @Controller('api/auth')
 @ApiTags('Auth')
@@ -40,7 +41,7 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post('login')
   async login(
-    @Request() req: RequestType & { user: User },
+    @Request() req: RequestWithJWT,
     @Body() _body: LoginRequest,
     @Res({ passthrough: true }) res: Response,
   ): Promise<unknown> {

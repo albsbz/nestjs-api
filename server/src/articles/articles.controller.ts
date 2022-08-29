@@ -10,6 +10,7 @@ import {
   UseGuards,
   Request,
   UseInterceptors,
+  UseFilters,
 } from '@nestjs/common';
 import { ArticlesService } from './articles.service';
 import { CreateArticleDto, FindAll } from './dto/requests.dto';
@@ -30,7 +31,7 @@ export class ArticlesController {
 
   @Post()
   @UseGuards(JwtAuthGuard)
-  create(
+  async create(
     @Body() createArticleDto: CreateArticleDto,
     @Request() req: RequestWithJWT,
   ): Promise<Article> {

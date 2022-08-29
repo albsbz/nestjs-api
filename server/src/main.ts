@@ -1,4 +1,4 @@
-import { ValidationPipe } from '@nestjs/common';
+import { BadRequestException, ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { NestFactory } from '@nestjs/core';
 import helmet from 'helmet';
@@ -7,6 +7,7 @@ import { swaggerOptions } from './config/swaggerOptions';
 import { RenderService } from 'nest-next';
 import { config } from 'aws-sdk';
 import { ConfigService } from '@nestjs/config';
+import { MongoExceptionFilter } from './common/filters/mongo-exception.filter';
 
 async function bootstrap(): Promise<void> {
   const server = await NestFactory.create(AppModule);
@@ -50,8 +51,18 @@ async function bootstrap(): Promise<void> {
       whitelist: true,
       transform: true,
       forbidUnknownValues: true,
+      exceptionFactory(errors): unknown {
+        return new BadRequestException(
+          errors.map((error) => ({
+            name: error.property,
+            errors: Object.entries(error.constraints).map(([_, v]) => v),
+          })),
+        );
+      },
     }),
   );
+
+  server.useGlobalFilters(new MongoExceptionFilter());
 
   // server.useGlobalInterceptors(
   //   new ClassSerializerInterceptor(server.get(Reflector)),
