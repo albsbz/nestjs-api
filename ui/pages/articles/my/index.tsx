@@ -13,7 +13,7 @@ type PageContext = NextPageContext & {
 };
 
 const myArticlePage: TNextPageWithLayout<PageProps> = ({ articles }) => {
-  return <MyArticles articles={articles} />;
+  return <MyArticles />;
 };
 
 myArticlePage.getLayout = (page) => {

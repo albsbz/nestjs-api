@@ -3,9 +3,9 @@ import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { IAuthContext } from '../../common/interface/IAuthContext';
 import { IProps } from '../../common/interface/IProps';
 import useAuth from './hooks/useAuth';
-import useGetInitTokens from './hooks/useGetInitTokens';
-// import useGetInitTokens from './hooks/useGetInitTokens';
 import { useRefreshToken } from './hooks/useRefreshToken';
+import getInitTokens from './helpers/getInitTokens';
+import { emptyObject } from '../../helpers';
 
 const context: IAuthContext = {
   login: (accessToken: string, refreshToken: string) => {},
@@ -24,13 +24,18 @@ export const useAuthContext = () => {
 
 export const AuthContextProvider: React.FC<IProps> = (props) => {
   const [isLoading, setIsLoading] = useState(true);
+  const [initTokens, setInitTokens] = useState({});
   const router = useRouter();
-  const initTokens = useGetInitTokens();
+  useEffect(() => {
+    setInitTokens(getInitTokens());
+  }, []);
 
-  const { login, logout, user, isAuth, tokens, clearUser, updateLocalStorage } =
-    useAuth(initTokens, setIsLoading);
+  const { login, logout, user, isAuth, tokens, updateLocalStorage } = useAuth(
+    initTokens,
+    setIsLoading,
+  );
 
-  useRefreshToken(tokens, login, logout, clearUser, updateLocalStorage);
+  useRefreshToken(tokens, logout, updateLocalStorage);
 
   useEffect(() => {
     if (!props.needAuth) {
@@ -41,11 +46,11 @@ export const AuthContextProvider: React.FC<IProps> = (props) => {
       setIsLoading(false);
       return;
     } else {
-      if (!tokens.accessToken) {
+      if (!emptyObject(initTokens) && !tokens.accessToken) {
         router.push('/auth/login');
       }
     }
-  }, [isAuth, props.needAuth, router, tokens.accessToken]);
+  }, [isAuth, props.needAuth, router, tokens, initTokens]);
 
   return (
     <AuthContext.Provider

@@ -4,6 +4,7 @@ import { LikeOutlined, MessageOutlined, StarOutlined } from '@ant-design/icons';
 import { Avatar, Divider, List, Skeleton, Space } from 'antd';
 import React from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import Link from 'next/link';
 
 const IconText = ({ icon, text }: { icon: React.FC; text: string }) => (
   <Space>
@@ -49,26 +50,17 @@ const MyArticles = () => {
   return (
     <div
       style={{
-        // height: '100%',
         overflow: 'auto',
       }}
     >
       <h1>My articles</h1>
 
-      {/* <div
-        id="scrollableDiv"
-        style={{
-          height: '100%',
-          overflow: 'auto',
-        }}
-      > */}
       <InfiniteScroll
         dataLength={articles.length}
         next={loadMoreData}
         hasMore={articles.length < count}
         loader={<Skeleton avatar paragraph={{ rows: 1 }} active />}
         endMessage={<Divider plain>It is all, nothing more 🤐</Divider>}
-        // scrollableTarget="scrollableDiv"
       >
         <List
           dataSource={articles}
@@ -96,16 +88,19 @@ const MyArticles = () => {
               extra={<img width={272} alt="logo" src="" />}
             >
               <List.Item.Meta
-                avatar={<Avatar src={''} />}
-                title={<a href={article.href}>{article.title}</a>}
+                avatar={<Avatar src={article.author.avatar?.url || ''} />}
+                title={
+                  <Link href={`/articles/${article.slug}`}>
+                    {article.title}
+                  </Link>
+                }
                 description={article.description}
               />
-              {article.content}
+              {article.description}
             </List.Item>
           )}
         />
       </InfiniteScroll>
-      {/* </div> */}
     </div>
   );
 };

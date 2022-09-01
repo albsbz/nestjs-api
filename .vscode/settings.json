@@ -1,3 +1,8 @@
 {
-  "eslint.workingDirectories": ["./server", "./ui", "./dto"]
+  "eslint.workingDirectories": ["./server", "./ui", "./dto"],
+  "launch": {
+    "configurations": [],
+    "compounds": []
+  },
+  "ngrokForVSCode.configPath": "C:\\Users\\dev\\AppData\\Local/ngrok/ngrok.yml"
 }

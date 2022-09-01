@@ -12,18 +12,24 @@ const AppSteps: React.FC<IProps & { next; prev; current; stepTitles }> = ({
   current,
   stepTitles,
 }) => {
-  const steps = Children.map(children, (child, idx) => {
-    return { content: child, title: stepTitles[idx] };
-  });
+  const steps = Children
+    ? Children.map(children, (child, idx) => {
+        return { content: child, title: stepTitles[idx] };
+      })
+    : null;
 
   return (
     <>
       <Steps current={current}>
-        {steps.map((item) => (
-          <Step key={item.title} title={item.title} />
-        ))}
+        {steps ? (
+          steps.map((item) => <Step key={item.title} title={item.title} />)
+        ) : (
+          <Step />
+        )}
       </Steps>
-      <div className={styles.stepsContent}>{steps[current].content}</div>
+      <div className={styles.stepsContent}>
+        {steps ? steps[current].content : ''}
+      </div>
     </>
   );
 };

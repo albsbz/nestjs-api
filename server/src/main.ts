@@ -1,4 +1,4 @@
-import { BadRequestException, ValidationPipe } from '@nestjs/common';
+import { BadRequestException, Logger, ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { NestFactory } from '@nestjs/core';
 import helmet from 'helmet';
@@ -34,7 +34,9 @@ async function bootstrap(): Promise<void> {
 
   const service = server.get(RenderService);
   service.setErrorHandler(async (err, req, res) => {
+    const logger = new Logger('HTTP');
     if (res.statusCode !== 404) {
+      logger.error(err.message, err?.stack);
       res.send(err.response);
       return;
     }
@@ -63,7 +65,6 @@ async function bootstrap(): Promise<void> {
   );
 
   server.useGlobalFilters(new MongoExceptionFilter());
-
   // server.useGlobalInterceptors(
   //   new ClassSerializerInterceptor(server.get(Reflector)),
   // );

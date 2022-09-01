@@ -30,7 +30,7 @@ const Registration = () => {
   return (
     <AppSteps next={next} prev={prev} current={current} stepTitles={stepTitles}>
       <RegistrationStep next={next} />
-      <PreferencesStep next={next} />
+      <PreferencesStep />
     </AppSteps>
   );
 };

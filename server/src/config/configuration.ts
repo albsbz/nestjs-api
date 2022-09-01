@@ -7,9 +7,9 @@ const Consts = (): unknown => ({
   },
   jwtConstants: {
     accessSecret: process.env.ACCESS_TOKEN_SECRET,
-    accessTokenExpiresIn: '3600s',
+    accessTokenExpiresIn: '1800s',
     refreshSecret: process.env.REFRESH_TOKEN_SECRET,
-    refreshTokenExpiresIn: '7200s',
+    refreshTokenExpiresIn: '3600s',
     dropPasswordSecret: process.env.DROP_PASSWORD_TOKEN_SECRET,
     dropPasswordTokenExpiresIn: '10800s',
   },

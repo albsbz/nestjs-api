@@ -77,7 +77,7 @@ export class ArticlesService {
                   {
                     $project: {
                       name: 1,
-                      avatar: 1,
+                      'avatar.url': 1,
                       _id: {
                         $toString: '$_id',
                       },
@@ -85,6 +85,12 @@ export class ArticlesService {
                     },
                   },
                 ],
+              },
+            },
+            {
+              $unwind: {
+                path: '$author',
+                preserveNullAndEmptyArrays: true,
               },
             },
           ],
@@ -100,7 +106,7 @@ export class ArticlesService {
 
     return {
       articles: articles[0].totalData,
-      count: articles[0].totalCount[0].count,
+      count: articles[0].totalCount[0]?.count || 0,
     };
   }
 
