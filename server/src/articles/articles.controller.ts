@@ -10,7 +10,8 @@ import {
   UseGuards,
   Request,
   UseInterceptors,
-  UseFilters,
+  NotFoundException,
+  ConflictException,
 } from '@nestjs/common';
 import { ArticlesService } from './articles.service';
 import { CreateArticleDto, FindAll } from './dto/requests.dto';
@@ -54,8 +55,8 @@ export class ArticlesController {
     return this.articlesService.findAll(query, req.user.userId);
   }
 
-  @Get(':id')
-  findOne(@Param() params: GetId): Promise<Article> {
+  @Get('id/:id')
+  findOneByID(@Param() params: GetId): Promise<Article> {
     const { id } = params;
     return this.articlesService.findOne(id);
   }
@@ -73,5 +74,19 @@ export class ArticlesController {
   remove(@Param() params: GetId): Promise<void> {
     const { id } = params;
     return this.articlesService.remove(id);
+  }
+
+  @Get(':slug')
+  async findOneBySlug(@Param('slug') slug: string): Promise<Article> {
+    const article = await this.articlesService.findBySlug(slug);
+    if (!article) throw new NotFoundException();
+    return article;
+  }
+
+  @Post('slugs')
+  async getAllSlugs(): Promise<{ slug: string }[]> {
+    const slugs = await this.articlesService.getAllSlugs();
+    if (!slugs) throw new ConflictException();
+    return slugs;
   }
 }

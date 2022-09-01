@@ -1,6 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { ConflictException, Injectable } from '@nestjs/common';
 
 import {
   CreateArticleDto,
@@ -8,18 +6,16 @@ import {
   FindAll,
 } from './dto/requests.dto';
 
-import { Article, ArticleDocument } from '../common/schemas/article.schema';
+import { Article } from '../common/schemas/article.schema';
 import ArticlesRepository from './articles.repository';
+import e from 'express';
 
 @Injectable()
 export class ArticlesService {
-  constructor(
-    @InjectModel(Article.name) private articleModel: Model<ArticleDocument>,
-    private readonly artilesRepository: ArticlesRepository,
-  ) {}
+  constructor(private readonly articlesRepository: ArticlesRepository) {}
 
   create(createArticleDto: CreateArticleDto, userId: string): Promise<Article> {
-    return this.artilesRepository.create({
+    return this.articlesRepository.create({
       ...createArticleDto,
       author: userId,
     });
@@ -29,118 +25,41 @@ export class ArticlesService {
     params: FindAll,
     userId?: string,
   ): Promise<{ articles: Article[]; count: string }> {
-    const { take, skip, keyword } = params;
+    return this.articlesRepository.findAll(params, userId);
+  }
 
-    const filter = {
-      $and: [],
-    };
-
-    if (keyword) {
-      filter.$and.push({
-        $or: [
-          {
-            title: { $regex: keyword, $options: 'i' },
-          },
-          {
-            content: { $regex: keyword, $options: 'i' },
-          },
-        ],
-      });
-    }
-
-    if (userId) {
-      const idFilter = { author: new Types.ObjectId(userId) };
-      filter.$and.push(idFilter);
-    }
-
-    const articles = await this.articleModel.aggregate([
-      {
-        $facet: {
-          totalData: [
-            { $match: filter },
-            { $skip: skip },
-            { $limit: take },
-            {
-              $addFields: {
-                _id: {
-                  $toString: '$_id',
-                },
-              },
-            },
-            {
-              $lookup: {
-                from: 'users',
-                localField: 'author',
-                foreignField: '_id',
-                as: 'author',
-                pipeline: [
-                  {
-                    $project: {
-                      name: 1,
-                      'avatar.url': 1,
-                      _id: {
-                        $toString: '$_id',
-                      },
-                      about: 1,
-                    },
-                  },
-                ],
-              },
-            },
-            {
-              $unwind: {
-                path: '$author',
-                preserveNullAndEmptyArrays: true,
-              },
-            },
-          ],
-          totalCount: [
-            { $match: filter },
-            {
-              $count: 'count',
-            },
-          ],
-        },
-      },
-    ]);
-
-    return {
-      articles: articles[0].totalData,
-      count: articles[0].totalCount[0]?.count || 0,
-    };
+  async findBySlug(slug: string): Promise<Article> {
+    return this.articlesRepository.findBySlug(slug);
   }
 
   async findOne(id: string): Promise<Article> {
-    return this.articleModel
-      .findById(id)
-      .populate('author', '_id nickname avatar');
+    return this.articlesRepository.findOne(id);
   }
 
   async update(
     id: string,
     updateArticleDto: UpdateArticleDto,
   ): Promise<Article> {
-    const result = await this.articleModel.findOneAndUpdate(
-      { _id: new Types.ObjectId(id) },
-      updateArticleDto,
-      {
-        new: true,
-      },
-    );
+    const result = await this.articlesRepository.update(id, updateArticleDto);
 
     if (!result) {
-      throw new NotFoundException();
+      throw new ConflictException();
     }
 
     return result;
   }
 
   async remove(id: string): Promise<void> {
-    const result = await this.articleModel.findByIdAndDelete(id);
+    const result = await this.articlesRepository.remove(id);
+    console.log('result', result);
 
     if (!result) {
-      throw new NotFoundException();
+      throw new ConflictException();
     }
     return;
+  }
+
+  async getAllSlugs(): Promise<{ slug: string }[]> {
+    return this.articlesRepository.getAllSlugs();
   }
 }

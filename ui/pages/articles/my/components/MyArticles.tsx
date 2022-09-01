@@ -90,9 +90,7 @@ const MyArticles = () => {
               <List.Item.Meta
                 avatar={<Avatar src={article.author.avatar?.url || ''} />}
                 title={
-                  <Link href={`/articles/${article.slug}`}>
-                    {article.title}
-                  </Link>
+                  <Link href={`/article/${article.slug}`}>{article.title}</Link>
                 }
                 description={article.description}
               />
