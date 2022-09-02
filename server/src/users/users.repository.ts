@@ -160,7 +160,7 @@ export class UsersRepository {
         name: profileData.name,
         about: profileData.about,
       },
-      { new: true },
+      { runValidators: true, context: 'query', new: true },
     );
 
     return user;

@@ -3,6 +3,7 @@ import { Exclude, Transform, Type } from 'class-transformer';
 import { Provider } from '../../users/providers/providers.enum';
 import { Role } from '../../users/roles/role.enum';
 import { PublicFile, PublicFileSchema } from './publicFile.schema';
+import * as uniqueValidator from 'mongoose-unique-validator';
 
 export type UserDocument = User & Document;
 
@@ -19,7 +20,7 @@ export class User {
   @Prop({ required: true, unique: true })
   email: string;
 
-  @Prop({ required: false, unique: true })
+  @Prop({ required: false, unique: true, sparse: true })
   name?: string;
 
   @Prop({ required: false })
@@ -43,4 +44,5 @@ export class User {
   avatar: PublicFile;
 }
 
-export const UserSchema = SchemaFactory.createForClass(User);
+export const UserSchema =
+  SchemaFactory.createForClass(User).plugin(uniqueValidator);

@@ -49,11 +49,10 @@ export class UsersController {
     @Body() profile: PatchProfileDTO,
     @Request() req: RequestWithJWT,
   ): Promise<User> {
-    const user = await this.usersService.updateProfile(req.user.userId, {
+    return this.usersService.updateProfile(req.user.userId, {
       about: profile.about,
       name: profile.name,
     });
-    return user;
   }
 
   @Delete(':id')

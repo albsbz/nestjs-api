@@ -43,8 +43,11 @@ export const useRefreshToken = (
           try {
             newAttempt = await axiosInstance.request(originalRequestConfig);
           } catch (e) {
-            logout(true);
-            router.push('/');
+            if (e.data.message === 'jwt expired') {
+              logout(true);
+              router.push('/');
+              return Promise.resolve();
+            }
             return Promise.resolve();
           }
           updateLocalStorage(resp.data.accessToken, resp.data.refreshToken);

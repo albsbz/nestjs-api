@@ -8,7 +8,6 @@ import {
 
 import { Article } from '../common/schemas/article.schema';
 import ArticlesRepository from './articles.repository';
-import e from 'express';
 
 @Injectable()
 export class ArticlesService {
@@ -51,8 +50,6 @@ export class ArticlesService {
 
   async remove(id: string): Promise<void> {
     const result = await this.articlesRepository.remove(id);
-    console.log('result', result);
-
     if (!result) {
       throw new ConflictException();
     }

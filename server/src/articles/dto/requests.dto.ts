@@ -13,6 +13,9 @@ export class CreateArticleDto {
   @IsNotEmpty()
   @Length(3, 256)
   @IsString()
+  @Matches(/^[a-zA-Z0-9\s\,\?\'\-\.]*$/, {
+    message: 'No symbols in description',
+  })
   title: string;
 
   @IsNotEmpty()
@@ -21,6 +24,10 @@ export class CreateArticleDto {
 
   @IsNotEmpty()
   @IsString()
+  @Length(3, 512)
+  @Matches(/^[a-zA-Z0-9\s\,\?\'\-\.]*$/, {
+    message: 'No symbols in description',
+  })
   description: string;
 
   @IsNotEmpty()

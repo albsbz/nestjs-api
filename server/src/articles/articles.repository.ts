@@ -125,7 +125,7 @@ class ArticlesRepository {
   async findBySlug(slug: string): Promise<Article> {
     return this.articleModel
       .findOne({ slug })
-      .populate('author', '_id nickname avatar')
+      .populate('author', '_id nickname avatar name about')
       .lean();
   }
   async getAllSlugs(): Promise<{ slug: string }[]> {

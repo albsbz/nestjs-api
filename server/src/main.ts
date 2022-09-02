@@ -48,6 +48,7 @@ async function bootstrap(): Promise<void> {
     region: configService.get('aws.region'),
   });
 
+  server.useGlobalFilters(new MongoExceptionFilter());
   server.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -64,7 +65,6 @@ async function bootstrap(): Promise<void> {
     }),
   );
 
-  server.useGlobalFilters(new MongoExceptionFilter());
   // server.useGlobalInterceptors(
   //   new ClassSerializerInterceptor(server.get(Reflector)),
   // );

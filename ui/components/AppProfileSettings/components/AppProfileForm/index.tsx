@@ -26,20 +26,33 @@ const AppProfileForm = ({ next, profile }) => {
   }, [profile, form]);
 
   const onFinish = async (values: any) => {
+    let response;
     try {
-      await axiosInstance.patch('users/profile', {
+      response = await axiosInstance.patch('users/profile', {
         name: values.name,
         about: values.about,
       });
       setAlert({ message: 'Profile updated' });
       next();
     } catch (e) {
-      if (e.response.status === 409) {
-        // form.setFields([{ name: 'email', errors: [e.response.data.message] }]);
+      form.setFields([
+        { name: 'name', errors: [] },
+        { name: 'about', errors: [] },
+      ]);
+      if (e.response.status === 400) {
+        if (e.response.data?.message) {
+          form.setFields(e.response.data.message);
+          return;
+        }
+        return;
       } else {
         throwError(e);
       }
     }
+    form.setFields([
+      { name: 'name', value: response.data.name, errors: [] },
+      { name: 'about', value: response.data.about, errors: [] },
+    ]);
   };
 
   const onFinishFailed = (errorInfo: any) => {};

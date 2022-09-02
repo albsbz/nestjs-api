@@ -1,4 +1,11 @@
-import { IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  Matches,
+  MinLength,
+} from 'class-validator';
 
 export class CreateUserDto {
   @IsNotEmpty()
@@ -15,9 +22,16 @@ export class CreateUserDto {
 export class PatchProfileDTO {
   @IsNotEmpty()
   @IsString()
+  @MinLength(3)
+  @Matches(/^[a-zA-Z0-9\.]*$/, {
+    message: 'No symbols in name',
+  })
   name: string;
 
   @IsString()
   @IsOptional()
+  @Matches(/^[a-zA-Z0-9\.\s\,]*$/, {
+    message: 'Symbol forbidden',
+  })
   about?: string;
 }
