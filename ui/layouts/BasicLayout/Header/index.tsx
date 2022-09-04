@@ -21,7 +21,7 @@ const AppHeader: React.FC = () => {
       ...items,
       {
         key: '/articles/create',
-        label: <Link href="/articles/create">New article</Link>,
+        label: <Link href="/article/create">New article</Link>,
       },
       {
         key: '/articles/my',

@@ -20,21 +20,32 @@ articlePage.getLayout = (page) => {
 };
 
 export async function getStaticPaths() {
-  const resp = await axiosInstance.post('articles/slugs');
-  return {
-    paths: resp.data.map((el) => ({ params: el })),
-    fallback: false, // can also be true or 'blocking'
-  };
+  let resp;
+  try {
+    resp = await axiosInstance.post('articles/slugs');
+  } catch (error) {
+  } finally {
+    return {
+      paths: resp?.data?.map((el) => ({ params: el })) || [],
+      fallback: false, // can also be true or 'blocking'
+    };
+  }
 }
 
 export const getStaticProps = async (ctx: PageContext) => {
-  const resp = await axiosInstance.get(`articles/${ctx.params.slug}`);
-  if (resp.data) {
-    return {
-      props: { article: resp.data },
-    };
+  let resp;
+  try {
+    resp = await axiosInstance.get(`articles/${ctx.params.slug}`);
+  } catch (error) {
+  } finally {
+    if (resp.data) {
+      return {
+        props: { article: resp.data },
+        revalidate: 10,
+      };
+    }
+    return;
   }
-  return;
 };
 
 export default articlePage;
