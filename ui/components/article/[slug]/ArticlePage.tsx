@@ -29,6 +29,8 @@ const Content: React.FC<{
 const ArticlePage = ({ article }) => {
   const router = useRouter();
 
+  if (router.isFallback) return <Skeleton />;
+
   return article ? (
     <div>
       <PageHeader

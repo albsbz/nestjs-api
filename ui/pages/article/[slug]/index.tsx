@@ -27,7 +27,7 @@ export async function getStaticPaths() {
   } finally {
     return {
       paths: resp?.data?.map((el) => ({ params: el })) || [],
-      fallback: false, // can also be true or 'blocking'
+      fallback: 'blocking', // can also be true or 'blocking'
     };
   }
 }
@@ -38,13 +38,15 @@ export const getStaticProps = async (ctx: PageContext) => {
     resp = await axiosInstance.get(`articles/${ctx.params.slug}`);
   } catch (error) {
   } finally {
-    if (resp.data) {
+    if (!resp.data) {
       return {
-        props: { article: resp.data },
-        revalidate: 10,
+        notFound: true,
       };
     }
-    return;
+    return {
+      props: { article: resp.data },
+      revalidate: 10,
+    };
   }
 };
 
