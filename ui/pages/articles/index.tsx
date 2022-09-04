@@ -2,7 +2,7 @@ import { NextPageContext } from 'next';
 
 import { TNextPageWithLayout } from '../../common/types/TNextPageWithLayout';
 import BasicLayout from '../../layouts/BasicLayout';
-import Articles from './components/Articles';
+import Articles from '../../components/articles/Articles';
 
 type PageProps = {
   articles: string;

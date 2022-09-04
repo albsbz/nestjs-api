@@ -1,5 +1,5 @@
 import BasicLayout from '../../../layouts/BasicLayout';
-import CreateArticle from './components/CreateArticle';
+import CreateArticle from '../../../components/article/create/CreateArticle';
 
 const createArticlePage = () => {
   return <CreateArticle />;

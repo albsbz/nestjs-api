@@ -1,7 +1,7 @@
 import { NextPageContext } from 'next';
 import BasicLayout from '../../../layouts/BasicLayout';
 import { axiosInstance } from '../../../utils/axios';
-import ArticlePage from './components/ArticlePage';
+import ArticlePage from '../../../components/article/[slug]/ArticlePage';
 
 type PageProps = {
   slug: string;

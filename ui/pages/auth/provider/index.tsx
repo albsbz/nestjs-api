@@ -1,5 +1,5 @@
 import BasicLayout from '../../../layouts/BasicLayout';
-import ProviderAuthController from './components/ProviderAuthController';
+import ProviderAuthController from '../../../components/auth/provider/ProviderAuthController';
 
 const AuthProviderPage = () => {
   return <ProviderAuthController />;

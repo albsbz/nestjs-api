@@ -1,5 +1,5 @@
-import AppProfileForm from './components/AppProfileForm';
-import AppUploadAvatar from './components/AppUploadAvatar';
+import AppProfileForm from './AppProfileForm';
+import AppUploadAvatar from './AppUploadAvatar';
 
 const AppProfileSettings = ({ profile, next }) => {
   return (

@@ -1,5 +1,5 @@
+import UpdatePassword from '../../../components/auth/update-password/UpdatePassword';
 import BasicLayout from '../../../layouts/BasicLayout';
-import UpdatePassword from './components/UpdatePassword';
 
 function UpdatePasswordPage() {
   return <UpdatePassword />;

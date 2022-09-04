@@ -1,6 +1,6 @@
 import React from 'react';
 import BasicLayout from '../../../layouts/BasicLayout';
-import Profile from './components/Profile';
+import Profile from '../../../components/auth/profile/Profile';
 
 function ProfilePage() {
   return <Profile />;

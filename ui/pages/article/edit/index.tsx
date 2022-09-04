@@ -1,5 +1,5 @@
 import BasicLayout from '../../../layouts/BasicLayout';
-import EditArticle from './components/EditArticle';
+import EditArticle from '../../../components/article/edit/EditArticle';
 
 const editArticlePage = () => {
   return <EditArticle />;

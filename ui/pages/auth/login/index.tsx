@@ -1,5 +1,5 @@
 import BasicLayout from '../../../layouts/BasicLayout';
-import Login from './components/Login';
+import Login from '../../../components/auth/login/Login';
 
 const loginPage = () => {
   return <Login />;

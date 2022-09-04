@@ -1,5 +1,5 @@
 import BasicLayout from '../../../layouts/BasicLayout';
-import DropPassword from './components/DropPassword';
+import DropPassword from '../../../components/auth/drop-password/DropPassword';
 
 const dropPasswordPage = () => {
   return <DropPassword />;

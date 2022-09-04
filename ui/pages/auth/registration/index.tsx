@@ -1,6 +1,6 @@
 import { TPage } from '../../../common/types/TPages';
+import Registration from '../../../components/auth/registration/Registration';
 import BasicLayout from '../../../layouts/BasicLayout';
-import Registration from './components/Registration';
 
 const RegistartionPage: TPage = () => {
   return <Registration />;
