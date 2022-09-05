@@ -12,6 +12,8 @@ import {
   UseInterceptors,
   NotFoundException,
   ConflictException,
+  UploadedFile,
+  BadRequestException,
 } from '@nestjs/common';
 import { ArticlesService } from './articles.service';
 import { CreateArticleDto, FindAll } from './dto/requests.dto';
@@ -23,6 +25,7 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import MongooseClassSerializerInterceptor from 'src/common/interceptors/mongooseClassSerializer.interceptor';
 import { User } from 'src/common/schemas/user.schema';
 import RequestWithJWT from 'src/common/interfaces/RequestWithJWT';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('api/articles')
 @ApiTags('articles')
@@ -66,6 +69,8 @@ export class ArticlesController {
     @Param() params: GetId,
     @Body() updateArticleDto: UpdateArticleDto,
   ): Promise<Article> {
+    console.log('content');
+
     const { id } = params;
     return this.articlesService.update(id, updateArticleDto);
   }
@@ -88,5 +93,25 @@ export class ArticlesController {
     const slugs = await this.articlesService.getAllSlugs();
     if (!slugs) throw new ConflictException();
     return slugs;
+  }
+
+  @Post('image')
+  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(FileInterceptor('file'))
+  async addImages(
+    @Request() req,
+    @UploadedFile() file: Express.Multer.File,
+  ): Promise<{ url: string }> {
+    let savedFile;
+    try {
+      savedFile = await this.articlesService.uploadImage(
+        req.articleId,
+        file.buffer,
+        file.originalname,
+      );
+    } catch (e) {
+      throw new BadRequestException(e);
+    }
+    return { url: savedFile.url };
   }
 }

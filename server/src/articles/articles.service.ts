@@ -8,10 +8,15 @@ import {
 
 import { Article } from '../common/schemas/article.schema';
 import ArticlesRepository from './articles.repository';
+import { PublicFile } from 'src/common/schemas/publicFile.schema';
+import { FilesService } from 'src/files/files.service';
 
 @Injectable()
 export class ArticlesService {
-  constructor(private readonly articlesRepository: ArticlesRepository) {}
+  constructor(
+    private readonly articlesRepository: ArticlesRepository,
+    private readonly filesService: FilesService,
+  ) {}
 
   create(createArticleDto: CreateArticleDto, userId: string): Promise<Article> {
     return this.articlesRepository.create({
@@ -58,5 +63,26 @@ export class ArticlesService {
 
   async getAllSlugs(): Promise<{ slug: string }[]> {
     return this.articlesRepository.getAllSlugs();
+  }
+
+  async uploadImage(
+    id: string,
+    imageBuffer: Buffer,
+    filename: string,
+  ): Promise<PublicFile> {
+    const file = await this.filesService.uploadPublicFile(
+      imageBuffer,
+      filename,
+      'articleImages',
+    );
+
+    // const oldUser = await this.usersRepository.updateAvatar(id, avatar);
+    // if (oldUser.avatar) {
+    //   await this.filesService.deletePublicFile(
+    //     oldUser.avatar._id,
+    //     oldUser.avatar.key,
+    //   );
+    // }
+    return file;
   }
 }

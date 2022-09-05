@@ -15,12 +15,13 @@ export class FilesService {
   async uploadPublicFile(
     dataBuffer: Buffer,
     filename: string,
+    folder,
   ): Promise<PublicFile> {
     const uploadResult = await s3
       .upload({
         Bucket: this.configService.get('aws.publicBucketName'),
         Body: dataBuffer,
-        Key: `avatars/${uuid()}-${encodeURI(filename)}`,
+        Key: `${folder}/${uuid()}-${encodeURI(filename)}`,
         ContentEncoding: 'base64',
         ContentType: 'image/jpeg',
       })

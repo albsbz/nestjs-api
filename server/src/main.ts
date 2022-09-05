@@ -16,6 +16,7 @@ async function bootstrap(): Promise<void> {
     'script-src': ['self', configService.get('url')],
     'img-src': [
       'self',
+      'data:',
       configService.get('aws.bucketUrlRegion'),
       configService.get('aws.bucketUrl'),
     ],

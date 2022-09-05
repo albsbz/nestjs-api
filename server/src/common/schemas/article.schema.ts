@@ -1,8 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Exclude, Transform, Type } from 'class-transformer';
 import mongoose, { Document } from 'mongoose';
-import { User } from './user.schema';
 import * as uniqueValidator from 'mongoose-unique-validator';
+import { User } from './user.schema';
 
 export type ArticleDocument = Article & Document;
 

@@ -94,6 +94,7 @@ export class UsersService {
     const avatar = await this.filesService.uploadPublicFile(
       imageBuffer,
       filename,
+      'avatars',
     );
 
     const oldUser = await this.usersRepository.updateAvatar(id, avatar);

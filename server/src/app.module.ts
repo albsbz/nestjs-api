@@ -18,7 +18,7 @@ import { FilesModule } from './files/files.module';
   imports: [
     RenderModule.forRootAsync(
       Next({
-        dev: false,
+        dev: true,
         dir: resolve(__dirname, '../../ui'),
       }),
       {

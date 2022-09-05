@@ -6,8 +6,10 @@ import {
   IsString,
   Matches,
 } from 'class-validator';
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import { PartialType } from '@nestjs/mapped-types';
+
+import * as sanitizeHtml from 'sanitize-html';
 
 export class CreateArticleDto {
   @IsNotEmpty()
@@ -20,6 +22,7 @@ export class CreateArticleDto {
 
   @IsNotEmpty()
   @IsString()
+  @Transform(({ value }): string => sanitizeHtml(value))
   content: string;
 
   @IsNotEmpty()

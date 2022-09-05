@@ -1,10 +1,8 @@
 import { useState } from 'react';
-import dynamic from 'next/dynamic';
-const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
-import 'react-quill/dist/quill.snow.css';
 import AppButton from '../../../components/Button';
 import { Form, Input } from 'antd';
 import useAsyncError from '../../../hooks/useAsyncError';
+import AppContentEditor from './AppContentEditor';
 
 const AppArticleForm = (props: {
   initialValues?: { title: ''; description: ''; slug: ''; content: '' };
@@ -84,10 +82,8 @@ const AppArticleForm = (props: {
         <Input />
       </Form.Item>
 
-      <Form.Item label="Content">
-        {typeof window !== 'undefined' && (
-          <ReactQuill theme="snow" value={content} onChange={setContent} />
-        )}
+      <Form.Item label="Content" name="content">
+        <AppContentEditor content={content} handler={setContent} />
       </Form.Item>
 
       <Form.Item wrapperCol={{ offset: 8, span: 16 }}>

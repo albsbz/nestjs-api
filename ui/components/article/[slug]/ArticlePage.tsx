@@ -10,6 +10,7 @@ import {
   Tag,
   Typography,
 } from 'antd';
+import ReactHtmlParser from 'react-html-parser';
 
 import { useRouter } from 'next/router';
 import AppAuthorAvatar from '../../AppAuthorAvatar';
@@ -67,7 +68,7 @@ const ArticlePage = ({ article }) => {
         }}
       >
         <Content extraContent={<div>Extra content</div>}>
-          {article.content}
+          {ReactHtmlParser(article.content)}
         </Content>
       </PageHeader>
     </div>
