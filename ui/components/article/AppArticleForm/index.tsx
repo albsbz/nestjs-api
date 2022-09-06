@@ -8,6 +8,7 @@ const AppArticleForm = (props: {
   initialValues?: { title: ''; description: ''; slug: ''; content: '' };
   submitForm;
 }) => {
+  const [isUpdating, setIsUpdating] = useState(false);
   const [content, setContent] = useState(props.initialValues?.content || '');
   const [form] = Form.useForm();
   const throwError = useAsyncError();
@@ -83,11 +84,16 @@ const AppArticleForm = (props: {
       </Form.Item>
 
       <Form.Item label="Content" name="content">
-        <AppContentEditor content={content} handler={setContent} />
+        <AppContentEditor
+          content={content}
+          handler={(v) => setContent(v)}
+          isUpdating={isUpdating}
+          updateHandler={(v) => setIsUpdating(v)}
+        />
       </Form.Item>
 
       <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-        <AppButton type="primary" htmlType="submit">
+        <AppButton type="primary" htmlType="submit" loading={isUpdating}>
           Submit
         </AppButton>
       </Form.Item>

@@ -69,7 +69,7 @@ export class ArticlesController {
     @Param() params: GetId,
     @Body() updateArticleDto: UpdateArticleDto,
   ): Promise<Article> {
-    console.log('content');
+    console.log('content', updateArticleDto);
 
     const { id } = params;
     return this.articlesService.update(id, updateArticleDto);

@@ -22,7 +22,11 @@ export class CreateArticleDto {
 
   @IsNotEmpty()
   @IsString()
-  @Transform(({ value }): string => sanitizeHtml(value))
+  @Transform(({ value }): string =>
+    sanitizeHtml(value, {
+      allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img']),
+    }),
+  )
   content: string;
 
   @IsNotEmpty()

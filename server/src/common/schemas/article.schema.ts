@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Exclude, Transform, Type } from 'class-transformer';
 import mongoose, { Document } from 'mongoose';
 import * as uniqueValidator from 'mongoose-unique-validator';
+import { PublicFile, PublicFileSchema } from './publicFile.schema';
 import { User } from './user.schema';
 
 export type ArticleDocument = Article & Document;
@@ -33,6 +34,10 @@ export class Article {
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: User.name })
   @Type(() => User)
   author: User;
+
+  @Prop({ type: PublicFileSchema })
+  @Type(() => PublicFile)
+  images: PublicFile[];
 }
 
 export const ArticleSchema =
