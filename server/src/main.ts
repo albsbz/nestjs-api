@@ -13,9 +13,17 @@ async function bootstrap(): Promise<void> {
   const server = await NestFactory.create(AppModule);
   const configService = server.get(ConfigService);
   const policies = {
-    'script-src': ['self', configService.get('url')],
+    defaultSrc: [
+      "'self'",
+      'https://s3.us-east-2.amazonaws.com/albsbz-blog-api',
+    ],
+    'form-action': [
+      "'self'",
+      'https://s3.us-east-2.amazonaws.com/albsbz-blog-api',
+    ],
+    'script-src': ["'self'", configService.get('url')],
     'img-src': [
-      'self',
+      "'self'",
       'data:',
       configService.get('aws.bucketUrlRegion'),
       configService.get('aws.bucketUrl'),
@@ -47,6 +55,7 @@ async function bootstrap(): Promise<void> {
     accessKeyId: configService.get('aws.accessKeyId'),
     secretAccessKey: configService.get('aws.secretAccessKey'),
     region: configService.get('aws.region'),
+    signatureVersion: 'v4',
   });
 
   server.useGlobalFilters(new MongoExceptionFilter());

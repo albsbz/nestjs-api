@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Article, ArticleDocument } from 'src/common/schemas/article.schema';
 import { FindAll, UpdateArticleDto } from './dto/requests.dto';
 import { Model, Types } from 'mongoose';
+import { Status } from './statuses/status.enum';
 
 @Injectable()
 class ArticlesRepository {
@@ -102,10 +103,11 @@ class ArticlesRepository {
   async update(
     id: string,
     updateArticleDto: UpdateArticleDto,
+    status: Status,
   ): Promise<Article> {
     return this.articleModel.findOneAndUpdate(
       { _id: new Types.ObjectId(id) },
-      updateArticleDto,
+      { ...updateArticleDto, status },
       {
         new: true,
       },
@@ -120,6 +122,65 @@ class ArticlesRepository {
     return this.articleModel
       .findById(id)
       .populate('author', '_id nickname avatar');
+  }
+
+  async findOneWithStatus(
+    id: string,
+    status: Status,
+    userId,
+  ): Promise<Article> {
+    const compareCondition = {
+      $or: [
+        {
+          $ne: ['$status', Status.NowEditing], // no editor
+        },
+        {
+          $eq: ['$editor', new Types.ObjectId(userId)], // i'am editor
+        },
+        {
+          $and: [
+            { eq: ['$status', Status.NowEditing] },
+            {
+              $gt: [
+                // start editing more then 5 minutes ago
+                {
+                  $dateDiff: {
+                    startDate: '$editedAt',
+                    endDate: '$$NOW',
+                    unit: 'minute',
+                  },
+                },
+                1,
+              ],
+            },
+          ],
+        },
+      ],
+    };
+
+    const article = await this.articleModel.findOneAndUpdate(
+      { _id: new Types.ObjectId(id) },
+      [
+        {
+          $set: {
+            editor: {
+              $cond: [compareCondition, new Types.ObjectId(userId), '$editor'],
+            },
+            editedAt: {
+              $cond: [compareCondition, '$$NOW', '$editedAt'],
+            },
+            status: {
+              $cond: [compareCondition, Status.NowEditing, '$status'],
+            },
+          },
+        },
+      ],
+      {
+        new: true,
+      },
+    );
+
+    return article;
   }
 
   async findBySlug(slug: string): Promise<Article> {

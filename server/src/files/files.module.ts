@@ -1,4 +1,6 @@
-import { Module } from '@nestjs/common';
+import * as redisStore from 'cache-manager-redis-store';
+import { Module, CacheModule } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import {
   PublicFile,
@@ -13,6 +15,15 @@ import { PublicFilesRepository } from './publicFiles.repository';
     MongooseModule.forFeature([
       { name: PublicFile.name, schema: PublicFileSchema },
     ]),
+    CacheModule.registerAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        store: redisStore,
+        host: configService.get('redis.host'),
+        port: Number(configService.get('redis.port')),
+      }),
+    }),
   ],
   providers: [FilesService, PublicFilesRepository],
   controllers: [FilesController],

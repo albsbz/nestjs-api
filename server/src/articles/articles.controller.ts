@@ -58,10 +58,21 @@ export class ArticlesController {
     return this.articlesService.findAll(query, req.user.userId);
   }
 
-  @Get('id/:id')
-  findOneByID(@Param() params: GetId): Promise<Article> {
+  @Get('edit/:id')
+  @UseGuards(JwtAuthGuard)
+  async findOneToEdit(
+    @Param() params: GetId,
+    @Request() req: RequestWithJWT,
+  ): Promise<Article> {
     const { id } = params;
-    return this.articlesService.findOne(id);
+    const article = await this.articlesService.findOneToEdit(
+      id,
+      req.user.userId,
+    );
+    if (!article) {
+      throw new NotFoundException();
+    }
+    return article;
   }
 
   @Patch(':id')
@@ -69,8 +80,6 @@ export class ArticlesController {
     @Param() params: GetId,
     @Body() updateArticleDto: UpdateArticleDto,
   ): Promise<Article> {
-    console.log('content', updateArticleDto);
-
     const { id } = params;
     return this.articlesService.update(id, updateArticleDto);
   }

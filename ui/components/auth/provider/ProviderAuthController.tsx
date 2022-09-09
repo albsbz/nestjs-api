@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useAuthContext } from '../../../context/authContext';
 import { axiosInstance } from '../../../utils/axios';
 import Router from 'next/router';
-import { possibleProviders } from '../../../utils/constants';
+import { POSSSIBLE_PROVIDERS } from '../../../utils/constants';
 import { message } from 'antd';
 
 interface Tokens {
@@ -29,7 +29,7 @@ const ProviderAuthController = () => {
   const { accessToken, refreshToken } = tokens;
 
   const getTokens = useCallback(async (provider, code) => {
-    if (!possibleProviders.includes(provider)) {
+    if (!POSSSIBLE_PROVIDERS.includes(provider)) {
       // throw new Error('Wrong provider');
       router.push('/');
       return;

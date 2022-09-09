@@ -10,6 +10,7 @@ import { Article } from '../common/schemas/article.schema';
 import ArticlesRepository from './articles.repository';
 import { PublicFile } from 'src/common/schemas/publicFile.schema';
 import { FilesService } from 'src/files/files.service';
+import { Status } from './statuses/status.enum';
 
 @Injectable()
 export class ArticlesService {
@@ -36,15 +37,29 @@ export class ArticlesService {
     return this.articlesRepository.findBySlug(slug);
   }
 
-  async findOne(id: string): Promise<Article> {
-    return this.articlesRepository.findOne(id);
+  async findOneToEdit(id: string, userId: string): Promise<Article> {
+    const article = await this.articlesRepository.findOneWithStatus(
+      id,
+      Status.NowEditing,
+      userId,
+    );
+
+    if (article?.editor.toString() !== userId) {
+      throw new ConflictException();
+    }
+
+    return article;
   }
 
   async update(
     id: string,
     updateArticleDto: UpdateArticleDto,
   ): Promise<Article> {
-    const result = await this.articlesRepository.update(id, updateArticleDto);
+    const result = await this.articlesRepository.update(
+      id,
+      updateArticleDto,
+      Status.NotEditing,
+    );
 
     if (!result) {
       throw new ConflictException();

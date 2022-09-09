@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Exclude, Transform, Type } from 'class-transformer';
 import mongoose, { Document } from 'mongoose';
 import * as uniqueValidator from 'mongoose-unique-validator';
+import { Status } from 'src/articles/statuses/status.enum';
 import { PublicFile, PublicFileSchema } from './publicFile.schema';
 import { User } from './user.schema';
 
@@ -34,6 +35,16 @@ export class Article {
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: User.name })
   @Type(() => User)
   author: User;
+
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: User.name })
+  @Type(() => User)
+  editor: User;
+
+  @Prop({ required: true, default: Status.NotEditing })
+  status: Status;
+
+  @Prop()
+  editedAt: Date;
 
   @Prop({ type: PublicFileSchema })
   @Type(() => PublicFile)

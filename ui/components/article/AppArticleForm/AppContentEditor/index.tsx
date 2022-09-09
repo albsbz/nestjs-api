@@ -3,10 +3,14 @@ import { RcFile } from 'antd/lib/upload';
 import dynamic from 'next/dynamic';
 import 'react-quill/dist/quill.snow.css';
 import { axiosInstance } from '../../../../utils/axios';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import IReactQuill from 'react-quill';
 import styles from './style.module.scss';
 import AppLoading from '../../../AppLoading';
+import axios from 'axios';
+import { v4 as uuid } from 'uuid';
+import useAuth from '../../../../context/authContext/hooks/useAuth';
+import { useAuthContext } from '../../../../context/authContext';
 
 const ReactQuill = dynamic(
   async () => {
@@ -37,51 +41,84 @@ const containerOptions = [
   ['clean'], // remove formatting button
 ];
 
+let didInit = false;
 const AppContentEditor = ({ content, handler, isUpdating, updateHandler }) => {
   const quillRef = useRef<IReactQuill>();
+  const { user } = useAuthContext();
+  const [uploadData, setUploadData] = useState<{
+    fields: [string];
+    url: string;
+  }>();
 
-  const imageHandler = useCallback(async (file) => {
-    const input = document.createElement('input');
-    input.setAttribute('type', 'file');
-    input.setAttribute('accept', 'image/*');
-    input.click();
+  const getUploadUrl = async () => {
+    const resp = await axiosInstance.get('files/upload-url');
 
-    input.onchange = async () => {
-      updateHandler(true);
-      const file = input.files ? input.files[0] : null;
-      let data = null;
-      const formData = new FormData();
-      if (quillRef) {
-        const quillObj = quillRef.current.getEditor();
-
-        const range = quillObj?.getSelection();
-
-        if (file) {
-          quillObj.disable();
-          const formData = new FormData();
-          formData.append('file', file as RcFile);
-          let resp;
-          try {
-            resp = await axiosInstance.post('articles/image', formData);
-          } catch (error) {
-            console.log('eerrr', error);
-            quillObj.enable();
-            updateHandler(false);
-            return;
-          }
-
-          const url = resp?.data?.url;
-          console.log('url', url);
-          if (url) {
-            updateHandler(false);
-            quillObj.insertEmbed(range.index, 'image', url);
-          }
-          quillObj.enable();
-          console.log(' quillObj.editor', quillObj);
-        }
-      }
-    };
+    if (resp?.data) {
+      setUploadData(resp.data);
+    }
+  };
+  useEffect(() => {
+    if (!didInit) {
+      getUploadUrl();
+      didInit = true;
+    }
   }, []);
+
+  const imageHandler = useCallback(
+    async (file) => {
+      if (!uploadData) return;
+      const input = document.createElement('input');
+      input.setAttribute('type', 'file');
+      input.setAttribute('accept', 'image/*');
+      input.click();
+
+      input.onchange = async () => {
+        updateHandler(true);
+        const file = input.files ? input.files[0] : null;
+        const formData = new FormData();
+
+        if (quillRef) {
+          const quillObj = quillRef.current.getEditor();
+
+          const range = quillObj?.getSelection();
+
+          if (file) {
+            quillObj.disable();
+            const fileName = `${user.sub}-${uuid()}.${file.name
+              .split('.')
+              .pop()}`;
+            formData.append('Content-Type', file.type);
+            Object.entries(uploadData.fields).forEach(([k, v]) => {
+              // if (k === 'key') {
+              //   formData.append(k, `articleImages/${fileName}`);
+              //   return;
+              // }
+              formData.append(k, v);
+            });
+            formData.append('key', `articleImages/${fileName}`);
+            formData.append('file', file as RcFile, fileName);
+            let resp;
+            try {
+              resp = await axios.post(uploadData.url, formData);
+            } catch (error) {
+              quillObj.enable();
+              updateHandler(false);
+              return;
+            }
+
+            const url = resp?.data?.url;
+
+            if (url) {
+              updateHandler(false);
+              quillObj.insertEmbed(range.index, 'image', url);
+            }
+            quillObj.enable();
+          }
+        }
+      };
+    },
+    [updateHandler, uploadData, user],
+  );
 
   const toolbarOptions = {
     container: containerOptions,

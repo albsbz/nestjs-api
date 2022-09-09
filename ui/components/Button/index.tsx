@@ -13,7 +13,6 @@ const AppButton = ({ children, loading = false, ...props }) => {
           ...props,
           onClick: (e) => {
             e.preventDefault();
-            console.log('prevent');
           },
         }}
         className={styles.button}

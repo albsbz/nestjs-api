@@ -12,7 +12,7 @@ const EditArticle = () => {
   const { setAlert } = useAlertContext();
 
   const getArticle = async () => {
-    const resp = await axiosInstance.get(`articles/id/${router.query.id}`);
+    const resp = await axiosInstance.get(`articles/edit/${router.query.id}`);
     setArticle(resp.data);
   };
   if (!didInit && router?.query?.id) {

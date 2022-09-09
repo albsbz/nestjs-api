@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import AppButton from '../../../components/Button';
 import { Form, Input } from 'antd';
 import useAsyncError from '../../../hooks/useAsyncError';
@@ -12,7 +12,13 @@ const AppArticleForm = (props: {
   const [content, setContent] = useState(props.initialValues?.content || '');
   const [form] = Form.useForm();
   const throwError = useAsyncError();
+  const updateHandler = useCallback((v) => {
+    setIsUpdating(v);
+  }, []);
 
+  const contentHandler = useCallback((v) => {
+    setContent(v);
+  }, []);
   let initialValues = { title: '', description: '', slug: '', content: '' };
 
   if (props?.initialValues) {
@@ -83,12 +89,12 @@ const AppArticleForm = (props: {
         <Input />
       </Form.Item>
 
-      <Form.Item label="Content" name="content">
+      <Form.Item label="Content">
         <AppContentEditor
           content={content}
-          handler={(v) => setContent(v)}
+          handler={contentHandler}
           isUpdating={isUpdating}
-          updateHandler={(v) => setIsUpdating(v)}
+          updateHandler={updateHandler}
         />
       </Form.Item>
 

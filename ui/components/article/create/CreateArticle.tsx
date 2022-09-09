@@ -12,7 +12,7 @@ const CreateArticle = () => {
 
   return (
     <div>
-      <h1>Edit article</h1>
+      <h1>Create article</h1>
 
       <AppArticleForm submitForm={submitForm} />
     </div>

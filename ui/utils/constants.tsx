@@ -1,1 +1,1 @@
-export const possibleProviders = ['google'];
+export const POSSSIBLE_PROVIDERS = ['google'];
