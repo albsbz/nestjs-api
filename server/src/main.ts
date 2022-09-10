@@ -13,14 +13,8 @@ async function bootstrap(): Promise<void> {
   const server = await NestFactory.create(AppModule);
   const configService = server.get(ConfigService);
   const policies = {
-    defaultSrc: [
-      "'self'",
-      'https://s3.us-east-2.amazonaws.com/albsbz-blog-api',
-    ],
-    'form-action': [
-      "'self'",
-      'https://s3.us-east-2.amazonaws.com/albsbz-blog-api',
-    ],
+    defaultSrc: ["'self'", configService.get('aws.formActionUrl')],
+    'form-action': ["'self'", configService.get('aws.formActionUrl')],
     'script-src': ["'self'", configService.get('url')],
     'img-src': [
       "'self'",

@@ -1,4 +1,8 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+} from '@nestjs/common';
 
 import {
   CreateArticleDto,
@@ -55,6 +59,12 @@ export class ArticlesService {
     id: string,
     updateArticleDto: UpdateArticleDto,
   ): Promise<Article> {
+    const statusUpdated = await this.filesService.changeStatus(
+      updateArticleDto.content,
+    );
+    if (!statusUpdated) {
+      throw new BadRequestException();
+    }
     const result = await this.articlesRepository.update(
       id,
       updateArticleDto,

@@ -46,8 +46,8 @@ const AppContentEditor = ({ content, handler, isUpdating, updateHandler }) => {
   const quillRef = useRef<IReactQuill>();
   const { user } = useAuthContext();
   const [uploadData, setUploadData] = useState<{
-    fields: [string];
-    url: string;
+    form: { fields: [string]; url: string };
+    sourceUrl: string;
   }>();
 
   const getUploadUrl = async () => {
@@ -87,30 +87,31 @@ const AppContentEditor = ({ content, handler, isUpdating, updateHandler }) => {
             const fileName = `${user.sub}-${uuid()}.${file.name
               .split('.')
               .pop()}`;
+            const key = `articleImages/${user.sub}/${fileName}`;
+
             formData.append('Content-Type', file.type);
-            Object.entries(uploadData.fields).forEach(([k, v]) => {
-              // if (k === 'key') {
-              //   formData.append(k, `articleImages/${fileName}`);
-              //   return;
-              // }
+            formData.append('x-amz-meta-userid', user.sub);
+            Object.entries(uploadData.form.fields).forEach(([k, v]) => {
               formData.append(k, v);
             });
-            formData.append('key', `articleImages/${fileName}`);
+            formData.append('key', key);
             formData.append('file', file as RcFile, fileName);
             let resp;
             try {
-              resp = await axios.post(uploadData.url, formData);
+              resp = await axios.post(uploadData.form.url, formData);
             } catch (error) {
               quillObj.enable();
               updateHandler(false);
               return;
             }
 
-            const url = resp?.data?.url;
-
-            if (url) {
+            if (resp) {
               updateHandler(false);
-              quillObj.insertEmbed(range.index, 'image', url);
+              quillObj.insertEmbed(
+                range.index,
+                'image',
+                `${uploadData.sourceUrl}/${key}`,
+              );
             }
             quillObj.enable();
           }

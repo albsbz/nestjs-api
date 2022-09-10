@@ -12,6 +12,7 @@ import {
   AWS,
 } from 'src/common/utils/constants';
 import { S3 } from 'aws-sdk';
+import { getKeysFromString } from 'src/common/helper/cast.helper';
 
 @Injectable()
 export class FilesService {
@@ -74,39 +75,72 @@ export class FilesService {
     return;
   }
 
-  async getUploadUrl(userId: string): Promise<S3.PresignedPost> {
+  async getUploadUrl(
+    userId: string,
+  ): Promise<{ form: S3.PresignedPost; sourceUrl: string }> {
+    const sourceUrl = `${this.configService.get('aws.bucketUrlRegion')}`;
     const cachedFormString: string = await this.cacheManager.get(
       `${REDIS.UPLOAD_URL}:${userId}`,
     );
     if (cachedFormString) {
-      const cachedForm = JSON.parse(cachedFormString) as S3.PresignedPost;
-      const [expiresIn] = cachedForm.url.match(/(?<=Expires\=)(.*)(?=\&)/i);
-      if (expiresIn && Number(expiresIn) - Date.now() < ONE_DAY) {
-        return cachedForm;
-      }
+      const form = JSON.parse(cachedFormString) as S3.PresignedPost;
+
+      return { form, sourceUrl };
     }
+
+    const tags =
+      '<Tagging><TagSet><Tag><Key>status</Key><Value>notProcessed</Value></Tag></TagSet></Tagging>';
     const params = {
       Bucket: this._bucket,
-      Fields: {},
-
+      Fields: {
+        Tagging: tags,
+      },
       Expires: UPLOAD_URL_EXPIRE,
       Conditions: [
         ['starts-with', '$Content-Type', 'image/'],
-        ['starts-with', '$key', `${AWS.ARTICLE_IMAGES_FOLDER}/`],
-        // ['content-length-range', 0, 1000000], // content length restrictions: 0-1MB
-        // ['eq', '$x-amz-meta-userid', userId], // tag with userid <= the user can see this!
+        ['starts-with', '$key', `${AWS.ARTICLE_IMAGES_FOLDER}/${userId}`],
+        ['content-length-range', 0, 1000000], // content length restrictions: 0-1MB
+        ['eq', '$x-amz-meta-userid', userId], // tag with userid
+        ['eq', '$Tagging', tags], // tag with userid <= the user can see this!
       ],
     };
 
-    const cachedForm = this.s3.createPresignedPost(params);
+    const form = this.s3.createPresignedPost(params);
     this.cacheManager.set(
       `${REDIS.UPLOAD_URL}:${userId}`,
-      JSON.stringify(cachedForm),
+      JSON.stringify(form),
       {
-        ttl: UPLOAD_URL_EXPIRE,
+        ttl: UPLOAD_URL_EXPIRE - ONE_DAY,
       },
     );
 
-    return cachedForm;
+    return {
+      form,
+      sourceUrl,
+    };
+  }
+
+  async changeStatus(content: string): Promise<boolean> {
+    const keys = getKeysFromString(
+      content,
+      this.configService.get('aws.bucketUrlRegion'),
+    );
+    if (!keys.length) return true;
+    try {
+      const update = await Promise.allSettled(
+        keys.map((key) => {
+          return this.s3
+            .putObjectTagging({
+              Bucket: this._bucket,
+              Key: key,
+              Tagging: { TagSet: [{ Key: 'status', Value: 'proccesed' }] },
+            })
+            .promise();
+        }),
+      );
+    } catch (e) {
+      return false;
+    }
+    return true;
   }
 }

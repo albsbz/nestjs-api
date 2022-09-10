@@ -43,6 +43,7 @@ const Consts = (): unknown => ({
     publicBucketName: process.env.AWS_PUBLIC_BUCKET_NAME,
     bucketUrl: `https://${process.env.AWS_PUBLIC_BUCKET_NAME}.s3.amazonaws.com`,
     bucketUrlRegion: `https://${process.env.AWS_PUBLIC_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com`,
+    formActionUrl: `https://s3.${process.env.AWS_REGION}.amazonaws.com/${process.env.AWS_PUBLIC_BUCKET_NAME}`,
   },
 });
 export default Consts;

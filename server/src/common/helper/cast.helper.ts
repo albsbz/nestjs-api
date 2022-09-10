@@ -41,3 +41,17 @@ export function toNumber(value: string, opts: ToNumberOptions = {}): number {
 
   return newValue;
 }
+
+export function RegExpEscape(s: string): string {
+  return String(s).replace(/[\\/^$*+?.()|[\]{}]/g, '\\$&');
+}
+
+export function getKeysFromString(str: string, bucketName: string): string[] {
+  if (!str) return [];
+  const regex = new RegExp(
+    `(?<=\"${RegExpEscape(bucketName)}\/).*?(?=\")`,
+    'ig',
+  );
+  const keys = str.match(regex);
+  return keys;
+}
