@@ -3,7 +3,7 @@ import { Exclude, Transform, Type } from 'class-transformer';
 import { Provider } from '../../users/providers/providers.enum';
 import { Role } from '../../users/roles/role.enum';
 import { PublicFile, PublicFileSchema } from './publicFile.schema';
-import * as uniqueValidator from 'mongoose-unique-validator';
+import uniqueValidator from 'mongoose-unique-validator';
 
 export type UserDocument = User & Document;
 

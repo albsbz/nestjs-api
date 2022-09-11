@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Exclude, Transform, Type } from 'class-transformer';
 import mongoose, { Document } from 'mongoose';
-import * as uniqueValidator from 'mongoose-unique-validator';
+import uniqueValidator from 'mongoose-unique-validator';
 import { Status } from 'src/articles/statuses/status.enum';
 import { PublicFile, PublicFileSchema } from './publicFile.schema';
 import { User } from './user.schema';

@@ -2,16 +2,21 @@ import { BadRequestException, Logger, ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { NestFactory } from '@nestjs/core';
 import helmet from 'helmet';
-import { AppModule } from './app.module';
 import { swaggerOptions } from './config/swaggerOptions';
 import { RenderService } from 'nest-next';
 import { config } from 'aws-sdk';
 import { ConfigService } from '@nestjs/config';
-import { MongoExceptionFilter } from './common/filters/mongo-exception.filter';
+import { Callback, Context, Handler } from 'aws-lambda';
 
-async function bootstrap(): Promise<void> {
-  const server = await NestFactory.create(AppModule);
-  const configService = server.get(ConfigService);
+import { MongoExceptionFilter } from './common/filters/mongo-exception.filter';
+import { AppModule } from './app.module';
+import serverlessExpress from '@vendia/serverless-express';
+
+let server: Handler;
+
+async function bootstrap(): Promise<Handler> {
+  const app = await NestFactory.create(AppModule);
+  const configService = app.get(ConfigService);
   const policies = {
     defaultSrc: ["'self'", configService.get('aws.formActionUrl')],
     'form-action': ["'self'", configService.get('aws.formActionUrl')],
@@ -26,7 +31,7 @@ async function bootstrap(): Promise<void> {
   if (process.env.NODE_ENV !== 'production') {
     policies['script-src'].push("'unsafe-eval'");
   }
-  server.use(
+  app.use(
     helmet({
       contentSecurityPolicy: {
         directives: policies,
@@ -35,7 +40,7 @@ async function bootstrap(): Promise<void> {
     }),
   );
 
-  const service = server.get(RenderService);
+  const service = app.get(RenderService);
   service.setErrorHandler(async (err, req, res) => {
     const logger = new Logger('HTTP');
     if (res.statusCode !== 404) {
@@ -52,8 +57,8 @@ async function bootstrap(): Promise<void> {
     signatureVersion: 'v4',
   });
 
-  server.useGlobalFilters(new MongoExceptionFilter());
-  server.useGlobalPipes(
+  app.useGlobalFilters(new MongoExceptionFilter());
+  app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
       transform: true,
@@ -69,9 +74,6 @@ async function bootstrap(): Promise<void> {
     }),
   );
 
-  // server.useGlobalInterceptors(
-  //   new ClassSerializerInterceptor(server.get(Reflector)),
-  // );
   const swaggerConfig = new DocumentBuilder()
     .setTitle('blog-api')
     .setDescription('blog-api description')
@@ -80,8 +82,23 @@ async function bootstrap(): Promise<void> {
     .addBearerAuth(undefined, 'accessToken')
     .addBearerAuth(undefined, 'refreshToken')
     .build();
-  const document = SwaggerModule.createDocument(server, swaggerConfig);
-  SwaggerModule.setup('api', server, document, swaggerOptions);
-  await server.listen(3000);
+  const document = SwaggerModule.createDocument(app, swaggerConfig);
+  SwaggerModule.setup('api', app, document, swaggerOptions);
+  // await app.listen(3000);
+
+  await app.init();
+
+  const expressApp = app.getHttpAdapter().getInstance();
+  return serverlessExpress({ app: expressApp });
 }
-bootstrap();
+
+// bootstrap();
+
+export const handler: Handler = async (
+  event: any,
+  context: Context,
+  callback: Callback,
+) => {
+  server = server ?? (await bootstrap());
+  return server(event, context, callback);
+};

@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Queue } from 'bull';
 import { createTransport } from 'nodemailer';
-import * as Mail from 'nodemailer/lib/mailer';
+import Mail from 'nodemailer/lib/mailer';
 
 @Injectable()
 export class MailService {

@@ -9,7 +9,7 @@ import {
 import { Transform, Type } from 'class-transformer';
 import { PartialType } from '@nestjs/mapped-types';
 
-import * as sanitizeHtml from 'sanitize-html';
+import sanitizeHtml from 'sanitize-html';
 
 export class CreateArticleDto {
   @IsNotEmpty()

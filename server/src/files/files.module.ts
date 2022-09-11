@@ -1,4 +1,4 @@
-import * as redisStore from 'cache-manager-redis-store';
+import redisStore from 'cache-manager-redis-store';
 import { Module, CacheModule } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
