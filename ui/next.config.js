@@ -26,6 +26,7 @@ const securityHeaders = [
     value: 'same-origin',
   },
 ];
+
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
@@ -35,6 +36,15 @@ const nextConfig = {
         // Apply these headers to all routes in your application.
         source: '/(.*)',
         headers: securityHeaders,
+      },
+    ];
+  },
+
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*',
+        destination: `${process.env.API_URL}/:path*`,
       },
     ];
   },

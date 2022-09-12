@@ -127,7 +127,7 @@ export class FilesService {
     );
     if (!keys.length) return true;
     try {
-      const update = await Promise.allSettled(
+      await Promise.allSettled(
         keys.map((key) => {
           return this.s3
             .putObjectTagging({

@@ -3,7 +3,6 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { NestFactory } from '@nestjs/core';
 import helmet from 'helmet';
 import { swaggerOptions } from './config/swaggerOptions';
-import { RenderService } from 'nest-next';
 import { config } from 'aws-sdk';
 import { ConfigService } from '@nestjs/config';
 import { Callback, Context, Handler } from 'aws-lambda';
@@ -13,6 +12,8 @@ import { AppModule } from './app.module';
 import serverlessExpress from '@vendia/serverless-express';
 
 let server: Handler;
+
+const development = process.env.NODE_ENV === 'dev';
 
 async function bootstrap(): Promise<Handler> {
   const app = await NestFactory.create(AppModule);
@@ -39,16 +40,6 @@ async function bootstrap(): Promise<Handler> {
       crossOriginEmbedderPolicy: false,
     }),
   );
-
-  const service = app.get(RenderService);
-  service.setErrorHandler(async (err, req, res) => {
-    const logger = new Logger('HTTP');
-    if (res.statusCode !== 404) {
-      logger.error(err.message, err?.stack);
-      res.send(err.response);
-      return;
-    }
-  });
 
   config.update({
     accessKeyId: configService.get('aws.accessKeyId'),
@@ -86,13 +77,17 @@ async function bootstrap(): Promise<Handler> {
   SwaggerModule.setup('api', app, document, swaggerOptions);
   // await app.listen(3000);
 
-  await app.init();
+  if (development) {
+    await app.listen(3000);
+    return;
+  }
 
+  await app.init();
   const expressApp = app.getHttpAdapter().getInstance();
   return serverlessExpress({ app: expressApp });
 }
 
-// bootstrap();
+if (development) bootstrap();
 
 export const handler: Handler = async (
   event: any,

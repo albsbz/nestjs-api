@@ -9,24 +9,21 @@ import { UsersModule } from './users/users.module';
 import { MailModule } from './mail/mail.module';
 import configuration from './config/configuration';
 import { BullModule } from '@nestjs/bull';
-import { RenderModule } from 'nest-next';
-import { SsrModule } from './ssr/ssr.module';
-import Next from 'next';
-import { resolve } from 'path';
+
 import { FilesModule } from './files/files.module';
+
+const envFilePath =
+  process.env.NODE_ENV !== 'production'
+    ? ['.env.development', '.env']
+    : ['.env'];
+
 @Module({
   imports: [
-    RenderModule.forRootAsync(
-      Next({
-        dev: true,
-        dir: resolve(__dirname, '../../ui'),
-      }),
-      {
-        viewsDir: null,
-        passthrough404: true,
-      },
-    ),
-    ConfigModule.forRoot({ isGlobal: true, load: [configuration] }),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [configuration],
+      envFilePath,
+    }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
@@ -49,7 +46,6 @@ import { FilesModule } from './files/files.module';
     AuthModule,
     UsersModule,
     MailModule,
-    SsrModule,
     FilesModule,
   ],
   providers: [

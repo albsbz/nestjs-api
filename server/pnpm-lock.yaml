@@ -59,7 +59,6 @@ specifiers:
   mongodb-memory-server: ^8.9.0
   mongoose: ^6.4.6
   mongoose-unique-validator: ^3.1.0
-  nest-next: ^10.0.0
   nodemailer: ^6.7.7
   nodemon: ^2.0.19
   passport: ^0.6.0
@@ -109,7 +108,6 @@ dependencies:
   joi: 17.6.0
   mongoose: 6.5.0
   mongoose-unique-validator: 3.1.0_mongoose@6.5.0
-  nest-next: 10.0.0_xxlaro4n3ygapuy65e43lboh2y
   nodemailer: 6.7.7
   nodemon: 2.0.19
   passport: 0.6.0
@@ -6288,18 +6286,6 @@ packages:
   /neo-async/2.6.2:
     resolution: {integrity: sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==}
     dev: true
-
-  /nest-next/10.0.0_xxlaro4n3ygapuy65e43lboh2y:
-    resolution: {integrity: sha512-ZoIO/4lvK5z4ikUpHH4fYgyQJhy5pKzCwGpNytooTtC6/pxN5a/vnyb5DGEKHd/4CcmCneBLOt3b2aOpu3yr5A==}
-    peerDependencies:
-      '@nestjs/common': '>=6.4'
-      '@nestjs/core': '>=6.4'
-      next: '>=9'
-    dependencies:
-      '@nestjs/common': 9.0.7_mgy7w2bm3yhmntrbe3boyroj6m
-      '@nestjs/core': 9.0.7_33m5b3m5yxauaifvpszi6cyz5m
-      rxjs: 7.5.6
-    dev: false
 
   /new-find-package-json/2.0.0:
     resolution: {integrity: sha512-lDcBsjBSMlj3LXH2v/FW3txlh2pYTjmbOXPYJD93HI5EwuLzI11tdHSIpUMmfq/IOsldj4Ps8M8flhm+pCK4Ew==}

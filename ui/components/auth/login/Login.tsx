@@ -37,8 +37,10 @@ const Login = () => {
         email: values.email,
         password: values.password,
       });
+      if (resp.headers.accesstoken && resp.headers.refreshtoken) {
+        login(resp.headers.accesstoken, resp.headers.refreshtoken);
+      }
 
-      login(resp.headers.accesstoken, resp.headers.refreshtoken);
       router.push('/');
     } catch (e) {
       if (e.response.status === 401) {

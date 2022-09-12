@@ -40,7 +40,10 @@ lerna-debug.log*
 
 #Config
 .env
-/server/.env
-/ui/.env
+/server/.env*
+/ui/.env*
 /mongo-data
 
+#serverless
+/ui/.serverless*
+/server/.serverless*

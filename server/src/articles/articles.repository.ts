@@ -21,9 +21,10 @@ class ArticlesRepository {
   ): Promise<{ articles: Article[]; count: string }> {
     const { take, skip, keyword } = params;
 
-    const filter = {
-      $and: [],
-    };
+    let filter =
+      {
+        $and: [],
+      } || {};
 
     if (keyword) {
       filter.$and.push({
@@ -42,6 +43,8 @@ class ArticlesRepository {
       const idFilter = { author: new Types.ObjectId(userId) };
       filter.$and.push(idFilter);
     }
+
+    if (!filter.$and.length) filter = {};
 
     const articles = await this.articleModel.aggregate([
       {
