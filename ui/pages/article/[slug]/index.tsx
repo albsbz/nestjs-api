@@ -1,6 +1,6 @@
 import { NextPageContext } from 'next';
 import BasicLayout from '../../../layouts/BasicLayout';
-import { axiosInstance } from '../../../utils/axios';
+import { axiosInstance, axiosInstanceServerSide } from '../../../utils/axios';
 import ArticlePage from '../../../components/article/[slug]/ArticlePage';
 
 type PageProps = {
@@ -35,10 +35,10 @@ export async function getStaticPaths() {
 export const getStaticProps = async (ctx: PageContext) => {
   let resp;
   try {
-    resp = await axiosInstance.get(`articles/${ctx.params.slug}`);
+    resp = await axiosInstanceServerSide.get(`articles/${ctx.params.slug}`);
   } catch (error) {
   } finally {
-    if (!resp.data) {
+    if (!resp?.data) {
       return {
         notFound: true,
       };
