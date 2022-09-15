@@ -1,4 +1,4 @@
-import { ExceptionFilter, Catch, ArgumentsHost, Logger } from '@nestjs/common';
+import { ExceptionFilter, Catch, ArgumentsHost } from '@nestjs/common';
 import { Response } from 'express';
 
 import { Error, MongooseError } from 'mongoose';
@@ -11,7 +11,6 @@ export class MongoExceptionFilter implements ExceptionFilter {
   ): void {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
-    // [{name: "about", errors: ["Symbol forbidden"]}]
     response.status(400).json({
       statusCode: 400,
       message: Object.entries(exception.errors).map(([idx, v]) => ({

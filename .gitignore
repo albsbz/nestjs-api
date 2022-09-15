@@ -47,3 +47,5 @@ lerna-debug.log*
 #serverless
 /ui/.serverless*
 /server/.serverless*
+
+.tutorial

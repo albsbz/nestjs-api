@@ -6,10 +6,9 @@ import { UsersModule } from '../users/users.module';
 
 import { MailService } from './mail.service';
 import { MailConfirmationService } from './mailConfirmation.service';
-import { sendEmailConsumer } from './sendEmail.processor';
 
 @Module({
-  providers: [MailService, MailConfirmationService, sendEmailConsumer],
+  providers: [MailService, MailConfirmationService],
   imports: [
     ConfigModule,
     JwtModule,

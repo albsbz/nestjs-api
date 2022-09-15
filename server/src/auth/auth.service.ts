@@ -7,7 +7,7 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import { RegisterRequest } from './dto/requests.dto';
 import { UserResponseDto } from '../users/dto/responses.dto';
 import { UsersService } from '../users/users.service';
@@ -58,7 +58,7 @@ export class AuthService {
     if (!newlyCreatedUser) {
       throw new ConflictException('User already exists');
     }
-    // this.sendVerificationLink(email);
+    this.sendVerificationLink(email);
     return;
   }
 

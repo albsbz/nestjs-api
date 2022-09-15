@@ -2,14 +2,59 @@ service: serverless-example
 
 plugins:
   - serverless-offline
+  - serverless-plugin-common-excludes
+  - serverless-plugin-include-dependencies
+
+useDotenv: true
 
 provider:
+  stage: ${opt:stage, 'production'}
   name: aws
   runtime: nodejs14.x
+  environment:
+    SLS_PUBLIC_API_URL: !Join
+      - ''
+      - - 'https://'
+        - !Ref ApiGatewayRestApi
+        - .execute-api.
+        - !Ref 'AWS::Region'
+        - .
+        - !Ref 'AWS::URLSuffix'
+        - /
+        - ${self:provider.stage}
+        - /api
+    SLS_API_URL: ''
+    MONGO_URL: ${env:MONGO_URL}
+    MONGO_USERNAME: ${env:MONGO_USERNAME}
+    MONGO_PASSWORD: ${env:MONGO_PASSWORD}
+    MONGO_PASSWORD_PREFIX: ${env:MONGO_PASSWORD_PREFIX}
+    NEXT_PUBLIC_URL: ${env:NEXT_PUBLIC_URL}
+    NEXT_PUBLIC_API_URL: ${env:NEXT_PUBLIC_API_URL}
+    NEXT_PUBLIC_GOOGLE_AUTH_CLIENT_ID: ${env:NEXT_PUBLIC_GOOGLE_AUTH_CLIENT_ID}
+    ACCESS_TOKEN_SECRET: ${env:ACCESS_TOKEN_SECRET}
+    REFRESH_TOKEN_SECRET: ${env:REFRESH_TOKEN_SECRET}
+    EMAIL_TOKEN_SECRET: ${env:EMAIL_TOKEN_SECRET}
+    EMAIL_SERVICE: ${env:EMAIL_SERVICE}
+    EMAIL_USER: ${env:EMAIL_USER}
+    EMAIL_PASSWORD: ${env:EMAIL_PASSWORD}
+    EMAIL_HOST: ${env:EMAIL_HOST}
+    EMAIL_PORT: ${env:EMAIL_PORT}
+    EMAIL_SECURE: ${env:EMAIL_SECURE}
+    EMAIL_SENDER: ${env:EMAIL_SENDER}
+    DROP_PASSWORD_TOKEN_SECRET: ${env:DROP_PASSWORD_TOKEN_SECRET}
+    GOOGLE_AUTH_CLIENT_ID: ${env:GOOGLE_AUTH_CLIENT_ID}
+    GOOGLE_AUTH_CLIENT_SECRET: ${env:GOOGLE_AUTH_CLIENT_SECRET}
+    REGION: ${env:REGION}
+    ACCESS_KEY_ID: ${env:ACCESS_KEY_ID}
+    SECRET_ACCESS_KEY: ${env:SECRET_ACCESS_KEY}
+    PUBLIC_BUCKET_NAME: ${env:PUBLIC_BUCKET_NAME}
 
 functions:
   main:
     handler: dist/main.handler
+    environment:
+      NODE_ENV: ${self:provider.stage}
+
     events:
       - http:
           method: ANY

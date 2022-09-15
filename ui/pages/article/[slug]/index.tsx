@@ -27,7 +27,7 @@ export async function getStaticPaths() {
   } finally {
     return {
       paths: resp?.data?.map((el) => ({ params: el })) || [],
-      fallback: 'blocking', // can also be true or 'blocking'
+      fallback: 'blocking',
     };
   }
 }

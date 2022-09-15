@@ -27,7 +27,8 @@ export class MailService {
   }
 
   async sendMail(emailData: Mail.Options): Promise<void> {
-    await this.emailQueue.add(emailData);
+    // await this.emailQueue.add(emailData);
+    await this.nodemailerTransport.sendMail(emailData);
     return;
   }
 }

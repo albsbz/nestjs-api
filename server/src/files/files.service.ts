@@ -5,12 +5,7 @@ import { PublicFilesRepository } from './publicFiles.repository';
 import { PublicFile } from 'src/common/schemas/publicFile.schema';
 // import { s3 } from 'src/config/s3';
 import { Cache } from 'cache-manager';
-import {
-  ONE_DAY,
-  REDIS,
-  UPLOAD_URL_EXPIRE,
-  AWS,
-} from 'src/common/utils/constants';
+import { ONE_DAY, UPLOAD_URL_EXPIRE, AWS } from 'src/common/utils/constants';
 import { S3 } from 'aws-sdk';
 import { getKeysFromString } from 'src/common/helper/cast.helper';
 
@@ -77,11 +72,9 @@ export class FilesService {
 
   async getUploadUrl(
     userId: string,
-  ): Promise<{ form: S3.PresignedPost; sourceUrl: string }> {
-    const sourceUrl = `${this.configService.get('aws.bucketUrlRegion')}`;
-    const cachedFormString: string = await this.cacheManager.get(
-      `${REDIS.UPLOAD_URL}:${userId}`,
-    );
+  ): Promise<{ form: S3.PresignedPost | undefined; sourceUrl: string }> {
+    const sourceUrl = this.configService.get('aws.bucketUrlRegion');
+    const cachedFormString: string = await this.cacheManager.get(userId);
     if (cachedFormString) {
       const form = JSON.parse(cachedFormString) as S3.PresignedPost;
 
@@ -106,14 +99,10 @@ export class FilesService {
     };
 
     const form = this.s3.createPresignedPost(params);
-    this.cacheManager.set(
-      `${REDIS.UPLOAD_URL}:${userId}`,
-      JSON.stringify(form),
-      {
-        ttl: UPLOAD_URL_EXPIRE - ONE_DAY,
-      },
-    );
 
+    this.cacheManager.set(userId, JSON.stringify(form), {
+      ttl: UPLOAD_URL_EXPIRE - ONE_DAY,
+    });
     return {
       form,
       sourceUrl,

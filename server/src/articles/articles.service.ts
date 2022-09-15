@@ -2,6 +2,7 @@ import {
   BadRequestException,
   ConflictException,
   Injectable,
+  Logger,
 } from '@nestjs/common';
 
 import {
@@ -18,6 +19,7 @@ import { Status } from './statuses/status.enum';
 
 @Injectable()
 export class ArticlesService {
+  private readonly logger = new Logger(ArticlesService.name);
   constructor(
     private readonly articlesRepository: ArticlesRepository,
     private readonly filesService: FilesService,
@@ -34,6 +36,7 @@ export class ArticlesService {
     params: FindAll,
     userId?: string,
   ): Promise<{ articles: Article[]; count: string }> {
+    this.logger.log({ params, userId }, 'findAll');
     return this.articlesRepository.findAll(params, userId);
   }
 

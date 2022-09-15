@@ -1,6 +1,7 @@
 const Consts = (): unknown => ({
-  apiUrl: process.env.NEXT_PUBLIC_API_URL,
-  url: process.env.NEXT_PUBLIC_URL,
+  env: process.env.NODE_ENV,
+  apiUrl: process.env.SLS_PUBLIC_API_URL || process.env.NEXT_PUBLIC_API_URL,
+  url: process.env.SLS_API_URL || process.env.NEXT_PUBLIC_URL,
   db: {
     mongoUrl: process.env.MONGO_URL,
     mongoPasswordPrefix: process.env.MONGO_PASSWORD_PREFIX,
@@ -37,13 +38,13 @@ const Consts = (): unknown => ({
     },
   },
   aws: {
-    region: process.env.AWS_REGION,
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-    publicBucketName: process.env.AWS_PUBLIC_BUCKET_NAME,
-    bucketUrl: `https://${process.env.AWS_PUBLIC_BUCKET_NAME}.s3.amazonaws.com`,
-    bucketUrlRegion: `https://${process.env.AWS_PUBLIC_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com`,
-    formActionUrl: `https://s3.${process.env.AWS_REGION}.amazonaws.com/${process.env.AWS_PUBLIC_BUCKET_NAME}`,
+    region: process.env.REGION,
+    accessKeyId: process.env.ACCESS_KEY_ID,
+    secretAccessKey: process.env.SECRET_ACCESS_KEY,
+    publicBucketName: process.env.PUBLIC_BUCKET_NAME,
+    bucketUrl: `https://${process.env.PUBLIC_BUCKET_NAME}.s3.amazonaws.com`,
+    bucketUrlRegion: `https://${process.env.PUBLIC_BUCKET_NAME}.s3.${process.env.REGION}.amazonaws.com`,
+    formActionUrl: `https://s3.${process.env.REGION}.amazonaws.com/${process.env.PUBLIC_BUCKET_NAME}`,
   },
 });
 export default Consts;

@@ -1,10 +1,11 @@
-import { BadRequestException, Logger, ValidationPipe } from '@nestjs/common';
+import { BadRequestException, ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { NestFactory } from '@nestjs/core';
 import helmet from 'helmet';
 import { swaggerOptions } from './config/swaggerOptions';
 import { config } from 'aws-sdk';
 import { ConfigService } from '@nestjs/config';
+import { Logger, LoggerErrorInterceptor } from 'nestjs-pino';
 import { Callback, Context, Handler } from 'aws-lambda';
 
 import { MongoExceptionFilter } from './common/filters/mongo-exception.filter';
@@ -13,10 +14,14 @@ import serverlessExpress from '@vendia/serverless-express';
 
 let server: Handler;
 
-const development = process.env.NODE_ENV === 'dev';
+const local = process.env.NODE_ENV === 'local';
+
+console.log('ENV', process.env);
 
 async function bootstrap(): Promise<Handler> {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { bufferLogs: true });
+  app.useLogger(app.get(Logger));
+  app.useGlobalInterceptors(new LoggerErrorInterceptor());
   const configService = app.get(ConfigService);
   const policies = {
     defaultSrc: ["'self'", configService.get('aws.formActionUrl')],
@@ -75,9 +80,8 @@ async function bootstrap(): Promise<Handler> {
     .build();
   const document = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('api', app, document, swaggerOptions);
-  // await app.listen(3000);
 
-  if (development) {
+  if (local) {
     await app.listen(3000);
     return;
   }
@@ -87,7 +91,7 @@ async function bootstrap(): Promise<Handler> {
   return serverlessExpress({ app: expressApp });
 }
 
-if (development) bootstrap();
+if (local) bootstrap();
 
 export const handler: Handler = async (
   event: any,
