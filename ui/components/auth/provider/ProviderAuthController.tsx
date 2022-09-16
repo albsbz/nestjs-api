@@ -36,7 +36,7 @@ const ProviderAuthController = () => {
     }
     let resp;
     try {
-      resp = await axiosInstance.get<Tokens>(provider, {
+      resp = await axiosInstance.get<Tokens>(`auth/${provider}/login`, {
         params: { code },
       });
     } catch (e) {

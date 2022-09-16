@@ -35,7 +35,9 @@ export async function getStaticPaths() {
 export const getStaticProps = async (ctx: PageContext) => {
   let resp;
   try {
-    resp = await axiosInstanceServerSide.get(`articles/${ctx.params.slug}`);
+    resp = await axiosInstanceServerSide.get(
+      `/main/articles/${ctx.params.slug}`,
+    );
   } catch (error) {
   } finally {
     if (!resp?.data) {

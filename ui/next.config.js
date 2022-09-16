@@ -42,9 +42,25 @@ const nextConfig = {
 
   async rewrites() {
     return [
+      // {
+      //   source: '/api/:path*',
+      //   destination: `${process.env.NEXT_PUBLIC_API_URL}/:path*`,
+      // },
       {
-        source: '/api/:path*',
-        destination: `${process.env.NEXT_PUBLIC_API_URL}/:path*`,
+        source: '/api/auth/:path*',
+        destination: `${process.env.NEXT_PUBLIC_API_URL}/main/auth/:path*`,
+      },
+      {
+        source: '/api/articles/:path*',
+        destination: `${process.env.NEXT_PUBLIC_API_URL}/main/articles/:path*`,
+      },
+      {
+        source: '/api/files/:path*',
+        destination: `${process.env.NEXT_PUBLIC_API_URL}/main/files/:path*`,
+      },
+      {
+        source: '/api/users/:path*',
+        destination: `${process.env.NEXT_PUBLIC_API_URL}/main/users/:path*`,
       },
     ];
   },

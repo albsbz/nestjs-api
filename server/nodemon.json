@@ -1,5 +1,5 @@
 {
-  "watch": ["src/**/*", "../dto/src/**/*"],
+  "watch": ["apps/**/*", "libs/**/*"],
   "ext": "ts,tsx",
   "exec": "ts-node ./src/main.ts"
 }

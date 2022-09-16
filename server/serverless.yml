@@ -51,14 +51,30 @@ provider:
 
 functions:
   main:
-    handler: dist/main.handler
+    handler: dist/apps/main/main.handler
+    name: ${sls:stage}-main
+    description: Main app
     environment:
       NODE_ENV: ${self:provider.stage}
 
     events:
+      # - http:
+      #     method: ANY
+      #     path: /
+      # - http:
+      #     method: ANY
+      #     path: '{proxy+}'
       - http:
           method: ANY
-          path: /
+          path: 'api/main/{proxy+}'
+
+  blog:
+    handler: dist/apps/blog/main.handler
+    name: ${sls:stage}-blog
+    description: Blog app
+    environment:
+      NODE_ENV: ${self:provider.stage}
+    events:
       - http:
           method: ANY
-          path: '{proxy+}'
+          path: 'api/blog/{proxy+}'
