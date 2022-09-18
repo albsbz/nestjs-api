@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { LoggerModule } from 'nestjs-pino';
-import { CommonService } from './common.service';
 
 import configuration from './config/configuration';
 
@@ -38,7 +37,7 @@ const loggerConfig = (configService: ConfigService): unknown => {
       inject: [ConfigService],
     }),
   ],
-  providers: [CommonService],
-  exports: [CommonService],
+  providers: [],
+  exports: [],
 })
-export class CommonModule {}
+export class BootstrapConfigModule {}

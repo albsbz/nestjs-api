@@ -1,5 +1,5 @@
 import { Alert } from 'antd';
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { IProps } from '../../common/interface/IProps';
 
 type AlertTypes = 'success' | 'info' | 'warning' | 'error';
@@ -25,23 +25,6 @@ export const AlertContextProvider: React.FC<IProps> = (props) => {
     type: 'info',
   } as AlertObjectType);
 
-  const resetAlert = (noTimeout: boolean | undefined) => {
-    if (alert.message !== '') {
-      if (noTimeout) {
-        setAlert({ message: '', type: 'info' });
-        return;
-      }
-
-      let timer;
-      if (alert.message !== '') {
-        timer = setTimeout(() => {
-          setAlert({ message: '', type: 'info' });
-          clearTimeout(timer);
-        }, 3000);
-      }
-    }
-  };
-
   useEffect(() => {
     let timer;
     if (alert.message !== '' && alert.hide) {
@@ -52,7 +35,25 @@ export const AlertContextProvider: React.FC<IProps> = (props) => {
     return () => clearTimeout(timer);
   }, [alert]);
 
-  return (
-    <AlertContext.Provider value={{ alert, setAlert, resetAlert }} {...props} />
-  );
+  const store = useMemo(() => {
+    const resetAlert = (noTimeout: boolean | undefined) => {
+      if (alert.message !== '') {
+        if (noTimeout) {
+          setAlert({ message: '', type: 'info' });
+          return;
+        }
+
+        let timer;
+        if (alert.message !== '') {
+          timer = setTimeout(() => {
+            setAlert({ message: '', type: 'info' });
+            clearTimeout(timer);
+          }, 3000);
+        }
+      }
+    };
+    return { alert, setAlert, resetAlert };
+  }, [alert, setAlert]);
+
+  return <AlertContext.Provider value={store} {...props} />;
 };

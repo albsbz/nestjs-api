@@ -52,10 +52,10 @@ export const AuthContextProvider: React.FC<IProps> = (props) => {
     }
   }, [isAuth, props.needAuth, router, tokens, initTokens]);
 
-  return (
-    <AuthContext.Provider
-      value={{ login, logout, user, isAuth, isLoading, setIsLoading }}
-      {...props}
-    />
+  const store = useMemo(
+    () => ({ login, logout, user, isAuth, isLoading, setIsLoading }),
+    [login, logout, user, isAuth, isLoading, setIsLoading],
   );
+
+  return <AuthContext.Provider value={store} {...props} />;
 };

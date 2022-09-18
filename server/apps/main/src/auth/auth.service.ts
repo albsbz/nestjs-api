@@ -12,9 +12,11 @@ import { RegisterRequest } from './dto/requests.dto';
 import { UserResponseDto } from '../users/dto/responses.dto';
 import { UsersService } from '../users/users.service';
 import { MailConfirmationService } from '../mail/mailConfirmation.service';
-import { Provider } from '../../src/users/providers/providers.enum';
-import { User } from '../../src/common/schemas/user.schema';
+
 import { MailService } from '../../src/mail/mail.service';
+import { Provider } from '@app/common/shared/shared/providers/providers.enum';
+import { User } from '@app/common/shared/shared/schemas/user.schema';
+
 @Injectable()
 export class AuthService {
   constructor(

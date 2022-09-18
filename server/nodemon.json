@@ -1,5 +1,5 @@
 {
   "watch": ["apps/**/*", "libs/**/*"],
   "ext": "ts,tsx",
-  "exec": "ts-node ./src/main.ts"
+  "exec": ["ts-node ./apps/**/src/main.ts", "ts-node ./libs/**/src/main.ts"]
 }

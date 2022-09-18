@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import AppAvatarDropdown from './AvatarDropdown';
 
 const AppProfileMenu = () => {
@@ -8,4 +9,4 @@ const AppProfileMenu = () => {
   );
 };
 
-export default AppProfileMenu;
+export default memo(AppProfileMenu);

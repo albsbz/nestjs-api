@@ -2,10 +2,17 @@ service: serverless-example
 
 plugins:
   - serverless-offline
+  - serverless-offline-watcher
   - serverless-plugin-common-excludes
   - serverless-plugin-include-dependencies
 
 useDotenv: true
+
+custom:
+  serverless-offline-watcher:
+    - path:
+        - dist/
+      command: node -e "console.log('modified', new Date())"
 
 provider:
   stage: ${opt:stage, 'production'}

@@ -1,10 +1,10 @@
 import { Skeleton } from 'antd';
 import { RcFile } from 'antd/lib/upload';
 import dynamic from 'next/dynamic';
-import 'react-quill/dist/quill.snow.css';
+import { useQuill } from 'react-quilljs';
+import 'quill/dist/quill.snow.css';
 import { axiosInstance } from '../../../../utils/axios';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import IReactQuill from 'react-quill';
+import { memo, useCallback, useEffect, useRef, useState } from 'react';
 import styles from './style.module.scss';
 import AppLoading from '../../../AppLoading';
 import axios from 'axios';
@@ -12,38 +12,9 @@ import { v4 as uuid } from 'uuid';
 import useAuth from '../../../../context/authContext/hooks/useAuth';
 import { useAuthContext } from '../../../../context/authContext';
 
-const ReactQuill = dynamic(
-  async () => {
-    const { default: RQ } = await import('react-quill');
-    const Quill = ({ forwardedRef, ...props }) => (
-      <RQ ref={forwardedRef} {...props} />
-    );
-    return Quill;
-  },
-  { ssr: false },
-);
-
-const containerOptions = [
-  ['bold', 'italic', 'underline', 'strike'],
-  ['blockquote', 'code-block'],
-
-  [{ header: 1 }, { header: 2 }],
-  [{ list: 'ordered' }, { list: 'bullet' }],
-  [{ script: 'sub' }, { script: 'super' }],
-  [{ indent: '-1' }, { indent: '+1' }],
-
-  [{ header: [1, 2, 3, 4, 5, 6, false] }],
-  ['link', 'image'],
-  [{ color: [] }, { background: [] }],
-  [{ font: [] }],
-  [{ align: [] }],
-
-  ['clean'], // remove formatting button
-];
-
 let didInit = false;
 const AppContentEditor = ({ content, handler, isUpdating, updateHandler }) => {
-  const quillRef = useRef<IReactQuill>();
+  const { quill, quillRef } = useQuill();
   const { user } = useAuthContext();
   const [uploadData, setUploadData] = useState<{
     form: { fields: [string]; url: string };
@@ -78,12 +49,10 @@ const AppContentEditor = ({ content, handler, isUpdating, updateHandler }) => {
         const formData = new FormData();
 
         if (quillRef) {
-          const quillObj = quillRef.current.getEditor();
-
-          const range = quillObj?.getSelection();
+          const range = quill.getSelection();
 
           if (file) {
-            quillObj.disable();
+            quill.disable();
             const fileName = `${user.sub}-${uuid()}.${file.name
               .split('.')
               .pop()}`;
@@ -100,48 +69,54 @@ const AppContentEditor = ({ content, handler, isUpdating, updateHandler }) => {
             try {
               resp = await axios.post(uploadData.form.url, formData);
             } catch (error) {
-              quillObj.enable();
+              quill.enable();
               updateHandler(false);
               return;
             }
 
             if (resp) {
               updateHandler(false);
-              quillObj.insertEmbed(
+              quill.insertEmbed(
                 range.index,
                 'image',
                 `${uploadData.sourceUrl}/${key}`,
               );
             }
-            quillObj.enable();
+            quill.enable();
           }
         }
       };
     },
-    [updateHandler, uploadData, user],
+    [uploadData, updateHandler, quillRef, quill, user.sub],
   );
 
-  const toolbarOptions = {
-    container: containerOptions,
-    handlers: {
-      image: imageHandler,
-    },
-  };
+  useEffect(() => {
+    if (quill) {
+      quill.on('text-change', () => handler(quill.root.innerHTML));
+    }
+  }, [quill, handler, content]);
+
+  useEffect(() => {
+    if (quill) {
+      // Add custom handler for Image Upload
+      quill.getModule('toolbar').addHandler('image', imageHandler);
+    }
+  }, [imageHandler, quill]);
+
+  useEffect(() => {
+    if (quill) quill.clipboard.dangerouslyPasteHTML(content);
+  }, [content, quill]);
 
   if (typeof window !== 'undefined') {
+    console.log('mount');
+
     return (
       <AppLoading isLoading={isUpdating} type="Image">
-        <ReactQuill
-          forwardedRef={quillRef}
-          theme="snow"
-          value={content}
-          onChange={handler}
-          modules={{ toolbar: toolbarOptions }}
-        />
+        <div ref={quillRef} />
       </AppLoading>
     );
   }
   return <Skeleton />;
 };
 
-export default AppContentEditor;
+export default memo(AppContentEditor);

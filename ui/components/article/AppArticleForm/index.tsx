@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { memo, useCallback, useState } from 'react';
 import AppButton from '../../../components/Button';
 import { Form, Input } from 'antd';
 import useAsyncError from '../../../hooks/useAsyncError';
@@ -107,4 +107,4 @@ const AppArticleForm = (props: {
   );
 };
 
-export default AppArticleForm;
+export default memo(AppArticleForm);

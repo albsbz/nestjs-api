@@ -1,6 +1,7 @@
+import { GoogleOauthGuard } from '@app/common/shared/shared/guards/google-oauth.guard';
 import { Controller, UseGuards, Get, Req } from '@nestjs/common';
 import { Request } from 'express';
-import { GoogleOauthGuard } from '../guards/google-oauth.guard';
+
 import { GoogleUser } from './dto/GoogleUser.dto';
 
 import { GoogleAuthService } from './google-auth.service';
@@ -13,7 +14,9 @@ export class GoogleAuthController {
 
   @Get()
   @UseGuards(GoogleOauthGuard)
-  async googleAuth(): Promise<void> {}
+  async googleAuth(): Promise<void> {
+    1;
+  }
 
   @Get('login')
   @UseGuards(GoogleOauthGuard)

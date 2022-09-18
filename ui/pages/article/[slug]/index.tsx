@@ -36,9 +36,8 @@ export const getStaticProps = async (ctx: PageContext) => {
   let resp;
   try {
     resp = await axiosInstanceServerSide.get(
-      `/main/articles/${ctx.params.slug}`,
+      `/blog/articles/${ctx.params.slug}`,
     );
-  } catch (error) {
   } finally {
     if (!resp?.data) {
       return {

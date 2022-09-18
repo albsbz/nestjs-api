@@ -1,6 +1,7 @@
 import AppArticleForm from '../AppArticleForm';
 import { useAlertContext } from '../../../context/alertContext';
 import { axiosInstance } from '../../../utils/axios';
+import { memo } from 'react';
 
 const CreateArticle = () => {
   const { setAlert } = useAlertContext();
@@ -19,4 +20,4 @@ const CreateArticle = () => {
   );
 };
 
-export default CreateArticle;
+export default memo(CreateArticle);

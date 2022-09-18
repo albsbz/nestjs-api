@@ -19,7 +19,7 @@ const AppAuthorAvatar = ({ author, src }) => {
         placement="bottomLeft"
         color="white"
       >
-        <img src={src} style={{ cursor: 'pointer' }} />
+        {src && <img src={src} style={{ cursor: 'pointer' }} />}
       </Tooltip>
     </Link>
   );

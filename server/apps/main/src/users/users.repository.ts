@@ -1,9 +1,12 @@
+import { IdToString } from '@app/common/shared/shared/decorators/idToString.decorator';
+import { Provider } from '@app/common/shared/shared/providers/providers.enum';
+import {
+  User,
+  UserDocument,
+} from '@app/common/shared/shared/schemas/user.schema';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { IdToString } from '../common/decorators/idToString.decorator';
-import { Provider } from './providers/providers.enum';
-import { User, UserDocument } from '../common/schemas/user.schema';
 
 @Injectable()
 @IdToString

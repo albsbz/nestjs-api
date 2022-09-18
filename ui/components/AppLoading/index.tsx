@@ -1,4 +1,5 @@
 import { Skeleton } from 'antd';
+import { memo } from 'react';
 import styles from './style.module.scss';
 const AppLoading = ({ children, isLoading, type = '' }) => {
   let SkeletonTyped = Skeleton;
@@ -7,13 +8,13 @@ const AppLoading = ({ children, isLoading, type = '' }) => {
   }
 
   return (
-    <div>
+    <div className="AppLoading">
       <div className={isLoading ? styles.background : styles.none}>
         <SkeletonTyped active className={styles.skeleton} />
       </div>
-      <div>{children}</div>
+      <div className="AppLoadingChildrenWrapper">{children}</div>
     </div>
   );
 };
 
-export default AppLoading;
+export default memo(AppLoading);

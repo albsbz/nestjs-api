@@ -1,9 +1,8 @@
+import { User } from '@app/common/shared/shared/schemas/user.schema';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { User } from '../common/schemas/user.schema';
 import { UsersService } from '../users/users.service';
-
 import { MailService } from './mail.service';
 
 @Injectable()

@@ -52,7 +52,7 @@ const nextConfig = {
       },
       {
         source: '/api/articles/:path*',
-        destination: `${process.env.NEXT_PUBLIC_API_URL}/main/articles/:path*`,
+        destination: `${process.env.NEXT_PUBLIC_API_URL}/blog/articles/:path*`,
       },
       {
         source: '/api/files/:path*',

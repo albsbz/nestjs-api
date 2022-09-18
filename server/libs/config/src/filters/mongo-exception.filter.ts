@@ -13,10 +13,12 @@ export class MongoExceptionFilter implements ExceptionFilter {
     const response = ctx.getResponse<Response>();
     response.status(400).json({
       statusCode: 400,
-      message: Object.entries(exception.errors).map(([idx, v]) => ({
-        name: idx,
-        errors: [v.message],
-      })),
+      message: exception.errors
+        ? Object.entries(exception.errors).map(([idx, v]) => ({
+            name: idx,
+            errors: [v.message],
+          }))
+        : { errors: exception },
       error: 'Bad Request',
     });
   }

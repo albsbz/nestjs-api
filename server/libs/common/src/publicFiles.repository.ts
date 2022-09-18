@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { IdToString } from '../../src/common/decorators/idToString.decorator';
+import { IdToString } from './shared/decorators/idToString.decorator';
 import {
   PublicFile,
   PublicFileDocument,
-} from '../../src/common/schemas/publicFile.schema';
+} from './shared/schemas/publicFile.schema';
 
 @Injectable()
 @IdToString

@@ -1,8 +1,7 @@
 import { Controller, Get, Request, UseGuards } from '@nestjs/common';
-
-import { JwtAuthGuard } from '../../src/auth/guards/jwt-auth.guard';
-import RequestWithJWT from '../../src/common/interfaces/RequestWithJWT';
-import { FilesService } from './files.service';
+import { FilesService } from '@app/common';
+import { JwtAuthGuard } from '@app/common/shared/shared/guards/jwt-auth.guard';
+import RequestWithJWT from '@app/common/shared/shared/interfaces/RequestWithJWT';
 
 @Controller('files')
 export class FilesController {

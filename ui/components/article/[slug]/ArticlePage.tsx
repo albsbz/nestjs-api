@@ -62,7 +62,7 @@ const ArticlePage = ({ article }) => {
           icon: (
             <AppAuthorAvatar
               author={article.author}
-              src={article.author.avatar.url}
+              src={article.author.avatar?.url}
             />
           ),
         }}

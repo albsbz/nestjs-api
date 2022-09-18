@@ -11,11 +11,11 @@ import {
   FindAll,
 } from './dto/requests.dto';
 
-import { Article } from '../common/schemas/article.schema';
+import { FilesService } from '@app/common';
 import ArticlesRepository from './articles.repository';
-import { PublicFile } from '../../src/common/schemas/publicFile.schema';
-import { FilesService } from '../../src/files/files.service';
-import { Status } from './statuses/status.enum';
+import { Article } from '@app/common/shared/shared/schemas/article.schema';
+import { Status } from '@app/common/shared/shared/statuses/status.enum';
+import { PublicFile } from '@app/common/shared/shared/schemas/publicFile.schema';
 
 @Injectable()
 export class ArticlesService {

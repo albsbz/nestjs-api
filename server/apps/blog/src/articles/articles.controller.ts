@@ -14,31 +14,38 @@ import {
   ConflictException,
   UploadedFile,
   BadRequestException,
+  Logger,
 } from '@nestjs/common';
 import { ArticlesService } from './articles.service';
 import { CreateArticleDto, FindAll } from './dto/requests.dto';
-import { GetId } from '../common/dto/requests.dto';
+
 import { UpdateArticleDto } from './dto/requests.dto';
-import { Article } from '../common/schemas/article.schema';
+
 import { ApiTags } from '@nestjs/swagger';
-import { JwtAuthGuard } from '../../src/auth/guards/jwt-auth.guard';
-import MongooseClassSerializerInterceptor from '../../src/common/interceptors/mongooseClassSerializer.interceptor';
-import { User } from '../../src/common/schemas/user.schema';
-import RequestWithJWT from '../../src/common/interfaces/RequestWithJWT';
+
 import { FileInterceptor } from '@nestjs/platform-express';
+import MongooseClassSerializerInterceptor from '@app/common/shared/shared/interceptors/mongooseClassSerializer.interceptor';
+import { JwtAuthGuard } from '@app/common/shared/shared/guards/jwt-auth.guard';
+import { Article } from '@app/common/shared/shared/schemas/article.schema';
+import RequestWithJWT from '@app/common/shared/shared/interfaces/RequestWithJWT';
+import { GetId } from '@app/common/shared/shared/dto/requests.dto';
 
 @Controller('articles')
 @ApiTags('articles')
-@UseInterceptors(MongooseClassSerializerInterceptor(User))
+@UseInterceptors(MongooseClassSerializerInterceptor(Article))
 export class ArticlesController {
   constructor(private readonly articlesService: ArticlesService) {}
-
+  private readonly logger = new Logger(ArticlesController.name);
   @Post()
   @UseGuards(JwtAuthGuard)
   async create(
     @Body() createArticleDto: CreateArticleDto,
     @Request() req: RequestWithJWT,
   ): Promise<Article> {
+    this.logger.log(
+      { createArticleDto, user: req.user.userId },
+      'createArticles',
+    );
     return this.articlesService.create(createArticleDto, req.user.userId);
   }
 

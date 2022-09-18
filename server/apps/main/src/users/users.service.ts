@@ -1,10 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Provider } from './providers/providers.enum';
-import { User } from '../common/schemas/user.schema';
+
 import { UsersRepository } from './users.repository';
-import { FilesService } from '../../src/files/files.service';
-import { PublicFile } from '../../src/common/schemas/publicFile.schema';
+
+import { FilesService } from '@app/common';
+import { Provider } from '@app/common/shared/shared/providers/providers.enum';
+import { User } from '@app/common/shared/shared/schemas/user.schema';
+import { PublicFile } from '@app/common/shared/shared/schemas/publicFile.schema';
 
 @Injectable()
 export class UsersService {

@@ -1,5 +1,5 @@
-import { Provider } from '../../../src/users/providers/providers.enum';
-import { Role } from '../../../src/users/roles/role.enum';
+import { Provider } from '../providers/providers.enum';
+import { Role } from '../roles/role.enum';
 import { PublicFile } from '../schemas/publicFile.schema';
 import { User } from '../schemas/user.schema';
 

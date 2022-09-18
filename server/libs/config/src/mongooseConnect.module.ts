@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-import { CommonService } from './common.service';
 
 @Module({
   imports: [
@@ -14,7 +13,7 @@ import { CommonService } from './common.service';
       inject: [ConfigService],
     }),
   ],
-  providers: [CommonService],
-  exports: [CommonService],
+  providers: [],
+  exports: [],
 })
 export class MongooseConnectModule {}

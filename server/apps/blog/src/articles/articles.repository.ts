@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { FindAll, UpdateArticleDto } from './dto/requests.dto';
+import { Model, Types } from 'mongoose';
 import {
   Article,
   ArticleDocument,
-} from '../../src/common/schemas/article.schema';
-import { FindAll, UpdateArticleDto } from './dto/requests.dto';
-import { Model, Types } from 'mongoose';
-import { Status } from './statuses/status.enum';
+} from '@app/common/shared/shared/schemas/article.schema';
+import { Status } from '@app/common/shared/shared/statuses/status.enum';
 
 @Injectable()
 class ArticlesRepository {

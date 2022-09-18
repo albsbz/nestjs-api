@@ -7,10 +7,11 @@ import { Callback, Context, Handler } from 'aws-lambda';
 
 import { MainModule } from './main.module';
 import serverlessExpress from '@vendia/serverless-express';
-import { commonConfig } from '@app/common/config/appConfiguration';
-import { MongoExceptionFilter } from '@app/common/filters/mongo-exception.filter';
+import { commonConfig } from '@app/config/config/appConfiguration';
+import { MongoExceptionFilter } from '@app/config/filters/mongo-exception.filter';
 
 let server: Handler;
+declare const module: any;
 
 const local = process.env.NODE_ENV === 'local';
 
@@ -47,6 +48,11 @@ async function bootstrap(): Promise<Handler> {
   if (local) {
     await app.listen(3000);
     return;
+  }
+
+  if (module.hot) {
+    module.hot.accept();
+    module.hot.dispose(() => app.close());
   }
 
   await app.init();

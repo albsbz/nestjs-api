@@ -1,17 +1,16 @@
 import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { v4 as uuid } from 'uuid';
-import { PublicFilesRepository } from './publicFiles.repository';
-import { PublicFile } from '../../src/common/schemas/publicFile.schema';
+
 // import { s3 } from 'src/config/s3';
 import { Cache } from 'cache-manager';
-import {
-  ONE_DAY,
-  UPLOAD_URL_EXPIRE,
-  AWS,
-} from '../../src/common/utils/constants';
+
 import { S3 } from 'aws-sdk';
-import { getKeysFromString } from '../../src/common/helper/cast.helper';
+
+import { getKeysFromString } from './shared/helper/cast.helper';
+import { PublicFilesRepository } from './publicFiles.repository';
+import { UPLOAD_URL_EXPIRE, AWS, ONE_DAY } from './shared/utils/constants';
+import { PublicFile } from './shared/schemas/publicFile.schema';
 
 @Injectable()
 export class FilesService {

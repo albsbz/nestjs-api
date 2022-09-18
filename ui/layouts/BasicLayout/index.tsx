@@ -8,6 +8,7 @@ import { AuthContextProvider } from '../../context/authContext';
 import PageLoader from '../../components/PageLoader';
 import { AlertContextProvider } from '../../context/alertContext';
 import AppAlert from '../../components/Alert';
+import { memo } from 'react';
 
 const { Content, Footer } = Layout;
 
@@ -40,4 +41,4 @@ const BasicLayout: React.FC<IProps> = ({ children, needAuth }) => {
   );
 };
 
-export default BasicLayout;
+export default memo(BasicLayout);

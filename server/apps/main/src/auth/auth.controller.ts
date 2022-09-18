@@ -1,3 +1,9 @@
+import { JwtAuthGuard } from '@app/common/shared/shared/guards/jwt-auth.guard';
+import { JwtRefreshGuard } from '@app/common/shared/shared/guards/jwt-refresh.guard';
+import { LocalAuthGuard } from '@app/common/shared/shared/guards/local-auth.guard';
+import RequestWithJWT from '@app/common/shared/shared/interfaces/RequestWithJWT';
+import { Provider } from '@app/common/shared/shared/providers/providers.enum';
+import { User } from '@app/common/shared/shared/schemas/user.schema';
 import {
   Body,
   Controller,
@@ -10,11 +16,9 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
-import { Request as RequestType, Response } from 'express';
-import { Provider } from '../../src/users/providers/providers.enum';
+import { Response } from 'express';
 import { MailConfirmationService } from '../mail/mailConfirmation.service';
 
-import { User } from '../common/schemas/user.schema';
 import { AuthService } from './auth.service';
 import {
   ConfirmDroppasswordRequest,
@@ -24,11 +28,6 @@ import {
   RegisterRequest,
 } from './dto/requests.dto';
 import { LoginResponse } from './dto/responses.dto';
-import { JwtAuthGuard } from './guards/jwt-auth.guard';
-import { JwtRefreshGuard } from './guards/jwt-refresh.guard';
-
-import { LocalAuthGuard } from './guards/local-auth.guard';
-import RequestWithJWT from '../../src/common/interfaces/RequestWithJWT';
 
 @Controller('auth')
 @ApiTags('Auth')

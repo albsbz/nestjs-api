@@ -15,7 +15,7 @@
       "name": "Launch Chrome",
       "request": "launch",
       "type": "chrome",
-      "url": "https://2986-188-163-98-182.eu.ngrok.io",
+      "url": "https://5b23-188-163-98-182.eu.ngrok.io/",
       "webRoot": "${workspaceFolder}/server"
     },
     {
@@ -23,7 +23,7 @@
       "port": 9222,
       "request": "attach",
       "type": "chrome",
-      "urlFilter": "https://2986-188-163-98-182.eu.ngrok.io/*", // use urlFilter instead of url!
+      "urlFilter": "https://5b23-188-163-98-182.eu.ngrok.io/*", // use urlFilter instead of url!
       "webRoot": "${workspaceFolder}/ui"
     }
   ]

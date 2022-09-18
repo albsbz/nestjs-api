@@ -1,12 +1,9 @@
-import { CommonModule } from '@app/common';
-import { MongooseConnectModule } from '@app/common/mongooseConnect.module';
+import { BootstrapConfigModule } from '@app/config';
+import { MongooseConnectModule } from '@app/config/mongooseConnect.module';
 import { Module } from '@nestjs/common';
-import { BlogController } from './blog.controller';
-import { BlogService } from './blog.service';
+import { ArticlesModule } from './articles/articles.module';
 
 @Module({
-  imports: [CommonModule, MongooseConnectModule],
-  controllers: [BlogController],
-  providers: [BlogService],
+  imports: [BootstrapConfigModule, MongooseConnectModule, ArticlesModule],
 })
 export class BlogModule {}

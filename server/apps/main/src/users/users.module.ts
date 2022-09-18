@@ -1,15 +1,18 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { User, UserSchema } from '../common/schemas/user.schema';
 import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
 import { UsersRepository } from './users.repository';
-import { FilesModule } from '../../src/files/files.module';
+import {
+  User,
+  UserSchema,
+} from '@app/common/shared/shared/schemas/user.schema';
+import { CommonFilesModule } from '@app/common';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
-    FilesModule,
+    CommonFilesModule,
   ],
   providers: [UsersService, UsersRepository],
   exports: [UsersService],

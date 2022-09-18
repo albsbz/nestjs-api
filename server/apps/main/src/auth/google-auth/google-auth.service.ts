@@ -1,5 +1,5 @@
+import { Provider } from '@app/common/shared/shared/providers/providers.enum';
 import { Injectable } from '@nestjs/common';
-import { Provider } from '../../../src/users/providers/providers.enum';
 import { UsersService } from '../../../src/users/users.service';
 import { AuthService } from '../auth.service';
 import { GoogleUser } from './dto/GoogleUser.dto';
