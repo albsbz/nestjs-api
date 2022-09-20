@@ -108,8 +108,6 @@ const AppContentEditor = ({ content, handler, isUpdating, updateHandler }) => {
   }, [content, quill]);
 
   if (typeof window !== 'undefined') {
-    console.log('mount');
-
     return (
       <AppLoading isLoading={isUpdating} type="Image">
         <div ref={quillRef} />

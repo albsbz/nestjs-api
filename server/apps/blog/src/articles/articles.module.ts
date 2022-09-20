@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { CacheModule, Module } from '@nestjs/common';
 import { ArticlesService } from './articles.service';
 import { ArticlesController } from './articles.controller';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -8,7 +8,6 @@ import {
   Article,
   ArticleSchema,
 } from '@app/common/shared/shared/schemas/article.schema';
-import { CommonFilesModule } from '@app/common';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { JwtStrategy } from '@app/common/shared/shared/strategies/jwt.strategy';
@@ -16,13 +15,22 @@ import {
   User,
   UserSchema,
 } from '@app/common/shared/shared/schemas/user.schema';
+import {
+  PublicFile,
+  PublicFileSchema,
+} from '@app/common/shared/shared/schemas/publicFile.schema';
+// import { CommonFilesModule } from '@app/common';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([
-      { name: Article.name, schema: ArticleSchema },
-      { name: User.name, schema: UserSchema },
-    ]),
+    MongooseModule.forFeature(
+      [
+        { name: Article.name, schema: ArticleSchema },
+        { name: User.name, schema: UserSchema },
+        { name: PublicFile.name, schema: PublicFileSchema },
+      ],
+      'main',
+    ),
     JwtModule.registerAsync({
       useFactory: async (configService: ConfigService) => ({
         secret: configService.get('jwtConstants.accessSecret'),
@@ -32,10 +40,10 @@ import {
       }),
       inject: [ConfigService],
     }),
-    CommonFilesModule,
+    // CommonFilesModule,
   ],
   controllers: [ArticlesController],
   providers: [ArticlesService, ArticlesRepository, JwtStrategy],
-  exports: [ArticlesService],
+  exports: [ArticlesService, MongooseModule],
 })
 export class ArticlesModule {}

@@ -11,7 +11,7 @@ import {
 @IdToString
 export class PublicFilesRepository {
   constructor(
-    @InjectModel(PublicFile.name)
+    @InjectModel(PublicFile.name, 'main')
     private publicFileModel: Model<PublicFileDocument>,
   ) {}
 

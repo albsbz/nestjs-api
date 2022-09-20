@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { FindAll, UpdateArticleDto } from './dto/requests.dto';
 import { Model, Types } from 'mongoose';
+
 import {
   Article,
   ArticleDocument,
@@ -11,7 +12,8 @@ import { Status } from '@app/common/shared/shared/statuses/status.enum';
 @Injectable()
 class ArticlesRepository {
   constructor(
-    @InjectModel(Article.name) private articleModel: Model<ArticleDocument>,
+    @InjectModel(Article.name, 'main')
+    private articleModel: Model<ArticleDocument>,
   ) {}
 
   async create(params): Promise<Article> {

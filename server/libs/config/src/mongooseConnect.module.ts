@@ -9,8 +9,12 @@ import { MongooseModule } from '@nestjs/mongoose';
       useFactory: async (configService: ConfigService) => ({
         uri: configService.get('db.mongoUrl'),
         dbName: configService.get('env'),
+        connectionFactory: (connetion): unknown => {
+          return connetion;
+        },
       }),
       inject: [ConfigService],
+      connectionName: 'main',
     }),
   ],
   providers: [],

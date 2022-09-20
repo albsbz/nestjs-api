@@ -117,7 +117,7 @@ export class FilesService {
       content,
       this.configService.get('aws.bucketUrlRegion'),
     );
-    if (!keys.length) return true;
+    if (!keys?.length) return true;
     try {
       await Promise.allSettled(
         keys.map((key) => {

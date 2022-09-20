@@ -16,16 +16,35 @@ import ArticlesRepository from './articles.repository';
 import { Article } from '@app/common/shared/shared/schemas/article.schema';
 import { Status } from '@app/common/shared/shared/statuses/status.enum';
 import { PublicFile } from '@app/common/shared/shared/schemas/publicFile.schema';
+import { LazyModuleLoader } from '@nestjs/core';
 
 @Injectable()
 export class ArticlesService {
   private readonly logger = new Logger(ArticlesService.name);
+  private filesService: FilesService;
+
   constructor(
+    private lazyModuleLoader: LazyModuleLoader,
     private readonly articlesRepository: ArticlesRepository,
-    private readonly filesService: FilesService,
   ) {}
 
-  create(createArticleDto: CreateArticleDto, userId: string): Promise<Article> {
+  async lazyInit(): Promise<void> {
+    if (this.filesService) return;
+
+    const { CommonFilesModule } = await import(
+      '../../../../libs/common/src/commonFiles.module'
+    );
+    const moduleRef = await this.lazyModuleLoader.load(() => CommonFilesModule);
+
+    const { FilesService } = await import(
+      '../../../../libs/common/src/files.service'
+    );
+    this.filesService = moduleRef.get(FilesService);
+  }
+  async create(
+    createArticleDto: CreateArticleDto,
+    userId: string,
+  ): Promise<Article> {
     return this.articlesRepository.create({
       ...createArticleDto,
       author: userId,
@@ -62,6 +81,7 @@ export class ArticlesService {
     id: string,
     updateArticleDto: UpdateArticleDto,
   ): Promise<Article> {
+    await this.lazyInit();
     const statusUpdated = await this.filesService.changeStatus(
       updateArticleDto.content,
     );
@@ -98,6 +118,7 @@ export class ArticlesService {
     imageBuffer: Buffer,
     filename: string,
   ): Promise<PublicFile> {
+    await this.lazyInit();
     const file = await this.filesService.uploadPublicFile(
       imageBuffer,
       filename,

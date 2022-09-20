@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
+    // "module": "commonjs",
     "declaration": true,
     "removeComments": true,
     "emitDecoratorMetadata": true,
@@ -11,6 +11,8 @@
     "outDir": "./dist",
     "baseUrl": "./",
     "incremental": true,
+    "module": "esnext",
+    "moduleResolution": "node",
     "skipLibCheck": true,
     "strictNullChecks": false,
     "noImplicitAny": false,
