@@ -32,15 +32,20 @@ export class ArticlesService {
     if (this.filesService) return;
 
     const { CommonFilesModule } = await import(
-      '../../../../libs/common/src/commonFiles.module'
+      '../../../../libs/common/src/files/commonFiles.module'
     );
-    const moduleRef = await this.lazyModuleLoader.load(() => CommonFilesModule);
-
+    let moduleRef;
+    try {
+      moduleRef = await this.lazyModuleLoader.load(() => CommonFilesModule);
+    } catch (error) {
+      this.logger.log(error);
+    }
     const { FilesService } = await import(
-      '../../../../libs/common/src/files.service'
+      '../../../../libs/common/src/files/files.service'
     );
-    this.filesService = moduleRef.get(FilesService);
+    this.filesService = await moduleRef.get(FilesService);
   }
+
   async create(
     createArticleDto: CreateArticleDto,
     userId: string,
@@ -133,5 +138,16 @@ export class ArticlesService {
     //   );
     // }
     return file;
+  }
+
+  async getUploadUrl(userId: string): Promise<unknown> {
+    try {
+      await this.lazyInit();
+    } catch (error) {
+      this.logger.log(error);
+    }
+
+    const presignedForm = await this.filesService.getUploadUrl(userId);
+    return presignedForm;
   }
 }

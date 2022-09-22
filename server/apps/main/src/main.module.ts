@@ -4,7 +4,6 @@ import { AuthModule } from './auth/auth.module';
 import { RolesGuard } from './guards/roles.guard';
 import { UsersModule } from './users/users.module';
 import { MailModule } from './mail/mail.module';
-import { FilesModule } from './files/files.module';
 import { SqsModule } from './sqs/sqs.module';
 import { BootstrapConfigModule } from '@app/config';
 import { MongooseConnectModule } from '@app/config/mongooseConnect.module';
@@ -15,7 +14,7 @@ import { MongooseConnectModule } from '@app/config/mongooseConnect.module';
     BootstrapConfigModule,
     MongooseConnectModule,
     // CacheConfigModule,
-    FilesModule,
+    // FilesModule,
     AuthModule,
     UsersModule,
     MailModule,

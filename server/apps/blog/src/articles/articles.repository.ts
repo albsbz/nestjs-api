@@ -12,7 +12,7 @@ import { Status } from '@app/common/shared/shared/statuses/status.enum';
 @Injectable()
 class ArticlesRepository {
   constructor(
-    @InjectModel(Article.name, 'main')
+    @InjectModel(Article.name)
     private articleModel: Model<ArticleDocument>,
   ) {}
 

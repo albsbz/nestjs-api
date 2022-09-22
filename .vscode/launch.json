@@ -25,6 +25,15 @@
       "type": "chrome",
       "urlFilter": "https://5b23-188-163-98-182.eu.ngrok.io/*", // use urlFilter instead of url!
       "webRoot": "${workspaceFolder}/ui"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug Serverless Offline",
+      "cwd": "${workspaceFolder}",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "debug"],
+      "sourceMaps": true
     }
   ]
 }

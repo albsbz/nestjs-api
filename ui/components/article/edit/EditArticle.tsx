@@ -13,7 +13,9 @@ const EditArticle = () => {
 
   const getArticle = async () => {
     const resp = await axiosInstance.get(`articles/edit/${router.query.id}`);
-    setArticle(resp.data);
+    if (resp?.data) {
+      setArticle(resp.data);
+    }
   };
   if (!didInit && router?.query?.id) {
     getArticle();

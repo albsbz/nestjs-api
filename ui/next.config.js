@@ -56,7 +56,7 @@ const nextConfig = {
       },
       {
         source: '/api/files/:path*',
-        destination: `${process.env.NEXT_PUBLIC_API_URL}/main/files/:path*`,
+        destination: `${process.env.NEXT_PUBLIC_API_URL}/blog/files/:path*`,
       },
       {
         source: '/api/users/:path*',

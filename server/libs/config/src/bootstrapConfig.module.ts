@@ -8,6 +8,7 @@ const envFilePath = `.env.${process.env.NODE_ENV || 'local'}`;
 
 const loggerConfig = (configService: ConfigService): unknown => {
   const local = configService.get('env') === 'local';
+  const dev = configService.get('env') === 'devlopment';
   return {
     pinoHttp: {
       customProps: (): object => ({
@@ -16,7 +17,7 @@ const loggerConfig = (configService: ConfigService): unknown => {
       transport: {
         target: 'pino-pretty',
         options: {
-          singleLine: !local,
+          singleLine: !local || !dev,
           colorize: local,
         },
       },
@@ -38,6 +39,6 @@ const loggerConfig = (configService: ConfigService): unknown => {
     }),
   ],
   providers: [],
-  exports: [],
+  exports: [ConfigModule],
 })
 export class BootstrapConfigModule {}

@@ -11,9 +11,7 @@ import { Model } from 'mongoose';
 @Injectable()
 @IdToString
 export class UsersRepository {
-  constructor(
-    @InjectModel(User.name, 'main') private userModel: Model<UserDocument>,
-  ) {}
+  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
   async createLocalUser(
     email: string,
     password: string,

@@ -7,15 +7,30 @@ import { FilesService } from '@app/common';
 import { Provider } from '@app/common/shared/shared/providers/providers.enum';
 import { User } from '@app/common/shared/shared/schemas/user.schema';
 import { PublicFile } from '@app/common/shared/shared/schemas/publicFile.schema';
+import { LazyModuleLoader } from '@nestjs/core';
 
 @Injectable()
 export class UsersService {
+  private filesService: FilesService;
   constructor(
+    private lazyModuleLoader: LazyModuleLoader,
     private readonly usersRepository: UsersRepository,
     private configService: ConfigService,
-    private readonly filesService: FilesService,
   ) {}
 
+  async lazyInit(): Promise<void> {
+    if (this.filesService) return;
+
+    const { CommonFilesModule } = await import(
+      '../../../../libs/common/src/files/commonFiles.module'
+    );
+    const moduleRef = await this.lazyModuleLoader.load(() => CommonFilesModule);
+
+    const { FilesService } = await import(
+      '../../../../libs/common/src/files/files.service'
+    );
+    this.filesService = moduleRef.get(FilesService);
+  }
   private passwordWithPrefix(password): string {
     return `${this.configService.get('db.mongoPasswordPrefix')}_${password}`;
   }
@@ -93,6 +108,7 @@ export class UsersService {
     imageBuffer: Buffer,
     filename: string,
   ): Promise<PublicFile> {
+    await this.lazyInit();
     const avatar = await this.filesService.uploadPublicFile(
       imageBuffer,
       filename,

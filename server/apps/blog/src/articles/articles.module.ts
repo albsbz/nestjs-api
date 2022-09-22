@@ -1,4 +1,4 @@
-import { CacheModule, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { ArticlesService } from './articles.service';
 import { ArticlesController } from './articles.controller';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -15,22 +15,15 @@ import {
   User,
   UserSchema,
 } from '@app/common/shared/shared/schemas/user.schema';
-import {
-  PublicFile,
-  PublicFileSchema,
-} from '@app/common/shared/shared/schemas/publicFile.schema';
-// import { CommonFilesModule } from '@app/common';
+
+import { FilesController } from './files.controller';
 
 @Module({
   imports: [
-    MongooseModule.forFeature(
-      [
-        { name: Article.name, schema: ArticleSchema },
-        { name: User.name, schema: UserSchema },
-        { name: PublicFile.name, schema: PublicFileSchema },
-      ],
-      'main',
-    ),
+    MongooseModule.forFeature([
+      { name: Article.name, schema: ArticleSchema },
+      { name: User.name, schema: UserSchema },
+    ]),
     JwtModule.registerAsync({
       useFactory: async (configService: ConfigService) => ({
         secret: configService.get('jwtConstants.accessSecret'),
@@ -42,7 +35,7 @@ import {
     }),
     // CommonFilesModule,
   ],
-  controllers: [ArticlesController],
+  controllers: [ArticlesController, FilesController],
   providers: [ArticlesService, ArticlesRepository, JwtStrategy],
   exports: [ArticlesService, MongooseModule],
 })

@@ -11,10 +11,7 @@ import { CommonFilesModule } from '@app/common';
 
 @Module({
   imports: [
-    MongooseModule.forFeature(
-      [{ name: User.name, schema: UserSchema }],
-      'main',
-    ),
+    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
     CommonFilesModule,
   ],
   providers: [UsersService, UsersRepository],
