@@ -8,6 +8,7 @@ import { Provider } from '@app/common/shared/shared/providers/providers.enum';
 import { User } from '@app/common/shared/shared/schemas/user.schema';
 import { PublicFile } from '@app/common/shared/shared/schemas/publicFile.schema';
 import { LazyModuleLoader } from '@nestjs/core';
+import { FileStatus } from '@app/common/shared/shared/statuses/fileStatus.enum';
 
 @Injectable()
 export class UsersService {
@@ -103,26 +104,15 @@ export class UsersService {
     );
   }
 
-  public async addAvatar(
-    id: string,
-    imageBuffer: Buffer,
-    filename: string,
-  ): Promise<PublicFile> {
+  public async addAvatar(id: string, key: string): Promise<void> {
     await this.lazyInit();
-    const avatar = await this.filesService.uploadPublicFile(
-      imageBuffer,
-      filename,
-      'avatars',
-    );
-
-    const oldUser = await this.usersRepository.updateAvatar(id, avatar);
+    const url = `${this.configService.get('aws.bucketUrlRegion')}/${key}`;
+    const oldUser = await this.usersRepository.updateAvatar(id, { url, key });
     if (oldUser.avatar) {
-      await this.filesService.deletePublicFile(
-        oldUser.avatar._id,
-        oldUser.avatar.key,
-      );
+      await this.filesService.deletePublicFile(oldUser.avatar.key);
     }
-    return avatar;
+    await this.filesService.changeStatus([key], FileStatus.Processed);
+    return;
   }
 
   public async updateProfile(

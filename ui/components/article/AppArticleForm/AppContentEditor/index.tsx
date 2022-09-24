@@ -11,15 +11,14 @@ import axios from 'axios';
 import { v4 as uuid } from 'uuid';
 import useAuth from '../../../../context/authContext/hooks/useAuth';
 import { useAuthContext } from '../../../../context/authContext';
+import { IUploadFileData } from '../../../../common/interface/IUploadFileData';
+import { AWS } from '../../../../utils/constants';
 
 let didInit = false;
 const AppContentEditor = ({ content, handler, isUpdating, updateHandler }) => {
   const { quill, quillRef } = useQuill();
   const { user } = useAuthContext();
-  const [uploadData, setUploadData] = useState<{
-    form: { fields: [string]; url: string };
-    sourceUrl: string;
-  }>();
+  const [uploadData, setUploadData] = useState<IUploadFileData>();
 
   const getUploadUrl = async () => {
     const resp = await axiosInstance.get('files/upload-url');
@@ -27,17 +26,16 @@ const AppContentEditor = ({ content, handler, isUpdating, updateHandler }) => {
     if (resp?.data) {
       setUploadData(resp.data);
     }
+    return resp.data;
   };
-  useEffect(() => {
-    if (!didInit) {
-      getUploadUrl();
-      didInit = true;
-    }
-  }, []);
 
   const imageHandler = useCallback(
     async (file) => {
-      if (!uploadData) return;
+      let uploadDataLocal = uploadData;
+      if (!uploadData) {
+        uploadDataLocal = await getUploadUrl();
+      }
+
       const input = document.createElement('input');
       input.setAttribute('type', 'file');
       input.setAttribute('accept', 'image/*');
@@ -56,18 +54,18 @@ const AppContentEditor = ({ content, handler, isUpdating, updateHandler }) => {
             const fileName = `${user.sub}-${uuid()}.${file.name
               .split('.')
               .pop()}`;
-            const key = `articleImages/${user.sub}/${fileName}`;
+            const key = `${user.sub}/${AWS.ARTICLE_IMAGES_FOLDER}/${fileName}`;
 
             formData.append('Content-Type', file.type);
             formData.append('x-amz-meta-userid', user.sub);
-            Object.entries(uploadData.form.fields).forEach(([k, v]) => {
+            Object.entries(uploadDataLocal.form.fields).forEach(([k, v]) => {
               formData.append(k, v);
             });
             formData.append('key', key);
             formData.append('file', file as RcFile, fileName);
             let resp;
             try {
-              resp = await axios.post(uploadData.form.url, formData);
+              resp = await axios.post(uploadDataLocal.form.url, formData);
             } catch (error) {
               quill.enable();
               updateHandler(false);
@@ -79,7 +77,7 @@ const AppContentEditor = ({ content, handler, isUpdating, updateHandler }) => {
               quill.insertEmbed(
                 range.index,
                 'image',
-                `${uploadData.sourceUrl}/${key}`,
+                `${uploadDataLocal.sourceUrl}/${key}`,
               );
             }
             quill.enable();

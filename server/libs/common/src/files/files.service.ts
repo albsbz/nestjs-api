@@ -9,6 +9,7 @@ import { getKeysFromString } from '../shared/helper/cast.helper';
 import { PublicFilesRepository } from './publicFiles.repository';
 import { UPLOAD_URL_EXPIRE, AWS, ONE_DAY } from '../shared/utils/constants';
 import { PublicFile } from '../shared/schemas/publicFile.schema';
+import { FileStatus } from '../shared/statuses/fileStatus.enum';
 
 @Injectable()
 export class FilesService {
@@ -60,15 +61,13 @@ export class FilesService {
     return newFile;
   }
 
-  async deletePublicFile(id, key): Promise<void> {
+  async deletePublicFile(key): Promise<void> {
     await this.s3
       .deleteObject({
         Bucket: this._bucket,
         Key: key,
       })
-      .promise(),
-      await this.publicFilesRepository.delete(id);
-
+      .promise();
     return;
   }
 
@@ -83,8 +82,7 @@ export class FilesService {
       return { form, sourceUrl };
     }
 
-    const tags =
-      '<Tagging><TagSet><Tag><Key>status</Key><Value>notProcessed</Value></Tag></TagSet></Tagging>';
+    const tags = `<Tagging><TagSet><Tag><Key>status</Key><Value>${FileStatus.Delete}</Value></Tag></TagSet></Tagging>`;
     const params = {
       Bucket: this._bucket,
       Fields: {
@@ -93,7 +91,7 @@ export class FilesService {
       Expires: UPLOAD_URL_EXPIRE,
       Conditions: [
         ['starts-with', '$Content-Type', 'image/'],
-        ['starts-with', '$key', `${AWS.ARTICLE_IMAGES_FOLDER}/${userId}`],
+        ['starts-with', '$key', `${userId}/`],
         ['content-length-range', 0, 1000000], // content length restrictions: 0-1MB
         ['eq', '$x-amz-meta-userid', userId], // tag with userid
         ['eq', '$Tagging', tags], // tag with userid <= the user can see this!
@@ -111,12 +109,7 @@ export class FilesService {
     };
   }
 
-  async changeStatus(content: string): Promise<boolean> {
-    const keys = getKeysFromString(
-      content,
-      this.configService.get('aws.bucketUrlRegion'),
-    );
-    if (!keys?.length) return true;
+  async changeStatus(keys: string[], status: string): Promise<boolean> {
     try {
       await Promise.allSettled(
         keys.map((key) => {
@@ -124,7 +117,7 @@ export class FilesService {
             .putObjectTagging({
               Bucket: this._bucket,
               Key: key,
-              Tagging: { TagSet: [{ Key: 'status', Value: 'proccesed' }] },
+              Tagging: { TagSet: [{ Key: 'status', Value: status }] },
             })
             .promise();
         }),

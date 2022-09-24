@@ -18,7 +18,7 @@ import { Express } from 'express';
 
 import { UsersService } from './users.service';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { PatchProfileDTO } from './dto/requests.dto';
+import { PatchProfileDTO, UploadAvatarDTO } from './dto/requests.dto';
 import MongooseClassSerializerInterceptor from '@app/common/shared/shared/interceptors/mongooseClassSerializer.interceptor';
 import { JwtAuthGuard } from '@app/common/shared/shared/guards/jwt-auth.guard';
 import { User } from '@app/common/shared/shared/schemas/user.schema';
@@ -63,21 +63,14 @@ export class UsersController {
 
   @Post('avatar')
   @UseGuards(JwtAuthGuard)
-  @UseInterceptors(FileInterceptor('file'))
   async addAvatar(
     @Request() req,
-    @UploadedFile() file: Express.Multer.File,
-  ): Promise<{ url: string }> {
-    let savedFile;
+    @Body() avatar: UploadAvatarDTO,
+  ): Promise<void> {
     try {
-      savedFile = await this.usersService.addAvatar(
-        req.user.userId,
-        file.buffer,
-        file.originalname,
-      );
+      await this.usersService.addAvatar(req.user.userId, avatar.key);
     } catch (e) {
       throw new BadRequestException(e);
     }
-    return { url: savedFile.url };
   }
 }

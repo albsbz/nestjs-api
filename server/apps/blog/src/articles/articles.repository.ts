@@ -117,7 +117,7 @@ class ArticlesRepository {
       { _id: new Types.ObjectId(id) },
       { ...updateArticleDto, status },
       {
-        new: true,
+        new: false,
       },
     );
   }

@@ -5,4 +5,5 @@ export const REDIS = {
 };
 export const AWS = {
   ARTICLE_IMAGES_FOLDER: 'articleImages',
+  AVATARS_FOLDER: 'avatars',
 };

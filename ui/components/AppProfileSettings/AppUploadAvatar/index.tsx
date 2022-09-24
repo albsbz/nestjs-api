@@ -1,9 +1,13 @@
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import { message, Upload } from 'antd';
 import type { RcFile } from 'antd/es/upload/interface';
+import axios from 'axios';
 import React, { useState } from 'react';
+import { v4 as uuid } from 'uuid';
+import { IUploadFileData } from '../../../common/interface/IUploadFileData';
 import { useAuthContext } from '../../../context/authContext';
 import { axiosInstance } from '../../../utils/axios';
+import { AWS } from '../../../utils/constants';
 
 const getBase64 = (img: RcFile, callback: (url: string) => void) => {
   const reader = new FileReader();
@@ -15,7 +19,17 @@ const AppUploadAvatar = ({ avatarURL }) => {
   const { user } = useAuthContext();
   const [loading, setLoading] = useState(false);
   const [prevAvatarURL, setPrevAvatarURL] = useState(avatarURL);
+  const [uploadData, setUploadData] = useState<IUploadFileData>();
   const [imageUrl, setImageUrl] = useState<string>(user.avatarURL);
+
+  const getUploadUrl = async () => {
+    const resp = await axiosInstance.get('files/upload-url');
+
+    if (resp?.data) {
+      setUploadData(resp.data);
+    }
+    return resp.data;
+  };
 
   if (avatarURL && avatarURL !== prevAvatarURL) {
     setPrevAvatarURL(avatarURL);
@@ -36,29 +50,32 @@ const AppUploadAvatar = ({ avatarURL }) => {
     return false;
   };
 
-  const handleUpload = (file: RcFile) => {
+  const handleUpload = async (file: RcFile) => {
+    let uploadDataLocal = uploadData;
+    if (!uploadData) {
+      uploadDataLocal = await getUploadUrl();
+    }
+    const fileName = `${user.sub}-${uuid()}.${file.name.split('.').pop()}`;
+    const key = `${user.sub}/${AWS.AVATARS_FOLDER}/${fileName}`;
     const formData = new FormData();
-    formData.append('file', file as RcFile);
-    setLoading(true);
-
-    // You can use any AJAX library you like
-    return axiosInstance
-      .post('users/avatar', formData)
-      .then(({ data }) => {
-        setImageUrl(data.url);
-
-        setLoading(false);
-        return;
-      })
-      .then(() => {
-        message.success('upload successfully.');
-      })
-      .catch(() => {
-        message.error('upload failed.');
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    formData.append('Content-Type', file.type);
+    formData.append('x-amz-meta-userid', user.sub);
+    Object.entries(uploadDataLocal.form.fields).forEach(([k, v]) => {
+      formData.append(k, v);
+    });
+    formData.append('key', key);
+    formData.append('file', file as RcFile, fileName);
+    try {
+      await axios.post(uploadDataLocal.form.url, formData);
+      await axiosInstance.post('users/avatar', { key: key });
+      setImageUrl(`${uploadDataLocal.sourceUrl}/${key}`);
+      message.success('upload successfully.');
+    } catch (error) {
+      message.error('upload failed.');
+    } finally {
+      setLoading(false);
+    }
+    return;
   };
 
   const uploadButton = (

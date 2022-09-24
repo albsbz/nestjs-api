@@ -53,5 +53,5 @@ export function getKeysFromString(str: string, bucketName: string): string[] {
     'ig',
   );
   const keys = str.match(regex);
-  return keys;
+  return keys || [];
 }

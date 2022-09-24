@@ -17,6 +17,9 @@ import { Article } from '@app/common/shared/shared/schemas/article.schema';
 import { Status } from '@app/common/shared/shared/statuses/status.enum';
 import { PublicFile } from '@app/common/shared/shared/schemas/publicFile.schema';
 import { LazyModuleLoader } from '@nestjs/core';
+import { getKeysFromString } from '@app/common/shared/shared/helper/cast.helper';
+import { ConfigService } from '@nestjs/config';
+import { FileStatus } from '@app/common/shared/shared/statuses/fileStatus.enum';
 
 @Injectable()
 export class ArticlesService {
@@ -26,6 +29,7 @@ export class ArticlesService {
   constructor(
     private lazyModuleLoader: LazyModuleLoader,
     private readonly articlesRepository: ArticlesRepository,
+    private readonly configService: ConfigService,
   ) {}
 
   async lazyInit(): Promise<void> {
@@ -86,24 +90,41 @@ export class ArticlesService {
     id: string,
     updateArticleDto: UpdateArticleDto,
   ): Promise<Article> {
+    const bucketRegion = this.configService.get('aws.bucketUrlRegion');
     await this.lazyInit();
-    const statusUpdated = await this.filesService.changeStatus(
-      updateArticleDto.content,
-    );
-    if (!statusUpdated) {
-      throw new BadRequestException();
+    const keys = getKeysFromString(updateArticleDto.content, bucketRegion);
+    if (keys?.length) {
+      const statusUpdated = await this.filesService.changeStatus(
+        keys,
+        FileStatus.Processed,
+      );
+      if (!statusUpdated) {
+        throw new BadRequestException();
+      }
     }
-    const result = await this.articlesRepository.update(
+    const oldValue = await this.articlesRepository.update(
       id,
       updateArticleDto,
       Status.NotEditing,
     );
 
-    if (!result) {
+    if (!oldValue) {
       throw new ConflictException();
     }
 
-    return result;
+    const oldKeys = getKeysFromString(oldValue.content, bucketRegion);
+
+    const keysToDelete = [];
+
+    oldKeys.forEach((k) => {
+      if (!keys?.includes(k)) keysToDelete.push(k);
+    });
+
+    if (keysToDelete.length) {
+      await this.filesService.changeStatus(keysToDelete, FileStatus.Delete);
+    }
+
+    return oldValue;
   }
 
   async remove(id: string): Promise<void> {

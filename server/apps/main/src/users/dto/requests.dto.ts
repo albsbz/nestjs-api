@@ -35,3 +35,8 @@ export class PatchProfileDTO {
   })
   about?: string;
 }
+
+export class UploadAvatarDTO {
+  @IsString()
+  key: string;
+}
