@@ -15,6 +15,7 @@ import {
   UploadedFile,
   BadRequestException,
   Logger,
+  Inject,
 } from '@nestjs/common';
 import { ArticlesService } from './articles.service';
 import { CreateArticleDto, FindAll } from './dto/requests.dto';
@@ -29,12 +30,16 @@ import { JwtAuthGuard } from '@app/common/shared/shared/guards/jwt-auth.guard';
 import { Article } from '@app/common/shared/shared/schemas/article.schema';
 import RequestWithJWT from '@app/common/shared/shared/interfaces/RequestWithJWT';
 import { GetId } from '@app/common/shared/shared/dto/requests.dto';
+import { Connection } from 'mongoose';
 
 @Controller('articles')
 @ApiTags('articles')
 @UseInterceptors(MongooseClassSerializerInterceptor(Article))
 export class ArticlesController {
-  constructor(private readonly articlesService: ArticlesService) {}
+  constructor(
+    private readonly articlesService: ArticlesService,
+    @Inject('MongooseConnection') private connection: Connection,
+  ) {}
   private readonly logger = new Logger(ArticlesController.name);
   @Post()
   @UseGuards(JwtAuthGuard)

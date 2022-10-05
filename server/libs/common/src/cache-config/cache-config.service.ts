@@ -16,7 +16,7 @@ export class CacheConfigService implements CacheOptionsFactory {
       options: {
         collection: 'uploadUrl',
         compression: false,
-        poolSize: 5,
+        poolSize: 1,
         autoReconnect: true,
       },
     };

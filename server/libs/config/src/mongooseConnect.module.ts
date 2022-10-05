@@ -13,10 +13,17 @@ const mongooseConnection = {
     ConfigModule,
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
-        uri: configService.get('db.mongoUrl'),
-        dbName: configService.get('env'),
-      }),
+      useFactory: async (configService: ConfigService) => {
+        if (connection.readyState) {
+          console.log('connectionExist', connection.readyState);
+          await connection.asPromise();
+          return connection;
+        }
+        return {
+          uri: configService.get('db.mongoUrl'),
+          dbName: configService.get('env'),
+        };
+      },
       inject: [ConfigService],
     }),
   ],

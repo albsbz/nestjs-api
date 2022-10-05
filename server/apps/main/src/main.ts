@@ -9,16 +9,18 @@ import { MainModule } from './main.module';
 import serverlessExpress from '@vendia/serverless-express';
 import { commonConfig } from '@app/config/config/appConfiguration';
 import { MongoExceptionFilter } from '@app/config/filters/mongo-exception.filter';
+import { Env } from '@app/common/shared/shared/enums/env.enum';
 
 let server: Handler;
 declare const module: any;
 
-const local = process.env.NODE_ENV === 'local';
+const local = process.env.NODE_ENV === Env.Local;
 
 console.log('ENV api', JSON.stringify(process.env));
 
 async function bootstrap(): Promise<Handler> {
   const app = await NestFactory.create(MainModule, { bufferLogs: true });
+  console.log('App created');
   if (local) {
     app.setGlobalPrefix('api/main');
   }
@@ -50,7 +52,7 @@ async function bootstrap(): Promise<Handler> {
     return;
   }
 
-  if (module.hot) {
+  if (module.hot && process.env.LOCAL_DEBUG) {
     module.hot.accept();
     module.hot.dispose(() => app.close());
   }
@@ -67,6 +69,9 @@ export const handler: Handler = async (
   context: Context,
   callback: Callback,
 ) => {
+  context.callbackWaitsForEmptyEventLoop = false;
+  console.log('handler', event, context);
   server = server ?? (await bootstrap());
+  console.log('bootstrap...main');
   return server(event, context, callback);
 };

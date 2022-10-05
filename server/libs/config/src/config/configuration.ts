@@ -1,9 +1,24 @@
+const isLambda =
+  process.env.AWS_ACCESS_KEY_ID &&
+  process.env.AWS_SECRET_ACCESS_KEY &&
+  process.env.AWS_SESSION_TOKEN;
+
 const Consts = (): unknown => ({
   env: process.env.NODE_ENV,
+  debug: process.env.DEBUG === 'true' || false,
+  localDebug: process.env.LOCAL_DEBUG === 'true' || false,
   apiUrl: process.env.SLS_PUBLIC_API_URL || process.env.NEXT_PUBLIC_API_URL,
   url: process.env.SLS_API_URL || process.env.NEXT_PUBLIC_URL,
   db: {
-    mongoUrl: process.env.MONGO_URL,
+    mongoUrl: isLambda
+      ? `mongodb+srv://${encodeURIComponent(
+          process.env.AWS_ACCESS_KEY_ID,
+        )}:${encodeURIComponent(process.env.AWS_SECRET_ACCESS_KEY)}@${
+          process.env.MONGO_CLUSTER
+        }&authSource=$external&authMechanism=MONGODB-AWS&authMechanismProperties=AWS_SESSION_TOKEN:${encodeURIComponent(
+          process.env.AWS_SESSION_TOKEN,
+        )}`
+      : `mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_CLUSTER}`,
     mongoPasswordPrefix: process.env.MONGO_PASSWORD_PREFIX,
   },
   jwtConstants: {
@@ -39,8 +54,10 @@ const Consts = (): unknown => ({
   },
   aws: {
     region: process.env.REGION,
-    accessKeyId: process.env.ACCESS_KEY_ID,
-    secretAccessKey: process.env.SECRET_ACCESS_KEY,
+    sessionToken: process.env.AWS_SESSION_TOKEN,
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID || process.env.ACCESS_KEY_ID,
+    secretAccessKey:
+      process.env.AWS_SECRET_ACCESS_KEY || process.env.SECRET_ACCESS_KEY,
     publicBucketName: process.env.PUBLIC_BUCKET_NAME,
     bucketUrl: `https://${process.env.PUBLIC_BUCKET_NAME}.s3.amazonaws.com`,
     bucketUrlRegion: `https://${process.env.PUBLIC_BUCKET_NAME}.s3.${process.env.REGION}.amazonaws.com`,

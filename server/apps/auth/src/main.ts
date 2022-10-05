@@ -5,28 +5,25 @@ import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import serverlessExpress from '@vendia/serverless-express';
 import { Callback, Context, Handler } from 'aws-lambda';
+import { AuthModule } from './auth.module';
 
-import { BlogModule } from './blog.module';
 declare const module: any;
 
 let server: Handler;
 
 const local = process.env.NODE_ENV === Env.Local;
 
-console.log('ENV', process.env);
-
 async function bootstrap(): Promise<Handler> {
-  const app = await NestFactory.create(BlogModule, { bufferLogs: true });
-  console.log('App created');
+  const app = await NestFactory.create(AuthModule, { bufferLogs: true });
   if (local) {
-    app.setGlobalPrefix('api/blog');
+    app.setGlobalPrefix('api/auth');
   }
   const configService = app.get(ConfigService);
   commonConfig(app, configService);
   app.useGlobalFilters(new MongoExceptionFilter());
 
   if (local) {
-    await app.listen(3000);
+    await app.listen(3002);
     return;
   }
 
@@ -34,10 +31,9 @@ async function bootstrap(): Promise<Handler> {
     module.hot.accept();
     module.hot.dispose(() => app.close());
   }
-  await app.init();
 
+  await app.init();
   const expressApp = app.getHttpAdapter().getInstance();
-  console.log('expressApp', expressApp);
   return serverlessExpress({ app: expressApp });
 }
 if (local) bootstrap();
@@ -50,6 +46,6 @@ export const handler: Handler = async (
   context.callbackWaitsForEmptyEventLoop = false;
   console.log('handler', event, context);
   server = server ?? (await bootstrap());
-  console.log('bootstrap...blog');
+  console.log('bootstrap...auth');
   return server(event, context, callback);
 };

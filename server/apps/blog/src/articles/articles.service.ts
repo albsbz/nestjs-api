@@ -20,23 +20,25 @@ import { LazyModuleLoader } from '@nestjs/core';
 import { getKeysFromString } from '@app/common/shared/shared/helper/cast.helper';
 import { ConfigService } from '@nestjs/config';
 import { FileStatus } from '@app/common/shared/shared/statuses/fileStatus.enum';
+import { ProxyLogger } from '@app/common/shared/shared/helper/proxyLogger.helper';
 
 @Injectable()
 export class ArticlesService {
-  private readonly logger = new Logger(ArticlesService.name);
+  private readonly logger = new Logger();
   private filesService: FilesService;
 
   constructor(
     private lazyModuleLoader: LazyModuleLoader,
     private readonly articlesRepository: ArticlesRepository,
     private readonly configService: ConfigService,
-  ) {}
-
+  ) {
+    return ProxyLogger(this);
+  }
   async lazyInit(): Promise<void> {
     if (this.filesService) return;
 
     const { CommonFilesModule } = await import(
-      '../../../../libs/common/src/files/commonFiles.module'
+      '@app/common/shared/files/commonFiles.module'
     );
     let moduleRef;
     try {
@@ -45,7 +47,7 @@ export class ArticlesService {
       this.logger.log(error);
     }
     const { FilesService } = await import(
-      '../../../../libs/common/src/files/files.service'
+      '@app/common/shared/files/files.service'
     );
     this.filesService = await moduleRef.get(FilesService);
   }
@@ -64,7 +66,6 @@ export class ArticlesService {
     params: FindAll,
     userId?: string,
   ): Promise<{ articles: Article[]; count: string }> {
-    this.logger.log({ params, userId }, 'findAll');
     return this.articlesRepository.findAll(params, userId);
   }
 

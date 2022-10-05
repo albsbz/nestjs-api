@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    // "module": "commonjs",
     "declaration": true,
     "removeComments": true,
     "emitDecoratorMetadata": true,
@@ -20,15 +19,31 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "strict": true,
-    "typeRoots": ["./node_modules/@types"],
+    "typeRoots": [
+      "./node_modules/@types"
+    ],
     "esModuleInterop": true,
     "paths": {
-      "@app/config": ["libs/config/src"],
-      "@app/config/*": ["libs/config/src/*"],
-      "@app/common": ["libs/common/src"],
-      "@app/common/shared/*": ["libs/common/src/*"]
+      "@app/config": [
+        "libs/config/src"
+      ],
+      "@app/config/*": [
+        "libs/config/src/*"
+      ],
+      "@app/common": [
+        "libs/common/src"
+      ],
+      "@app/common/shared/*": [
+        "libs/common/src/*"
+      ]
     }
   },
-  "exclude": ["node_modules", "./dist"],
-  "include": ["apps/**/*.ts", "apps/**/*.ts", "libs/**/*.ts"]
+  "exclude": [
+    "node_modules",
+    "dist"
+  ],
+  "include": [
+    "apps/**/*.ts",
+    "libs/**/*.ts"
+  ]
 }

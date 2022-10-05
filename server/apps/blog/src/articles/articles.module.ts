@@ -17,9 +17,11 @@ import {
 } from '@app/common/shared/shared/schemas/user.schema';
 
 import { FilesController } from './files.controller';
+import { MongooseConnectModule } from '@app/config';
 
 @Module({
   imports: [
+    MongooseConnectModule,
     MongooseModule.forFeature([
       { name: Article.name, schema: ArticleSchema },
       { name: User.name, schema: UserSchema },
@@ -33,7 +35,6 @@ import { FilesController } from './files.controller';
       }),
       inject: [ConfigService],
     }),
-    // CommonFilesModule,
   ],
   controllers: [ArticlesController, FilesController],
   providers: [ArticlesService, ArticlesRepository, JwtStrategy],

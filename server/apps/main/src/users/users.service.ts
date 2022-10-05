@@ -23,12 +23,12 @@ export class UsersService {
     if (this.filesService) return;
 
     const { CommonFilesModule } = await import(
-      '../../../../libs/common/src/files/commonFiles.module'
+      '@app/common/shared/files/commonFiles.module'
     );
     const moduleRef = await this.lazyModuleLoader.load(() => CommonFilesModule);
 
     const { FilesService } = await import(
-      '../../../../libs/common/src/files/files.service'
+      '@app/common/shared/files/files.service'
     );
     this.filesService = moduleRef.get(FilesService);
   }

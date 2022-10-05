@@ -3,13 +3,10 @@ import React, { useEffect } from 'react';
 import BasicLayout from '../layouts/BasicLayout';
 import { TPage } from '../common/types/TPages';
 import { useAuthContext } from '../context/authContext';
+import HomePage from '../components/homepage/HomePage';
 
 const BlogApp: TPage = () => {
-  // const { setIsLoading } = useAuthContext();
-  // useEffect(() => {
-  //   setIsLoading(false);
-  // }, [setIsLoading]);
-  return <h1>Home</h1>;
+  return <HomePage />;
 };
 
 BlogApp.getLayout = (page) => {

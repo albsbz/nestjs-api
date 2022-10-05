@@ -8,13 +8,16 @@ import {
   ArticleDocument,
 } from '@app/common/shared/shared/schemas/article.schema';
 import { Status } from '@app/common/shared/shared/statuses/status.enum';
+import { ProxyLogger } from '@app/common/shared/shared/helper/proxyLogger.helper';
 
 @Injectable()
 class ArticlesRepository {
   constructor(
     @InjectModel(Article.name)
     private articleModel: Model<ArticleDocument>,
-  ) {}
+  ) {
+    return ProxyLogger(this);
+  }
 
   async create(params): Promise<Article> {
     return this.articleModel.create(params);

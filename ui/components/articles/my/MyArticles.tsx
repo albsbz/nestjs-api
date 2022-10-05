@@ -20,21 +20,21 @@ const MyArticles = () => {
   const [count, setCount] = useState(0);
   let didLoad = false;
 
-  const loadMoreData = () => {
+  const loadMoreData = async () => {
     if (loading) {
       return;
     }
     setLoading(true);
-    axiosInstance
-      .get(`articles/my?take=10&skip=${articles.length}`)
-      .then((res) => {
-        setArticles([...articles, ...res.data.articles]);
-        setCount(res.data.count);
-        setLoading(false);
-      })
-      .catch(() => {
-        setLoading(false);
-      });
+    try {
+      const res = await axiosInstance.get(
+        `articles/my?take=10&skip=${articles.length}`,
+      );
+      setArticles([...articles, ...res.data.articles]);
+      setCount(res.data.count);
+      setLoading(false);
+    } finally {
+      setLoading(false);
+    }
   };
   const initLoad = () => {
     if (!didLoad) {
