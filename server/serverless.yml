@@ -34,7 +34,20 @@ provider:
           Action:
             - 's3:*'
             - 's3-object-lambda:*'
-          Resource: '*'
+          Resource: ${env:S3_ARN}
+        - Effect: Allow
+          Action:
+            - 'logs:CreateLogStream'
+            - 'logs:CreateLogGroup'
+          Resource:
+            - arn:aws:logs:us-east-1:632791012032:log-group:/aws/lambda/production-main:*
+            - arn:aws:logs:us-east-1:632791012032:log-group:/aws/lambda/production-blog:*
+        - Effect: Allow
+          Action:
+            - 'logs:PutLogEvents'
+          Resource:
+            - arn:aws:logs:us-east-1:632791012032:log-group:/aws/lambda/production-main:*:*
+            - arn:aws:logs:us-east-1:632791012032:log-group:/aws/lambda/production-blog:*:*
 
   stage: ${opt:stage, 'production'}
   name: aws
@@ -73,18 +86,18 @@ provider:
     GOOGLE_AUTH_CLIENT_ID: ${env:GOOGLE_AUTH_CLIENT_ID}
     GOOGLE_AUTH_CLIENT_SECRET: ${env:GOOGLE_AUTH_CLIENT_SECRET}
     REGION: ${env:REGION}
-    # ACCESS_KEY_ID: ${env:ACCESS_KEY_ID}
-    # SECRET_ACCESS_KEY: ${env:SECRET_ACCESS_KEY}
+    ACCESS_KEY_ID: ${env:ACCESS_KEY_ID}
+    SECRET_ACCESS_KEY: ${env:SECRET_ACCESS_KEY}
     PUBLIC_BUCKET_NAME: ${env:PUBLIC_BUCKET_NAME}
     DEBUG: ${env:DEBUG}
     LOCAL_DEBUG: ${env:LOCAL_DEBUG}
 
 resources:
   Resources:
-    IamRoleLambdaExecution: # has to be this exact name, https://serverless.com/framework/docs/providers/aws/guide/resources/
+    IamRoleLambdaExecution:
       Type: AWS::IAM::Role
       Properties:
-        AssumeRolePolicyDocument: # OVERWRITE assume role policy, rest is populated by serverless
+        AssumeRolePolicyDocument:
           Version: '2012-10-17'
           Statement:
             - Effect: Allow

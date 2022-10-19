@@ -85,7 +85,6 @@ const MyArticles = () => {
                   key="list-vertical-message"
                 />,
               ]}
-              extra={<img width={272} alt="logo" src="" />}
             >
               <List.Item.Meta
                 avatar={<Avatar src={article.author.avatar?.url || ''} />}
