@@ -52,6 +52,12 @@ const Consts = (): unknown => ({
       clientSecret: process.env.GOOGLE_AUTH_CLIENT_SECRET,
     },
   },
+  github: {
+    auth: {
+      clientId: process.env.GITHUB_AUTH_CLIENT_ID,
+      clientSecret: process.env.GITHUB_AUTH_CLIENT_SECRET,
+    },
+  },
   aws: {
     region: process.env.REGION,
     sessionToken: process.env.AWS_SESSION_TOKEN,

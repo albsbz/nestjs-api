@@ -48,8 +48,18 @@ export class UsersService {
     );
   }
 
-  async createProviderUser(email: string, provider: Provider): Promise<User> {
-    return this.usersRepository.createProviderUser(email, provider);
+  async createProviderUser(
+    email: string,
+    provider: Provider,
+    avatar: string,
+    firstName: string,
+  ): Promise<User> {
+    return this.usersRepository.createProviderUser(
+      email,
+      provider,
+      avatar,
+      firstName,
+    );
   }
 
   async findOne(email: string): Promise<User | null> {

@@ -10,6 +10,7 @@ import useAsyncError from '../../../hooks/useAsyncError';
 import { useAuthContext } from '../../../context/authContext';
 import { useRouter } from 'next/router';
 import { useEffect, useMemo } from 'react';
+import GithubButton from '../../GithubButton';
 
 const Login = () => {
   const router = useRouter();
@@ -114,7 +115,8 @@ const Login = () => {
             Login with Email
           </AppButton>
         </Form.Item>
-        <GoogleButton>Login with google</GoogleButton>
+        <GoogleButton>Login with Google</GoogleButton>
+        <GithubButton>Login with Github</GithubButton>
       </Form>
     </div>
   );

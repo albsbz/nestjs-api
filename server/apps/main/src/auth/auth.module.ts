@@ -14,6 +14,9 @@ import { GoogleAuthController } from './google-auth/google-auth.controller';
 import { GoogleAuthService } from './google-auth/google-auth.service';
 import { GoogleOAuthStrategy } from './strategies/google-OAuth.strategy';
 import { JwtStrategy } from '@app/common/shared/shared/strategies/jwt.strategy';
+import { GithubAuthController } from './github-auth/github-auth.controller';
+import { GithubAuthService } from './github-auth/github-auth.service';
+import { GithubOAuthStrategy } from './strategies/github-OAuth.strategy';
 
 @Module({
   imports: [
@@ -36,8 +39,10 @@ import { JwtStrategy } from '@app/common/shared/shared/strategies/jwt.strategy';
     JwtStrategy,
     JwtRefreshStrategy,
     GoogleOAuthStrategy,
+    GithubOAuthStrategy,
     GoogleAuthService,
+    GithubAuthService,
   ],
-  controllers: [AuthController, GoogleAuthController],
+  controllers: [AuthController, GoogleAuthController, GithubAuthController],
 })
 export class AuthModule {}

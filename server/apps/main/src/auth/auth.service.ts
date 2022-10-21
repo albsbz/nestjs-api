@@ -67,11 +67,20 @@ export class AuthService {
   async registerUserWithProvider({
     email,
     provider,
+    avatar,
+    firstName,
   }: {
     email: string;
     provider: Provider;
+    avatar?: string;
+    firstName?: string;
   }): Promise<User> {
-    const user = await this.usersService.createProviderUser(email, provider);
+    const user = await this.usersService.createProviderUser(
+      email,
+      provider,
+      avatar,
+      firstName,
+    );
 
     if (!user || typeof user === 'boolean') {
       throw new ConflictException('User already exists');

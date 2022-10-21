@@ -70,10 +70,19 @@ export class UsersRepository {
     return !!(user.modifiedCount || user.upsertedCount);
   }
 
-  async createProviderUser(email: string, provider: Provider): Promise<User> {
+  async createProviderUser(
+    email: string,
+    provider: Provider,
+    avatar: string,
+    firstName: string,
+  ): Promise<User> {
+    console.log('eeer', avatar, firstName);
+
     const user = await this.userModel.findOneAndUpdate(
       {
         email,
+        // name: firstName,
+        // avatar: { url: avatar },
       },
       [
         {
@@ -98,6 +107,8 @@ export class UsersRepository {
                 default: '$providers',
               },
             },
+            'avatar.url': avatar,
+            name: firstName,
           },
         },
       ],
