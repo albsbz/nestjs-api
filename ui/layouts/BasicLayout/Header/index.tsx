@@ -1,4 +1,4 @@
-import { Button, Layout, Menu } from 'antd';
+import { Button, Layout, Menu, Submenu } from 'antd';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { memo, useMemo } from 'react';
@@ -11,21 +11,27 @@ const { Header } = Layout;
 const AppHeader: React.FC = () => {
   const { isAuth, isLoading } = useAuthContext();
   let items = [
-    {
-      key: '/',
-      label: <Link href="/">Main</Link>,
-    },
+    // {
+    //   key: '/',
+    //   label: <Link href="/">Main</Link>,
+    // },
   ];
   if (isAuth) {
     items = [
       ...items,
       {
-        key: '/articles/create',
-        label: <Link href="/article/create">New article</Link>,
-      },
-      {
-        key: '/articles/my',
-        label: <Link href="/articles/my">My articles</Link>,
+        key: '/home',
+        label: <Link href="/">Articles</Link>,
+        children: [
+          {
+            key: '/articles/my',
+            label: <Link href="/articles/my">My articles</Link>,
+          },
+          {
+            key: '/articles/create',
+            label: <Link href="/article/create">Create new</Link>,
+          },
+        ],
       },
     ];
   }

@@ -1,4 +1,4 @@
-import { Breadcrumb, Layout } from 'antd';
+import { Layout } from 'antd';
 import 'antd/dist/antd.css';
 import { IProps } from '../../common/interface/IProps';
 import styles from './style.module.scss';
@@ -9,6 +9,7 @@ import PageLoader from '../../components/PageLoader';
 import { AlertContextProvider } from '../../context/alertContext';
 import AppAlert from '../../components/Alert';
 import { memo } from 'react';
+import Breadcrumbs from './Breadcrumbs';
 
 const { Content, Footer } = Layout;
 
@@ -22,11 +23,7 @@ const BasicLayout: React.FC<IProps> = ({ children, needAuth }) => {
             <AlertContextProvider>
               <AppAlert />
               <Content className={styles.content} style={{ padding: '0 50px' }}>
-                <Breadcrumb style={{ margin: '16px 0' }}>
-                  <Breadcrumb.Item>Home</Breadcrumb.Item>
-                  <Breadcrumb.Item>List</Breadcrumb.Item>
-                  <Breadcrumb.Item>App</Breadcrumb.Item>
-                </Breadcrumb>
+                <Breadcrumbs></Breadcrumbs>
                 <div className={styles.contentBackground}>{children}</div>
               </Content>
             </AlertContextProvider>
