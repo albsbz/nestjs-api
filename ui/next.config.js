@@ -23,8 +23,9 @@ const securityHeaders = [
   },
   {
     key: 'Referrer-Policy',
-    value: 'same-origin',
+    value: 'strict-origin-when-cross-origin',
   },
+  { key: 'ngrok-skip-browser-warning', value: '1' },
 ];
 
 const nextConfig = {
@@ -41,6 +42,12 @@ const nextConfig = {
   },
 
   async rewrites() {
+    console.log('====================================');
+    console.log(
+      'rewrit3',
+      `${process.env.NEXT_PUBLIC_API_URL}/main/auth/:path*`,
+    );
+    console.log('====================================');
     return [
       // {
       //   source: '/api/:path*',

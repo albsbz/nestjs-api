@@ -9,5 +9,5 @@ export class GoogleUser {
   @IsUrl()
   picture: string;
 
-  accessToken: string;
+  accessToken?: string;
 }

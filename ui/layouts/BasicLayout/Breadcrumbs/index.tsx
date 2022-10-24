@@ -6,8 +6,6 @@ const AppBreadcrumbs = () => {
   const router = useRouter();
   const crumbs = router?.asPath.split('/').slice(1) || [];
   if (crumbs.includes('auth')) return;
-  console.log(crumbs);
-
   return (
     <Breadcrumb style={{ margin: '16px 0' }}>
       {crumbs[0] && (

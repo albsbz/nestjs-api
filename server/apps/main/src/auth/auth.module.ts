@@ -17,6 +17,8 @@ import { JwtStrategy } from '@app/common/shared/shared/strategies/jwt.strategy';
 import { GithubAuthController } from './github-auth/github-auth.controller';
 import { GithubAuthService } from './github-auth/github-auth.service';
 import { GithubOAuthStrategy } from './strategies/github-OAuth.strategy';
+import { GoogleOnetapAuthController } from './google-auth/google-onetap.controller';
+import { GoogleOneTapStrategy } from './strategies/google-onetap.strategy';
 
 @Module({
   imports: [
@@ -39,10 +41,16 @@ import { GithubOAuthStrategy } from './strategies/github-OAuth.strategy';
     JwtStrategy,
     JwtRefreshStrategy,
     GoogleOAuthStrategy,
+    GoogleOneTapStrategy,
     GithubOAuthStrategy,
     GoogleAuthService,
     GithubAuthService,
   ],
-  controllers: [AuthController, GoogleAuthController, GithubAuthController],
+  controllers: [
+    AuthController,
+    GoogleAuthController,
+    GoogleOnetapAuthController,
+    GithubAuthController,
+  ],
 })
 export class AuthModule {}

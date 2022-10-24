@@ -10,6 +10,7 @@ import { AlertContextProvider } from '../../context/alertContext';
 import AppAlert from '../../components/Alert';
 import { memo } from 'react';
 import Breadcrumbs from './Breadcrumbs';
+import OneTap from './OneTap';
 
 const { Content, Footer } = Layout;
 
@@ -20,6 +21,7 @@ const BasicLayout: React.FC<IProps> = ({ children, needAuth }) => {
         <PageLoader needAuth={needAuth}>
           <Layout className={styles.layout}>
             <AppHeader />
+            <OneTap />
             <AlertContextProvider>
               <AppAlert />
               <Content className={styles.content} style={{ padding: '0 50px' }}>
