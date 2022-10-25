@@ -6,7 +6,11 @@ function GithubButton({ children }) {
     e.preventDefault();
     window.location.href = `${process.env.NEXT_PUBLIC_API}/auth/github`;
   };
-  return <AppButton onClick={handleRedirect}>{children}</AppButton>;
+  return (
+    <AppButton onClick={handleRedirect} style={{ width: '100%' }}>
+      {children}
+    </AppButton>
+  );
 }
 
 export default GithubButton;

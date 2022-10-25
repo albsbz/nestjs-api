@@ -76,8 +76,6 @@ export class UsersRepository {
     avatar: string,
     firstName: string,
   ): Promise<User> {
-    console.log('eeer', avatar, firstName);
-
     const user = await this.userModel.findOneAndUpdate(
       {
         email,

@@ -1,23 +1,25 @@
 import { useRouter } from 'next/router';
-import Script from 'next/script';
 import useGoogleOneTap from '../../../components/auth/hooks/useGoogleOneTap';
+import { useAuthContext } from '../../../context/authContext';
+import styles from './style.module.scss';
 
 const OneTap = () => {
+  const { isAuth } = useAuthContext();
+  const router = useRouter();
+
   useGoogleOneTap();
+  if (isAuth || router.pathname === '/auth/login') return;
   return (
-    <>
-      <Script
-        id="google-maps"
-        src="https://accounts.google.com/gsi/client"
-        async
-        defer
-      />
-      <div
-        id="g_id_onload"
-        data-client_id={process.env.NEXT_PUBLIC_GOOGLE_AUTH_CLIENT_ID}
-        data-callback="handleCredentialResponse"
-      ></div>
-    </>
+    <div
+      id="g_id_onload"
+      data-nonce=""
+      data-close_on_tap_outside="false"
+      data-itp_support="false"
+      data-client_id={process.env.NEXT_PUBLIC_GOOGLE_AUTH_CLIENT_ID}
+      data-callback="handleCredentialResponse"
+      data-prompt_parent_id="g_id_onload"
+      className={styles.OneTap}
+    ></div>
   );
 };
 export default OneTap;

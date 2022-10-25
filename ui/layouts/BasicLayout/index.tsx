@@ -11,12 +11,17 @@ import AppAlert from '../../components/Alert';
 import { memo } from 'react';
 import Breadcrumbs from './Breadcrumbs';
 import OneTap from './OneTap';
+import Script from 'next/script';
 
 const { Content, Footer } = Layout;
 
 const BasicLayout: React.FC<IProps> = ({ children, needAuth }) => {
   return (
     <ErrorBoundary>
+      <Script
+        src="https://accounts.google.com/gsi/client"
+        // strategy="lazyOnload"
+      ></Script>
       <AuthContextProvider needAuth={needAuth}>
         <PageLoader needAuth={needAuth}>
           <Layout className={styles.layout}>

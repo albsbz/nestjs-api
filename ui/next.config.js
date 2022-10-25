@@ -42,12 +42,6 @@ const nextConfig = {
   },
 
   async rewrites() {
-    console.log('====================================');
-    console.log(
-      'rewrit3',
-      `${process.env.NEXT_PUBLIC_API_URL}/main/auth/:path*`,
-    );
-    console.log('====================================');
     return [
       // {
       //   source: '/api/:path*',

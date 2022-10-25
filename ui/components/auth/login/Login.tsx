@@ -115,8 +115,12 @@ const Login = () => {
             Login with Email
           </AppButton>
         </Form.Item>
-        <GoogleButton>Login with Google</GoogleButton>
-        <GithubButton>Login with Github</GithubButton>
+        <Form.Item wrapperCol={{ offset: 0, span: 24 }}>
+          <GoogleButton>Login with Google</GoogleButton>
+        </Form.Item>
+        <Form.Item wrapperCol={{ offset: 0, span: 24 }}>
+          <GithubButton>Login with Github</GithubButton>
+        </Form.Item>
       </Form>
     </div>
   );

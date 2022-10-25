@@ -17,7 +17,11 @@ const AppAvatarDropdown: React.FC = () => {
         items={[
           {
             key: '1',
-            label: <a onClick={handleLogout}>Logout</a>,
+            label: (
+              <a onClick={handleLogout} className="g_id_signout">
+                Logout
+              </a>
+            ),
           },
           {
             key: '2',

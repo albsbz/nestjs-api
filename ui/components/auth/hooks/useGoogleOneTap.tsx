@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import Router from 'next/router';
 import { useAuthContext } from '../../../context/authContext';
 import { axiosInstance } from '../../../utils/axios';
@@ -25,10 +25,9 @@ const useGoogleOneTap = () => {
 
   const { accessToken, refreshToken } = tokens;
 
-  useEffect(() => {
-    async function handleCredentialResponse({ credential }) {
+  const handleCredentialResponse = useCallback(
+    async ({ credential }) => {
       if (!credential) return;
-
       let resp;
       try {
         resp = await axiosInstance.post<Tokens>(`auth/google-one-tap/login`, {
@@ -39,9 +38,15 @@ const useGoogleOneTap = () => {
         return;
       }
       setTokens(resp.data);
+    },
+    [router],
+  );
+
+  useEffect(() => {
+    if (window && !window.handleCredentialResponse) {
+      window.handleCredentialResponse = handleCredentialResponse;
     }
-    window.handleCredentialResponse = handleCredentialResponse;
-  }, [router]);
+  }, [handleCredentialResponse]);
 
   useEffect(() => {
     if (accessToken && !isAuth) {
@@ -54,5 +59,7 @@ const useGoogleOneTap = () => {
       Router.push('/');
     }
   }, [isAuth]);
+
+  return { handleCredentialResponse };
 };
 export default useGoogleOneTap;
