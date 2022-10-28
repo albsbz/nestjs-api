@@ -1,7 +1,7 @@
 import { Avatar, Dropdown, Image, Menu, Space } from 'antd';
 import { useRouter } from 'next/router';
 import { memo } from 'react';
-import { useAuthContext } from '../../../../../context/authContext';
+import { useAuthContext } from '../../../../../../context/authContext';
 
 const AppAvatarDropdown: React.FC = () => {
   const router = useRouter();

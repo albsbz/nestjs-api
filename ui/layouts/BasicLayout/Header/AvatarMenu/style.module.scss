@@ -1,0 +1,13 @@
+.headerColor {
+  background: #c8dbf7;
+}
+
+.rightButtonsWrapper {
+  float: right;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  .dash {
+    margin: 0 5px;
+  }
+}
