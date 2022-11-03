@@ -3,9 +3,11 @@ import { useState } from 'react';
 import AppSteps from './AppSteps';
 import RegistrationStep from './Steps/RegistrationStep';
 import PreferencesStep from './Steps/PreferencesStep';
+import useInitAuth from '../../../hooks/useInitAuth';
 
 const Registration = () => {
   const [current, setCurrent] = useState(0);
+  const { initAuth } = useInitAuth();
 
   const next = () => {
     setCurrent(current + 1);
@@ -17,10 +19,17 @@ const Registration = () => {
 
   const stepTitles = ['Registration', 'Preferences'];
   return (
-    <AppSteps next={next} prev={prev} current={current} stepTitles={stepTitles}>
-      <RegistrationStep next={next} />
-      <PreferencesStep />
-    </AppSteps>
+    initAuth && (
+      <AppSteps
+        next={next}
+        prev={prev}
+        current={current}
+        stepTitles={stepTitles}
+      >
+        <RegistrationStep next={next} />
+        <PreferencesStep />
+      </AppSteps>
+    )
   );
 };
 

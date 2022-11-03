@@ -6,14 +6,16 @@ import useAuth from './hooks/useAuth';
 import { useRefreshToken } from './hooks/useRefreshToken';
 import getInitTokens from './helpers/getInitTokens';
 import { emptyObject } from '../../helpers';
+import { useLoadingContext } from '../loadingContext';
 
 const context: IAuthContext = {
   login: (accessToken: string, refreshToken: string) => {},
   logout: () => {},
   user: {},
   isAuth: false,
-  isLoading: true,
-  setIsLoading: (v: boolean) => {},
+  needAuth: false,
+  onlyNoAuth: false,
+  initiated: false,
 };
 
 export const AuthContext = createContext(context);
@@ -23,38 +25,41 @@ export const useAuthContext = () => {
 };
 
 export const AuthContextProvider: React.FC<IProps> = (props) => {
-  const [isLoading, setIsLoading] = useState(true);
+  // const { isLoading, setIsLoading } = useLoadingContext();
+  const { needAuth, onlyNoAuth } = props;
   const [initTokens, setInitTokens] = useState({});
+  const [initiated, setInitiated] = useState(false);
   const router = useRouter();
   useEffect(() => {
     setInitTokens(getInitTokens());
+    setInitiated(true);
   }, []);
 
   const { login, logout, user, isAuth, tokens, updateLocalStorage } = useAuth(
     initTokens,
-    setIsLoading,
+    // setIsLoading,
   );
 
   useRefreshToken(tokens, logout, updateLocalStorage);
 
   useEffect(() => {
-    if (!props.needAuth) {
-      setIsLoading(false);
+    if (!needAuth) {
+      // setIsLoading(false);
       return;
     }
     if (isAuth) {
-      setIsLoading(false);
+      // setIsLoading(false);
       return;
     } else {
       if (!emptyObject(initTokens) && !tokens.accessToken) {
         router.push('/auth/login');
       }
     }
-  }, [isAuth, props.needAuth, router, tokens, initTokens]);
+  }, [isAuth, needAuth, router, tokens, initTokens]);
 
   const store = useMemo(
-    () => ({ login, logout, user, isAuth, isLoading, setIsLoading }),
-    [login, logout, user, isAuth, isLoading, setIsLoading],
+    () => ({ login, logout, user, isAuth, needAuth, onlyNoAuth, initiated }),
+    [login, logout, user, isAuth, needAuth, onlyNoAuth, initiated],
   );
 
   return <AuthContext.Provider value={store} {...props} />;

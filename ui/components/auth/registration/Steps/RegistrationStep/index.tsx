@@ -10,25 +10,14 @@ import { useAuthContext } from '../../../../../context/authContext';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { useAlertContext } from '../../../../../context/alertContext';
+import { useLoadingContext } from '../../../../../context/loadingContext';
 
 const RegistrationStep = ({ next }) => {
   const router = useRouter();
   const [form] = Form.useForm();
   const throwError = useAsyncError();
-  const { isAuth, setIsLoading, isLoading, login } = useAuthContext();
+  const { login } = useAuthContext();
   const { setAlert } = useAlertContext();
-
-  useEffect(() => {
-    if (isAuth) {
-      setIsLoading(true);
-    }
-  }, [isAuth, setIsLoading]);
-
-  useEffect(() => {
-    if (!isLoading && isAuth) {
-      router.push('/');
-    }
-  }, [router, isAuth, isLoading]);
 
   const passwordValidator = (_, pw) => {
     if (/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/.test(pw)) {

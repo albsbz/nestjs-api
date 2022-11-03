@@ -1,9 +1,10 @@
 .logo {
-  width: 120px;
+  min-width: 120px;
   height: 31px;
-  margin: 0px 24px 0px 0px;
+  margin: 0px 24px 0px 24px;
   cursor: pointer;
   font-family: 'Rubik Dirt', cursive;
+  display: inline-block;
 }
 .float {
   float: left;

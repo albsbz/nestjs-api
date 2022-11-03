@@ -8,7 +8,7 @@ import {
   axiosInstance,
 } from '../../../utils/axios';
 
-const useAuth = (initTokens, setIsLoading) => {
+const useAuth = (initTokens) => {
   const [prevInitTokens, setPrevInitTokens] = useState(initTokens);
   const [tokens, setTokens] = useState({ accessToken: '', refreshToken: '' });
 
@@ -17,10 +17,6 @@ const useAuth = (initTokens, setIsLoading) => {
     setTokens(initTokens);
     setAuthHeader(initTokens.accessToken);
   }
-
-  // setIsLoading(true);
-  // const [user, setUser] = useState({});
-  // const [isAuth, setIsAuth] = useState(false);
 
   let user = useMemo(() => ({}), []);
   if (tokens?.accessToken) {
@@ -48,7 +44,7 @@ const useAuth = (initTokens, setIsLoading) => {
   };
 
   const logout = async (noRequest?: boolean) => {
-    setIsLoading(true);
+    // setIsLoading(true);
     if (!noRequest) {
       await axiosInstance.post('/auth/logout');
     }

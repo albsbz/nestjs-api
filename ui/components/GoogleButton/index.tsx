@@ -8,7 +8,6 @@ declare global {
 }
 function GoogleButton({ children }) {
   const { handleCredentialResponse } = useGoogleOneTap();
-  console.dir(handleCredentialResponse);
   useEffect(() => {
     if (window.google) {
       window.google.accounts.id.initialize({

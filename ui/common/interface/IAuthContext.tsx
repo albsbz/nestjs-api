@@ -3,6 +3,7 @@ export interface IAuthContext {
   logout: () => void;
   user: { avatarURL?: string; sub?: string };
   isAuth: boolean;
-  isLoading: boolean;
-  setIsLoading: (v: boolean) => void;
+  needAuth: boolean;
+  onlyNoAuth: boolean;
+  initiated: boolean;
 }

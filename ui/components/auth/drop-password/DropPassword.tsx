@@ -10,12 +10,14 @@ import { useAuthContext } from '../../../context/authContext';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { useAlertContext } from '../../../context/alertContext';
+import { useLoadingContext } from '../../../context/loadingContext';
 
 const DropPassword = () => {
   const router = useRouter();
   const [form] = Form.useForm();
   const throwError = useAsyncError();
-  const { login, isAuth, setIsLoading, isLoading } = useAuthContext();
+  const { login, isAuth } = useAuthContext();
+  const { setIsLoading, isLoading } = useLoadingContext();
   const { setAlert } = useAlertContext();
 
   useEffect(() => {

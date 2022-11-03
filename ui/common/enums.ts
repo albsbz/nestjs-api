@@ -1,6 +1,6 @@
 export enum WindowSize {
-  small = 'small',
-  medium = 'medium',
-  large = 'large',
-  extraLarge = 'extraLarge',
+  small = 0,
+  medium = 1,
+  large = 2,
+  extraLarge = 3,
 }

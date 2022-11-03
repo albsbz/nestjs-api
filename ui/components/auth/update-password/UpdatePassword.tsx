@@ -9,12 +9,14 @@ import { useAuthContext } from '../../../context/authContext';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { useAlertContext } from '../../../context/alertContext';
+import { useLoadingContext } from '../../../context/loadingContext';
 
 const UpdatePassword = () => {
   const router = useRouter();
   const [form] = Form.useForm();
   const throwError = useAsyncError();
-  const { isAuth, setIsLoading, isLoading } = useAuthContext();
+  const { isAuth } = useAuthContext();
+  const { setIsLoading, isLoading } = useLoadingContext();
   const { setAlert } = useAlertContext();
 
   useEffect(() => {

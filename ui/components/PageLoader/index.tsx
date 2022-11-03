@@ -1,9 +1,10 @@
 import { Spin } from 'antd';
 import { useAuthContext } from '../../context/authContext';
+import { useLoadingContext } from '../../context/loadingContext';
 import styles from './style.module.scss';
 
 const PageLoader = ({ children, needAuth }) => {
-  const { isLoading } = useAuthContext();
+  const { isLoading } = useLoadingContext();
 
   const RenderChildren = (!needAuth || (!isLoading && needAuth)) && (
     <div>{children}</div>

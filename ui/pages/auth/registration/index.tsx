@@ -7,7 +7,7 @@ const RegistartionPage: TPage = () => {
 };
 
 RegistartionPage.getLayout = (page) => {
-  return <BasicLayout>{page}</BasicLayout>;
+  return <BasicLayout onlyNoAuth>{page}</BasicLayout>;
 };
 
 export default RegistartionPage;

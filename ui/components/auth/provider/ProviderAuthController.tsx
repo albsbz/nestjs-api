@@ -5,6 +5,7 @@ import { axiosInstance } from '../../../utils/axios';
 import Router from 'next/router';
 import { POSSSIBLE_PROVIDERS } from '../../../utils/constants';
 import { message } from 'antd';
+import { useLoadingContext } from '../../../context/loadingContext';
 
 interface Tokens {
   accessToken: string;
@@ -18,7 +19,8 @@ const ProviderAuthController = () => {
     accessToken: '',
     refreshToken: '',
   });
-  const { login, isAuth, setIsLoading } = useAuthContext();
+  const { login, isAuth } = useAuthContext();
+  const { setIsLoading } = useLoadingContext();
 
   useEffect(() => {
     setIsLoading(true);

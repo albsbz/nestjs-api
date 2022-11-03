@@ -6,7 +6,7 @@ const loginPage = () => {
 };
 
 loginPage.getLayout = (page) => {
-  return <BasicLayout>{page}</BasicLayout>;
+  return <BasicLayout onlyNoAuth>{page}</BasicLayout>;
 };
 
 export default loginPage;

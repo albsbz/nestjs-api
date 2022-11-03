@@ -15,14 +15,12 @@ const { Header } = Layout;
 
 const AppHeader: React.FC = () => {
   const { windowDimensions, windowSize } = useWindowDimensions();
-  const { isAuth, isLoading } = useAuthContext();
-  const [collapsed, setCollapsed] = useState(false);
+  const { isAuth } = useAuthContext();
+  const [collapsed, setCollapsed] = useState(true);
 
   const toggleCollapsed = () => {
     setCollapsed(!collapsed);
   };
-
-  console.log('width', windowDimensions, windowSize);
 
   let items = [
     // {+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -50,7 +48,7 @@ const AppHeader: React.FC = () => {
     ];
   }
   const getMenu = () => {
-    if (windowSize === WindowSize.large || windowSize === WindowSize.extraLarge)
+    if (windowSize > WindowSize.medium) {
       return (
         <>
           <Logo left />
@@ -63,7 +61,7 @@ const AppHeader: React.FC = () => {
           />
         </>
       );
-    if (windowSize === WindowSize.small || windowSize === WindowSize.medium) {
+    } else {
       return (
         <>
           <Button
