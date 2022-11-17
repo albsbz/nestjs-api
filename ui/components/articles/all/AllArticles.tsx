@@ -15,20 +15,21 @@ const IconText = ({ icon, text }: { icon: React.FC; text: string }) => (
 const AllArticles = () => {
   const [loading, setLoading] = useState(false);
   const [articles, setArticles] = useState([]);
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(0);
   const [count, setCount] = useState(0);
   let didLoad = false;
+  let perPage = 3;
 
-  const loadMoreData = async () => {
+  const loadMoreData = async (currentPage) => {
     if (loading) {
       return;
     }
     setLoading(true);
     try {
       const res = await axiosInstance.get(
-        `articles?take=3&skip=${articles.length}`,
+        `articles?take=${perPage}&skip=${perPage * (currentPage - 1)}`,
       );
-      setArticles([...articles, ...res.data.articles]);
+      setArticles(res.data.articles);
       setCount(res.data.count);
       setLoading(false);
     } finally {
@@ -37,7 +38,7 @@ const AllArticles = () => {
   };
   const initLoad = () => {
     if (!didLoad) {
-      loadMoreData();
+      loadMoreData(1);
       didLoad = true;
     }
   };
@@ -53,6 +54,10 @@ const AllArticles = () => {
       pagination={{
         pageSize: 3,
         total: count,
+        onChange: (page) => {
+          setPage(page);
+          loadMoreData(page);
+        },
       }}
       renderItem={(article) => (
         <List.Item
